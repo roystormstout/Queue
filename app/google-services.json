@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "700971486111",
+    "firebase_url": "https://dopeaf1-f4532.firebaseio.com",
+    "project_id": "dopeaf1-f4532",
+    "storage_bucket": "dopeaf1-f4532.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:700971486111:android:cfac88d2103ee208",
+        "android_client_info": {
+          "package_name": "com.example.lingfeng.dopeaf1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "700971486111-difngrpa9942udtnr6s3f0vap9qiojjq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZ2S3BLhujOPiMomhhIjrC0-RDGJqaBUg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
