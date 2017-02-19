@@ -52,4 +52,14 @@ public class User {
         enrolledCourses.add(courseID);
     }
 
+    public boolean dropCourse(String courseID){
+        if(enrolledCourses==null)
+            return false;
+        if(enrolledCourses.contains(courseID))
+            enrolledCourses.remove(enrolledCourses.indexOf(courseID));
+        else
+            return false;
+        return true;
+    }
+
 }

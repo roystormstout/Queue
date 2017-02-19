@@ -62,6 +62,13 @@
             android:id="@+id/add_class"
             android:layout_weight="0.05" />
 
+        <Button
+            android:text="Drop Class"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/drop_class"
+            android:layout_weight="0.07" />
+
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

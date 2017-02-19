@@ -36,4 +36,14 @@ public class Class {
         users.add(studentID);
     }
 
+    public boolean dropStudent(String studentID){
+        if(users==null)
+            return false;
+        if(users.contains(studentID))
+            users.remove(users.indexOf(studentID));
+        else
+            return false;
+        return true;
+    }
+
 }

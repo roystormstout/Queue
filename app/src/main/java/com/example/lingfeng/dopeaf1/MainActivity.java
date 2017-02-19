@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                                         User user = snapshot.getValue(User.class);
                                         if(emailU.equals(user.email)&&passwordU.equals(user.password)) {
                                             loggedin = user;
-                                            Toast.makeText(MainActivity.this, "Hello "+loggedin.username, Toast.LENGTH_LONG).show();
+                                            Toast.makeText(MainActivity.this, "Hello "+loggedin.username, Toast.LENGTH_SHORT).show();
                                             Intent intent = new Intent(MainActivity.this, AddClass.class);
                                             flag=1;
                                             loggedin.updateLastlogin();
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     }
                                     if(flag==0) {
-                                        Toast.makeText(MainActivity.this, "Wrong email or password", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(MainActivity.this, "Wrong email or password", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                                 @Override
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                             });
                 }
                 else{
-                    Toast.makeText(MainActivity.this, "Please enter valid value in all fields for login", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Please enter valid value in all fields for login", Toast.LENGTH_SHORT).show();
                 }
             }
             });
@@ -104,20 +104,26 @@ public class MainActivity extends AppCompatActivity {
                     final User userNew = new User(nameU, emailU, id, passwordU);
                     FirebaseDatabase.getInstance().getReference().child("users")
                             .addListenerForSingleValueEvent(new ValueEventListener() {
+                                int flag = 0;
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
+
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                         User user = snapshot.getValue(User.class);
                                         if(userNew.email.equals(user.email)) {
-                                            Toast.makeText(MainActivity.this, "This email has been registered!", Toast.LENGTH_LONG).show();
-                                            return;
+                                            Toast.makeText(MainActivity.this, "This email has been registered!", Toast.LENGTH_SHORT).show();
+                                            flag=1;
+                                            break;
                                         }
                                         if(userNew.userID.equals(user.userID)) {
-                                            Toast.makeText(MainActivity.this, "This userID has been registered!", Toast.LENGTH_LONG).show();
-                                            return;
+                                            flag=1;
+                                            Toast.makeText(MainActivity.this, "This userID has been registered!", Toast.LENGTH_SHORT).show();
+                                            break;
                                         }
+                                    }
+                                    if(flag ==0) {
                                         mDatabase.child("users").child(id).setValue(userNew);
-                                        Toast.makeText(MainActivity.this, "successfully added "+userNew.username, Toast.LENGTH_LONG).show();
+                                        Toast.makeText(MainActivity.this, "successfully added " + userNew.username, Toast.LENGTH_SHORT).show();
                                     }
                                 }
                                 @Override
