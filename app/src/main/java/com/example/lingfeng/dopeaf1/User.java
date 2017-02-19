@@ -20,6 +20,8 @@ public class User {
     public String createDate;
     public String lastlogin;
     public List<String> enrolledCourses;
+    public List<String> finishedTask;
+    public List<String> inProgressTask;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -37,7 +39,8 @@ public class User {
         createDate = df.format(dateobj);
         lastlogin="";
         enrolledCourses = new ArrayList<String>();
-
+        finishedTask = new ArrayList<String>();
+        inProgressTask = new ArrayList<String>();
     }
 
     public void updateLastlogin(){
