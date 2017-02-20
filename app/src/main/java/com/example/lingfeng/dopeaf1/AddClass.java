@@ -1,10 +1,7 @@
 package com.example.lingfeng.dopeaf1;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,9 +10,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.IgnoreExtraProperties;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.ValueEventListener;
 
 public class AddClass extends AppCompatActivity {
@@ -24,7 +18,7 @@ public class AddClass extends AppCompatActivity {
     private EditText q;
     private EditText sect;
     private EditText credits;
-    public final User a = MainActivity.loggedin;
+    public final User a = Login.loggedin;
     private Button btnAdd;
     private Button btnDrop;
     public DatabaseReference mDatabase;

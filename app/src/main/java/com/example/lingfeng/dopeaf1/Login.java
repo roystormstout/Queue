@@ -14,14 +14,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class MainActivity extends AppCompatActivity {
+public class Login extends AppCompatActivity {
     public static User loggedin;
     public DatabaseReference mDatabase;
     private EditText email;
-    private EditText userID;
-    private EditText name;
     private EditText password;
-    private Button btnSignup;
     private Button btnLogin;
     private Button btnForgotPassword;
 
@@ -33,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
         email = (EditText) findViewById(R.id.email);
         password = (EditText) findViewById(R.id.password);
         btnLogin = (Button) findViewById(R.id.login);
-        //btnSignup = (Button) findViewById(R.id.login);
         btnForgotPassword = (Button) findViewById(R.id.forgotPassword);
 
         //connect to our own database using google-services.json
@@ -67,10 +63,10 @@ public class MainActivity extends AppCompatActivity {
                                 //if the email and password all match
                                 if (emailU.equals(user.email) && passwordU.equals(user.password)) {
                                     loggedin = user;
-                                    Toast.makeText(MainActivity.this, "Hello " + loggedin.username, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Login.this, "Hello " + loggedin.username, Toast.LENGTH_SHORT).show();
                                     flag = 1;
                                     //define a jump
-                                    Intent intent = new Intent(MainActivity.this, AddClass.class);
+                                    Intent intent = new Intent(Login.this, AddClass.class);
 
                                     loggedin.updateLastlogin();
                                     mDatabase.child("users").child(loggedin.userID).setValue(loggedin);
@@ -85,18 +81,19 @@ public class MainActivity extends AppCompatActivity {
 
                             // if user enters a wrong password but valid email
                             if (flag == 2) {
-                                Toast.makeText(MainActivity.this, "Wrong email or password", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Login.this, "Wrong email or password!", Toast.LENGTH_SHORT).show();
 
                                 // if user enters new contents
                             } else if (flag == 0) {
                                 final User userNew = new User("NEW USER", emailU, "NEW ID", passwordU);
                                 //put user into users field
-                                Toast.makeText(MainActivity.this, "successfully added " + userNew.username, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Login.this, "successfully added " + userNew.username, Toast.LENGTH_SHORT).show();
                                 loggedin = userNew;
-                                Toast.makeText(MainActivity.this, "Hello " + loggedin.username, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Login.this, "Hello " + loggedin.username, Toast.LENGTH_SHORT).show();
 
                                 //define a jump
-                                Intent intent = new Intent(MainActivity.this, AddClass.class);
+                                //TODO: change the view
+                                Intent intent = new Intent(Login.this, AddClass.class);
 
                                 loggedin.updateLastlogin();
                                 mDatabase.child("users").child(loggedin.userID).setValue(loggedin);
@@ -111,10 +108,28 @@ public class MainActivity extends AppCompatActivity {
                     });
                 } else if(email.getText().length() < 1){
                     //notify user that the email is invalid
-                    Toast.makeText(MainActivity.this, "Email address has not entered yet!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Login.this, "Email address has not entered yet!", Toast.LENGTH_SHORT).show();
                 } else if(password.getText().length() <= 5) {
-                    Toast.makeText(MainActivity.this, "Password should have at least 6 characters!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Login.this, "Password should have at least 6 characters!", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        //triggered when click on forgot password button
+        btnForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                /* redirect to page for confirming information and retrieving information */
+
+                //define a jump
+                //TODO: change the view, and may need to PASS the EMAIL user entered, so that they does not need to enter it again
+                Intent intent = new Intent(Login.this, AddClass.class);
+                final User userNew = new User("Forgot Password", "Forgot Password", "Forgot Password", "Forgot Password");
+                loggedin = userNew;
+                mDatabase.child("users").child(loggedin.userID).setValue(loggedin);
+                //jump to add class
+                startActivity(intent);
             }
         });
     }
