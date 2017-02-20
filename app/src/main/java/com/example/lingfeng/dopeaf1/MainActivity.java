@@ -33,9 +33,10 @@ public class MainActivity extends AppCompatActivity {
     private EditText name;
     private EditText password;
 
-    private Button btnUser;
+    private Button btnSignup;
 
     private Button btnLogin;
+
     public DatabaseReference mDatabase;
     public static User loggedin;
 
@@ -48,30 +49,48 @@ public class MainActivity extends AppCompatActivity {
         name  = (EditText) findViewById(R.id.name);
         password  = (EditText) findViewById(R.id.password);
         btnLogin = (Button) findViewById(R.id.login);
-        btnUser = (Button) findViewById(R.id.add_user);
+        btnSignup = (Button) findViewById(R.id.add_user);
+
+        //connect to our own database using google-services.json
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+
+        //triggered when click on login button
         btnLogin.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v) {
+
+                //check if email and password are valid
+                //
+                //todo: add more checks to the format
                 if ((email.getText().length() > 1) && (password.getText().length()>5)){
+
+
                     final String emailU = email.getText().toString();
                     final String passwordU = password.getText().toString();
 
-                    FirebaseDatabase.getInstance().getReference().child("users")
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    mDatabase.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                                 int flag = 0;
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    //TODO: update searching to hashmap
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                                        //search through each user
                                         User user = snapshot.getValue(User.class);
                                         if(emailU.equals(user.email)&&passwordU.equals(user.password)) {
                                             loggedin = user;
                                             Toast.makeText(MainActivity.this, "Hello "+loggedin.username, Toast.LENGTH_SHORT).show();
-                                            Intent intent = new Intent(MainActivity.this, AddClass.class);
                                             flag=1;
+                                            //define a jump
+                                            Intent intent = new Intent(MainActivity.this, AddClass.class);
+
                                             loggedin.updateLastlogin();
                                             mDatabase.child("users").child(loggedin.userID).setValue(loggedin);
+                                            //jump to add class
                                             startActivity(intent);
                                         }
                                     }
@@ -85,24 +104,30 @@ public class MainActivity extends AppCompatActivity {
                             });
                 }
                 else{
+
+                    //notify user that the fields are invalid
                     Toast.makeText(MainActivity.this, "Please enter valid value in all fields for login", Toast.LENGTH_SHORT).show();
                 }
             }
             });
 
-        btnUser.setOnClickListener(new View.OnClickListener()
+
+        //triggered when signing up
+        btnSignup.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v) {
                 if ((email.getText().length() > 1) && (userID.getText().length() > 0 && (name.getText().length() > 3)&& (password.getText().length()>5))){
+
+                    //TODO: use some kind of unique auto generate code
                     final String id = userID.getText().toString();
                     String nameU = name.getText().toString();
                     String emailU = email.getText().toString();
                     String passwordU = password.getText().toString();
-                    mDatabase = FirebaseDatabase.getInstance().getReference();
 
+                    //create new user
                     final User userNew = new User(nameU, emailU, id, passwordU);
-                    FirebaseDatabase.getInstance().getReference().child("users")
+                    mDatabase.child("users")
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 int flag = 0;
                                 @Override
@@ -122,8 +147,20 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     }
                                     if(flag ==0) {
-                                        mDatabase.child("users").child(id).setValue(userNew);
+
+                                        //put user into users field
                                         Toast.makeText(MainActivity.this, "successfully added " + userNew.username, Toast.LENGTH_SHORT).show();
+                                        loggedin = userNew;
+                                        Toast.makeText(MainActivity.this, "Hello "+loggedin.username, Toast.LENGTH_SHORT).show();
+
+                                        //define a jump
+                                        Intent intent = new Intent(MainActivity.this, AddClass.class);
+
+                                        loggedin.updateLastlogin();
+                                        mDatabase.child("users").child(loggedin.userID).setValue(loggedin);
+                                        //jump to add class
+                                        startActivity(intent);
+
                                     }
                                 }
                                 @Override

@@ -14,11 +14,11 @@ public class Task {
     //public String startTime;
     //public String endTime;
     public String dueDate;
-    public int priority;
+    //public int priority;
     public String taskDescription = "";
     public double completePercentage = 0;
     public int completedPerson;
-    public int status;
+    //public int status;
     // 0: in progress; 1: completed; 2: missed
 
     public Task(){
@@ -31,8 +31,7 @@ public class Task {
         this.taskID = taskID;
         this.courseID = courseID;
         this.dueDate = dueDate;
-        this.priority = priority;
-        status = 0;
+
     }
 
     public void addUserID(String id){
@@ -41,10 +40,6 @@ public class Task {
 
     public void updateDueDate(String date){
         dueDate = date;
-    }
-
-    public void updatePriority(int priority){
-        this.priority = priority;
     }
 
     public void updateDiscription(String dis){

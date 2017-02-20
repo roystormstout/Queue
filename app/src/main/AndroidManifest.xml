@@ -26,7 +26,8 @@
         <activity
             android:name=".AddClass"
             android:label="@string/title_activity_add_class"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".AddTask"></activity>
     </application>
 
 </manifest>

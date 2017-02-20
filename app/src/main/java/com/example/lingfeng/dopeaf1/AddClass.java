@@ -41,6 +41,8 @@ public class AddClass extends AppCompatActivity {
         btnAdd = (Button) findViewById(R.id.add_class);
         btnDrop = (Button) findViewById(R.id.drop_class);
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        //add class
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,7 +53,7 @@ public class AddClass extends AppCompatActivity {
                     String qua = q.getText().toString();
                     String sec = sect.getText().toString();
                     final Class newClass = new Class(id, n, sec, qua, cred);
-                    FirebaseDatabase.getInstance().getReference().child("classes")
+                    mDatabase.child("classes")
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -100,11 +102,12 @@ public class AddClass extends AppCompatActivity {
                 }
             }
         });
+
         btnDrop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String id = cID.getText().toString();
-                FirebaseDatabase.getInstance().getReference().child("classes")
+                mDatabase.child("classes")
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             int foundFlag = 0;
                             @Override
