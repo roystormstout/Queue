@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -26,11 +27,16 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
         email = (EditText) findViewById(R.id.email);
         password = (EditText) findViewById(R.id.password);
         btnLogin = (Button) findViewById(R.id.login);
         btnForgotPassword = (Button) findViewById(R.id.forgotPassword);
+
+        if(loggedin != null) {
+            email.setText(loggedin.getUserEmail());
+            password.setText(loggedin.getUserPassword());
+        }
 
         //connect to our own database using google-services.json
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -61,20 +67,20 @@ public class Login extends AppCompatActivity {
                                 User user = snapshot.getValue(User.class);
 
                                 //if the email and password all match
-                                if (emailU.equals(user.email) && passwordU.equals(user.password)) {
+                                if (emailU.equals(user.getUserEmail()) && passwordU.equals(user.getUserPassword())) {
                                     loggedin = user;
-                                    Toast.makeText(Login.this, "Hello " + loggedin.username, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Login.this, "Hello " + loggedin.getUsername(), Toast.LENGTH_SHORT).show();
                                     flag = 1;
                                     //define a jump
                                     Intent intent = new Intent(Login.this, AddClass.class);
 
                                     loggedin.updateLastlogin();
-                                    mDatabase.child("users").child(loggedin.userID).setValue(loggedin);
+                                    mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
                                     //jump to add class
                                     startActivity(intent);
 
                                     //if the email matches but password does not match
-                                } else if (flag != 1 && emailU.equals(user.email) && !passwordU.equals(user.password)) {
+                                } else if (flag != 1 && emailU.equals(user.getUserEmail()) && !passwordU.equals(user.getUserPassword())) {
                                     flag = 2;
                                 }
                             }
@@ -83,20 +89,21 @@ public class Login extends AppCompatActivity {
                             if (flag == 2) {
                                 Toast.makeText(Login.this, "Wrong email or password!", Toast.LENGTH_SHORT).show();
 
-                                // if user enters new contents
+                            // if user enters new contents
                             } else if (flag == 0) {
+                                //TODO: Use a random unique user ID instead
                                 final User userNew = new User("NEW USER", emailU, "NEW ID", passwordU);
                                 //put user into users field
-                                Toast.makeText(Login.this, "successfully added " + userNew.username, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Login.this, "successfully added " + userNew.getUsername(), Toast.LENGTH_SHORT).show();
                                 loggedin = userNew;
-                                Toast.makeText(Login.this, "Hello " + loggedin.username, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Login.this, "Hello " + loggedin.getUsername(), Toast.LENGTH_SHORT).show();
 
                                 //define a jump
                                 //TODO: change the view
-                                Intent intent = new Intent(Login.this, AddClass.class);
+                                Intent intent = new Intent(Login.this, Signup.class);
 
                                 loggedin.updateLastlogin();
-                                mDatabase.child("users").child(loggedin.userID).setValue(loggedin);
+                                mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
                                 //jump to add class
                                 startActivity(intent);
                             }
@@ -127,7 +134,7 @@ public class Login extends AppCompatActivity {
                 Intent intent = new Intent(Login.this, AddClass.class);
                 final User userNew = new User("Forgot Password", "Forgot Password", "Forgot Password", "Forgot Password");
                 loggedin = userNew;
-                mDatabase.child("users").child(loggedin.userID).setValue(loggedin);
+                mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
                 //jump to add class
                 startActivity(intent);
             }

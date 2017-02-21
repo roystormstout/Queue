@@ -8,17 +8,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
 
 @IgnoreExtraProperties
 public class User {
-    public String pid;
-    public String userID;
-    public String username;
-    public String email;
-    public int numTasks;
-    public String password;
-    public String createDate;
-    public String lastlogin;
+    private String userID;
+    private String username;
+    private String email;
+    private int numTasks;
+    private String password;
+    private String createDate;
+    private String lastlogin;
+    private String UCSDEmail;
+    private String UCSDPassword;
     public List<String> enrolledCourses;
     public List<String> finishedTask;
     public List<String> inProgressTask;
@@ -28,11 +30,13 @@ public class User {
     }
 
     User(String username, String email, String userID, String password) {
-        this.pid="";
         this.password = password;
         this.userID = userID;
+        //TODO: Do we really need USERNAME? Personally, I think we'd better not to have it
         this.username = username;
         this.email = email;
+        UCSDEmail = "";
+        UCSDPassword = "";
         numTasks = 0;
         DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
         Date dateobj = new Date();
@@ -63,6 +67,59 @@ public class User {
         else
             return false;
         return true;
+    }
+
+    public void setUCSDAccount(String UCSDEmail, String UCSDPassword) {
+        setUCSDEmail(UCSDEmail);
+        setUCSDPassword(UCSDPassword);
+    }
+
+    public String getUCSDEmail() {
+        return UCSDEmail;
+    }
+
+    public void setUCSDEmail(String UCSDEmail) {
+        this.UCSDEmail = UCSDEmail;
+    }
+
+    public String getUCSDPassword() {
+        return UCSDPassword;
+    }
+
+    public void setUCSDPassword(String UCSDPassword) {
+        this.UCSDPassword = UCSDPassword;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    public String getUserEmail() {
+        return email;
+    }
+
+    public void setUserEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUserPassword() {
+        return password;
+    }
+
+    public void setUserPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 }
