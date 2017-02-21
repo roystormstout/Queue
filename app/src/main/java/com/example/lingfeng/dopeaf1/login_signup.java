@@ -1,33 +1,20 @@
 package com.example.lingfeng.dopeaf1;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.IgnoreExtraProperties;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-public class MainActivity extends AppCompatActivity {
+public class Login_SignUp extends AppCompatActivity {
     private EditText email;
     private EditText userID;
     private EditText name;
@@ -42,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login_signup);
         email = (EditText) findViewById(R.id.email);
         userID = (EditText) findViewById(R.id.userid);
         name  = (EditText) findViewById(R.id.name);
@@ -67,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
                                         User user = snapshot.getValue(User.class);
                                         if(emailU.equals(user.email)&&passwordU.equals(user.password)) {
                                             loggedin = user;
-                                            Toast.makeText(MainActivity.this, "Hello "+loggedin.username, Toast.LENGTH_SHORT).show();
-                                            Intent intent = new Intent(MainActivity.this, AddClass.class);
+                                            Toast.makeText(Login_SignUp.this, "Hello "+loggedin.username, Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(Login_SignUp.this, AddClass.class);
                                             flag=1;
                                             loggedin.updateLastlogin();
                                             mDatabase.child("users").child(loggedin.userID).setValue(loggedin);
@@ -76,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     }
                                     if(flag==0) {
-                                        Toast.makeText(MainActivity.this, "Wrong email or password", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(Login_SignUp.this, "Wrong email or password", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                                 @Override
@@ -85,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                             });
                 }
                 else{
-                    Toast.makeText(MainActivity.this, "Please enter valid value in all fields for login", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Login_SignUp.this, "Please enter valid value in all fields for login", Toast.LENGTH_SHORT).show();
                 }
             }
             });
@@ -111,19 +98,19 @@ public class MainActivity extends AppCompatActivity {
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                         User user = snapshot.getValue(User.class);
                                         if(userNew.email.equals(user.email)) {
-                                            Toast.makeText(MainActivity.this, "This email has been registered!", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(Login_SignUp.this, "This email has been registered!", Toast.LENGTH_SHORT).show();
                                             flag=1;
                                             break;
                                         }
                                         if(userNew.userID.equals(user.userID)) {
                                             flag=1;
-                                            Toast.makeText(MainActivity.this, "This userID has been registered!", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(Login_SignUp.this, "This userID has been registered!", Toast.LENGTH_SHORT).show();
                                             break;
                                         }
                                     }
                                     if(flag ==0) {
                                         mDatabase.child("users").child(id).setValue(userNew);
-                                        Toast.makeText(MainActivity.this, "successfully added " + userNew.username, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(Login_SignUp.this, "successfully added " + userNew.username, Toast.LENGTH_SHORT).show();
                                     }
                                 }
                                 @Override
@@ -132,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                             });
                 }
                 else{
-                    Toast.makeText(MainActivity.this, "Please enter valid value in all fields for register", Toast.LENGTH_LONG).show();
+                    Toast.makeText(Login_SignUp.this, "Please enter valid value in all fields for register", Toast.LENGTH_LONG).show();
                 }
             }
         });
