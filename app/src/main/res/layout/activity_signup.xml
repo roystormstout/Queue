@@ -1,0 +1,146 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="72dp"
+    android:paddingRight="72dp"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.lingfeng.dopeaf1.Signup"
+    android:background="@color/colorPrimaryDark">
+
+    <!-- Login progress -->
+
+
+    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/login_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textAlignment="center">
+
+        <RelativeLayout
+            android:id="@+id/email_login_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:ems="10"
+                android:id="@+id/email"
+                android:hint="Email"
+                android:theme="@style/EditTextDarkTheme"
+                android:textColor="@color/colorAccent"
+                android:textColorHighlight="@color/colorAccent"
+                android:textColorHint="@color/colorPrimary"
+                android:layout_above="@+id/password"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/password"
+                android:hint="Password"
+                android:theme="@style/EditTextDarkTheme"
+                android:textColor="@color/colorAccent"
+                android:textColorHighlight="@color/colorAccent"
+                android:textColorHint="@color/colorPrimary"
+                android:layout_above="@+id/spaceAboveConfirmPassword"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:id="@+id/spaceAboveConfirmPassword"
+                android:layout_above="@+id/confirmPassword" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/confirmPassword"
+                android:hint="Confirm Password"
+                android:theme="@style/EditTextDarkTheme"
+                android:textColor="@color/colorAccent"
+                android:textColorHighlight="@color/colorAccent"
+                android:textColorHint="@color/colorPrimary"
+                android:layout_above="@+id/spaceAboveUCSDEmail" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="16dp"
+                android:id="@+id/spaceAboveUCSDEmail"
+                android:layout_above="@+id/UCSDEmail"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:ems="10"
+                android:id="@+id/UCSDEmail"
+                android:hint="Email - UCSD"
+                android:theme="@style/EditTextDarkTheme"
+                android:textColor="@color/colorAccent"
+                android:textColorHighlight="@color/colorAccent"
+                android:textColorHint="@color/colorPrimary"
+                android:layout_above="@+id/UCSDPassword" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/UCSDPassword"
+                android:hint="Password - UCSD"
+                android:theme="@style/EditTextDarkTheme"
+                android:textColor="@color/colorAccent"
+                android:textColorHighlight="@color/colorAccent"
+                android:textColorHint="@color/colorPrimary"
+                android:layout_above="@+id/spaceAboveRegister" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:id="@+id/spaceAboveRegister"
+                android:layout_above="@+id/register" />
+
+            <Button
+                android:text="REGISTER"
+                android:layout_width="match_parent"
+                android:id="@+id/register"
+                android:layout_height="72dp"
+                android:textColor="#263238"
+                android:backgroundTint="@color/colorAccent"
+                android:elevation="8dp"
+                android:textStyle="normal|bold"
+                android:textSize="14sp"
+                android:layout_above="@+id/back"/>
+
+            <Button
+                android:text="Back to Sign IN"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:id="@+id/back"
+                android:background="@android:color/transparent"
+                android:textColor="@color/colorAccent"
+                android:layout_alignParentBottom="true" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>
