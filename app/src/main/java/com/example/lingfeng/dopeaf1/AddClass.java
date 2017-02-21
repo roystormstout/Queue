@@ -1,6 +1,8 @@
 package com.example.lingfeng.dopeaf1;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +23,7 @@ public class AddClass extends AppCompatActivity {
     public final User a = Login.loggedin;
     private Button btnAdd;
     private Button btnDrop;
+    private Button btnAddTask;
     public DatabaseReference mDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,7 @@ public class AddClass extends AppCompatActivity {
         sect  = (EditText) findViewById(R.id.section);
         btnAdd = (Button) findViewById(R.id.add_class);
         btnDrop = (Button) findViewById(R.id.drop_class);
+        btnAddTask = (Button) findViewById(R.id.btnAddTask);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         //add class
@@ -133,6 +137,21 @@ public class AddClass extends AppCompatActivity {
                         });
             }
             });
+
+        btnAddTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //final String id = cID.getText().toString();
+                //Toast.makeText(AddTask.class, "Come to Add Task!", Toast.LENGTH_SHORT).show();
+                //define a jump
+                Intent intent = new Intent(AddClass.this, AddTask.class);
+
+                a.updateLastlogin();
+                mDatabase.child("users").child(a.getUserID()).setValue(a);
+                //jump to add class
+                startActivity(intent);
+            }
+        });
     }
 
 }

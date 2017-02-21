@@ -29,7 +29,7 @@ public class AddTask extends AppCompatActivity {
     private EditText dueDate;
 
     //Get the user from the Main
-    public final User a = MainActivity.loggedin;
+    public final User a = Login.loggedin;
 
     //Use for database
     public DatabaseReference mDatabase;
@@ -40,7 +40,7 @@ public class AddTask extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
 
-        Toast.makeText(AddTask.this, "Hi! "+a.username+ " Add Task at this page", Toast.LENGTH_SHORT).show();
+        Toast.makeText(AddTask.this, "Hi! "+a.getUsername()+ " Add Task at this page", Toast.LENGTH_SHORT).show();
 
         saveTask = (Button) findViewById(R.id.saveTask);
         cancel = (Button) findViewById(R.id.cancel);
@@ -96,13 +96,13 @@ public class AddTask extends AppCompatActivity {
                                     Toast.makeText(AddTask.this, "Adding new task!" + taskName, Toast.LENGTH_SHORT).show();
                                     //taskOfClass.addSharedTasks(nameOfTask);
                                     mDatabase.child("classes").child(courseID).child(nameOfTask).setValue(newTask);
-                                    mDatabase.child("users").child(a.userID).child("In Progress").setValue(newTask);
+                                    mDatabase.child("users").child(a.getUserID()).child("In Progress").setValue(newTask);
 
                                     //define a jump
                                     Intent intent = new Intent(AddTask.this, AddClass.class);
 
                                     a.updateLastlogin();
-                                    mDatabase.child("users").child(a.userID).setValue(a);
+                                    mDatabase.child("users").child(a.getUserID()).setValue(a);
                                     //jump to add class
                                     startActivity(intent);
                                 } else {
@@ -133,7 +133,7 @@ public class AddTask extends AppCompatActivity {
                                 Intent intent = new Intent(AddTask.this, AddClass.class);
 
                                 a.updateLastlogin();
-                                mDatabase.child("users").child(a.userID).setValue(a);
+                                mDatabase.child("users").child(a.getUserID()).setValue(a);
                                 //jump to add class
                                 startActivity(intent);
                             }
