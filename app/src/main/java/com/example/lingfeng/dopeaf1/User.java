@@ -1,5 +1,6 @@
 package com.example.lingfeng.dopeaf1;
 
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.sql.Time;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 @IgnoreExtraProperties
 public class User {

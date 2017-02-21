@@ -95,9 +95,9 @@ public class Signup extends AppCompatActivity {
                         //check if email and password are valid, and the confirm password matches the password above it
                         //
                         //todo: add more checks to the format
-                        if ((email.getText().length() > 1) && (password.getText().length() > 5) &&
+                        if ((email.getText().length() > 0) && (password.getText().length() > 5) &&
                                 (confirmPassword.getText().toString().equals(password.getText().toString())) &&
-                                (UCSDEmail.getText().length() > 1) && (UCSDPassword.getText().length() > 5)) {
+                                (UCSDEmail.getText().length() > 0) && (UCSDPassword.getText().length() > 5)) {
 
                             final String emailU = email.getText().toString();
                             final String passwordU = password.getText().toString();

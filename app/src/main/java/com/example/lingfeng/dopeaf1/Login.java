@@ -15,6 +15,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.UUID;
+
 public class Login extends AppCompatActivity {
     public static User loggedin;
     public DatabaseReference mDatabase;
@@ -49,7 +51,7 @@ public class Login extends AppCompatActivity {
                 //check if email and password are valid
                 //
                 //todo: add more checks to the format
-                if ((email.getText().length() > 1) && (password.getText().length() > 5)) {
+                if ((email.getText().length() > 0) && (password.getText().length() > 5)) {
 
                     final String emailU = email.getText().toString();
                     final String passwordU = password.getText().toString();
@@ -92,7 +94,19 @@ public class Login extends AppCompatActivity {
                             // if user enters new contents
                             } else if (flag == 0) {
                                 //TODO: Use a random unique user ID instead
-                                final User userNew = new User("NEW USER", emailU, "NEW ID", passwordU);
+                                String uniqueID = UUID.randomUUID().toString();
+
+                                boolean unique = false;
+                                while(!unique) {
+                                    unique = true;
+                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                        if(snapshot.getValue(User.class).getUserID().toString().equals(uniqueID)) {
+                                            unique = false;
+                                        }
+                                    }
+                                }
+
+                                final User userNew = new User("NEW USER", emailU, uniqueID, passwordU);
                                 //put user into users field
                                 Toast.makeText(Login.this, "successfully added " + userNew.getUsername(), Toast.LENGTH_SHORT).show();
                                 loggedin = userNew;
@@ -103,7 +117,7 @@ public class Login extends AppCompatActivity {
                                 Intent intent = new Intent(Login.this, Signup.class);
 
                                 loggedin.updateLastlogin();
-                                mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
+                                //mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
                                 //jump to add class
                                 startActivity(intent);
                             }
