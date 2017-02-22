@@ -11,13 +11,11 @@ public class Task {
     public String taskID;
     public ArrayList<String> userID = new ArrayList<String>();
     public String courseID;
-    //public String startTime;
-    //public String endTime;
     public String dueDate;
     public float priority;
     public String taskDescription = "";
     //public double completePercentage = 0;
-    public int completedPerson;
+    //public int completedPerson;
     public boolean share = false;
     //public int status;
     // 0: in progress; 1: completed; 2: missed
@@ -49,12 +47,13 @@ public class Task {
         taskDescription = dis;
     }
 
-
+    //W level
+/*
     public void updatePercentage() {
         completedPerson++;
-        completePercentage = completedPerson / (double) userID.size();
+        //completePercentage = completedPerson / (double) userID.size();
     }
-
+*/
     public String getTaskID(String taskName){
         return "";
     }
