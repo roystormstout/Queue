@@ -1,10 +1,9 @@
 package com.example.lingfeng.dopeaf1;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,9 +12,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.IgnoreExtraProperties;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.ValueEventListener;
 
 public class AddClass extends AppCompatActivity {
@@ -24,15 +20,16 @@ public class AddClass extends AppCompatActivity {
     private EditText q;
     private EditText sect;
     private EditText credits;
-    public final User a = MainActivity.loggedin;
+    public final User a = Login.loggedin;
     private Button btnAdd;
     private Button btnDrop;
+    private Button btnAddTask;
     public DatabaseReference mDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_class);
-        Toast.makeText(AddClass.this, "Hi! "+a.username+ " Add class at this page", Toast.LENGTH_SHORT).show();
+        Toast.makeText(AddClass.this, "Hi! "+a.getUsername()+ " Add class at this page", Toast.LENGTH_SHORT).show();
         cID = (EditText) findViewById(R.id.courseID);
         classname = (EditText) findViewById(R.id.className);
         q  = (EditText) findViewById(R.id.quarter);
@@ -40,6 +37,7 @@ public class AddClass extends AppCompatActivity {
         sect  = (EditText) findViewById(R.id.section);
         btnAdd = (Button) findViewById(R.id.add_class);
         btnDrop = (Button) findViewById(R.id.drop_class);
+        btnAddTask = (Button) findViewById(R.id.btnAddTask);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         //add class
@@ -67,7 +65,7 @@ public class AddClass extends AppCompatActivity {
                                             int flag = 0;
                                             if(aClass.users!=null) {
                                                 for (String u : aClass.users) {
-                                                    if (u.equals(a.userID)) {
+                                                    if (u.equals(a.getUserID())) {
                                                         Toast.makeText(AddClass.this, "You already enrolled!", Toast.LENGTH_SHORT).show();
                                                         flag = 1;
                                                     }
@@ -75,10 +73,10 @@ public class AddClass extends AppCompatActivity {
                                             }
                                             if(flag==0){
                                                 Toast.makeText(AddClass.this, "Enrolling you to the course", Toast.LENGTH_SHORT).show();
-                                                aClass.addStudents(a.userID);
+                                                aClass.addStudents(a.getUserID());
                                                 a.addCourse(id);
                                                 mDatabase.child("classes").child(id).setValue(aClass);
-                                                mDatabase.child("users").child(a.userID).setValue(a);
+                                                mDatabase.child("users").child(a.getUserID()).setValue(a);
                                             }
                                             break;
                                         }
@@ -86,10 +84,10 @@ public class AddClass extends AppCompatActivity {
                                     }
                                     if(newCFlag==0){
                                         Toast.makeText(AddClass.this, "Adding new class!"+ n, Toast.LENGTH_SHORT).show();
-                                        newClass.addStudents(a.userID);
+                                        newClass.addStudents(a.getUserID());
                                         a.addCourse(id);
                                         mDatabase.child("classes").child(id).setValue(newClass);
-                                        mDatabase.child("users").child(a.userID).setValue(a);
+                                        mDatabase.child("users").child(a.getUserID()).setValue(a);
                                     }
                                 }
                                 @Override
@@ -118,9 +116,9 @@ public class AddClass extends AppCompatActivity {
                                     Class aClass = snapshot.getValue(Class.class);
                                     if (id.equals(aClass.courseID)) {
                                             foundFlag=1;
-                                            if(aClass.dropStudent(a.userID)&&a.dropCourse(aClass.courseID)){
+                                            if(aClass.dropStudent(a.getUserID())&&a.dropCourse(aClass.courseID)){
                                                 mDatabase.child("classes").child(id).setValue(aClass);
-                                                mDatabase.child("users").child(a.userID).setValue(a);
+                                                mDatabase.child("users").child(a.getUserID()).setValue(a);
                                                 Toast.makeText(AddClass.this, "Course removed!", Toast.LENGTH_SHORT).show();
                                             }
                                             else{
@@ -139,6 +137,21 @@ public class AddClass extends AppCompatActivity {
                         });
             }
             });
+
+        btnAddTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //final String id = cID.getText().toString();
+                //Toast.makeText(AddTask.class, "Come to Add Task!", Toast.LENGTH_SHORT).show();
+                //define a jump
+                Intent intent = new Intent(AddClass.this, AddTask.class);
+
+                a.updateLastlogin();
+                mDatabase.child("users").child(a.getUserID()).setValue(a);
+                //jump to add class
+                startActivity(intent);
+            }
+        });
     }
 
 }

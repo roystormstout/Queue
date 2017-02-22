@@ -14,7 +14,7 @@ public class Task {
     //public String startTime;
     //public String endTime;
     public String dueDate;
-    //public int priority;
+    public float priority;
     public String taskDescription = "";
     public double completePercentage = 0;
     public int completedPerson;
@@ -25,12 +25,15 @@ public class Task {
 
     }
 
-    public Task(String taskName, String taskID, String courseID, String dueDate, int priority,
+    public Task(String taskName, String courseID, String dueDate, float priority,
                 boolean shared) {
         this.taskName = taskName;
         this.taskID = taskID;
         this.courseID = courseID;
         this.dueDate = dueDate;
+        this.priority = priority;
+
+        this.taskID = getTaskID(taskName);
 
     }
 
@@ -50,5 +53,9 @@ public class Task {
     public void updatePercentage() {
         completedPerson++;
         completePercentage = completedPerson / (double) userID.size();
+    }
+
+    public String getTaskID(String taskName){
+        return "";
     }
 }
