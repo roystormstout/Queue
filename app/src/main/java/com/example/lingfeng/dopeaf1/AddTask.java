@@ -40,8 +40,10 @@ public class AddTask extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
 
+        //Welcome info
         Toast.makeText(AddTask.this, "Hi! "+a.getUsername()+ " Add Task at this page", Toast.LENGTH_SHORT).show();
 
+        //Find element in the page
         saveTask = (Button) findViewById(R.id.saveTask);
         cancel = (Button) findViewById(R.id.cancel);
         shareSwitch = (Switch) findViewById(R.id.shareSwitch);
@@ -50,9 +52,10 @@ public class AddTask extends AppCompatActivity {
         courseText = (TextView) findViewById(R.id.course);
         dueDate = (EditText) findViewById(R.id.dueDate);
 
+        //Get a instance of the firebase
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        //add class
+        //add task save button listener
         saveTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,8 +64,7 @@ public class AddTask extends AppCompatActivity {
                 //In this part, we did not restrict the user
                 //to have length of task or any other kinds
                 //of restriction to the input. the only restriction
-                //is the course. The user must enrolled to the course.
-                //
+                //is the course. The user must enrolled to the course
                 float priorityValue = priorityBar.getRating();
                 final String nameOfTask = taskName.getText().toString();
                 final String courseID = courseText.getText().toString();

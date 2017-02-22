@@ -35,7 +35,7 @@
         <activity android:name=".AddTask" />
         <activity
             android:name=".Signup"
-            android:label="@string/title_activity_signup"></activity>
+            android:label="@string/title_activity_signup" />
     </application>
 
 </manifest>

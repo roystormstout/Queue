@@ -16,8 +16,9 @@ public class Task {
     public String dueDate;
     public float priority;
     public String taskDescription = "";
-    public double completePercentage = 0;
+    //public double completePercentage = 0;
     public int completedPerson;
+    public boolean share = false;
     //public int status;
     // 0: in progress; 1: completed; 2: missed
 
@@ -28,11 +29,10 @@ public class Task {
     public Task(String taskName, String courseID, String dueDate, float priority,
                 boolean shared) {
         this.taskName = taskName;
-        this.taskID = taskID;
         this.courseID = courseID;
         this.dueDate = dueDate;
         this.priority = priority;
-
+        this.share = shared;
         this.taskID = getTaskID(taskName);
 
     }

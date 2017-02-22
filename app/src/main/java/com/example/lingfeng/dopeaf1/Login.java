@@ -23,6 +23,7 @@ public class Login extends AppCompatActivity {
     private EditText email;
     private EditText password;
     private Button btnLogin;
+    private Button btnSignUp;
     private Button btnForgotPassword;
 
     @Override
@@ -33,6 +34,7 @@ public class Login extends AppCompatActivity {
         email = (EditText) findViewById(R.id.email);
         password = (EditText) findViewById(R.id.password);
         btnLogin = (Button) findViewById(R.id.login);
+        btnSignUp = (Button) findViewById(R.id.register);
         btnForgotPassword = (Button) findViewById(R.id.forgotPassword);
 
         if(loggedin != null) {
@@ -93,33 +95,7 @@ public class Login extends AppCompatActivity {
 
                             // if user enters new contents
                             } else if (flag == 0) {
-                                //TODO: Use a random unique user ID instead
-                                String uniqueID = UUID.randomUUID().toString();
-
-                                boolean unique = false;
-                                while(!unique) {
-                                    unique = true;
-                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                        if(snapshot.getValue(User.class).getUserID().toString().equals(uniqueID)) {
-                                            unique = false;
-                                        }
-                                    }
-                                }
-
-                                final User userNew = new User("NEW USER", emailU, uniqueID, passwordU);
-                                //put user into users field
-                                Toast.makeText(Login.this, "successfully added " + userNew.getUsername(), Toast.LENGTH_SHORT).show();
-                                loggedin = userNew;
-                                Toast.makeText(Login.this, "Hello " + loggedin.getUsername(), Toast.LENGTH_SHORT).show();
-
-                                //define a jump
-                                //TODO: change the view
-                                Intent intent = new Intent(Login.this, Signup.class);
-
-                                loggedin.updateLastlogin();
-                                //mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
-                                //jump to add class
-                                startActivity(intent);
+                                Toast.makeText(Login.this, "User Not Exist!", Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -133,6 +109,66 @@ public class Login extends AppCompatActivity {
                 } else if(password.getText().length() <= 5) {
                     Toast.makeText(Login.this, "Password should have at least 6 characters!", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+
+
+
+
+        //triggered when click on login button
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //check if email and password are valid
+                //
+                //todo: add more checks to the format
+
+                    final String emailU = email.getText().toString();
+                    final String passwordU = password.getText().toString();
+
+                    mDatabase.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                        int flag = 0;
+
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                            //TODO: Use a random unique user ID instead
+                            String uniqueID = UUID.randomUUID().toString();
+
+                            boolean unique = false;
+                            while(!unique) {
+                                unique = true;
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    if(snapshot.getValue(User.class).getUserID().toString().equals(uniqueID)) {
+                                        unique = false;
+                                    }
+                                }
+                            }
+
+                            final User userNew = new User("NEW USER", emailU, uniqueID, passwordU);
+                            //put user into users field
+                            Toast.makeText(Login.this, "successfully added " + userNew.getUsername(), Toast.LENGTH_SHORT).show();
+                            loggedin = userNew;
+                            Toast.makeText(Login.this, "Hello " + loggedin.getUsername(), Toast.LENGTH_SHORT).show();
+
+                            //define a jump
+                            //TODO: change the view
+                            Intent intent = new Intent(Login.this, Signup.class);
+
+                            loggedin.updateLastlogin();
+                            //mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
+                            //jump to add class
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
+
             }
         });
 

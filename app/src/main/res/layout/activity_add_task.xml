@@ -10,64 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.lingfeng.dopeaf1.AddTask">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/taskName"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:hint="Task Name" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/course"
-        android:layout_marginTop="13dp"
-        android:layout_below="@+id/taskName"
-        android:layout_alignParentStart="true"
-        android:hint="course" />
-
-    <TextView
-        android:text="Choose Priority"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/priorityText"
-        android:layout_below="@+id/dueDate"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="10dp" />
-
-    <RatingBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/priorityBar"
-        android:layout_below="@+id/priorityText"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="19dp" />
-
-    <Switch
-        android:text="Share?"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/shareSwitch"
-        android:layout_below="@+id/priorityBar"
-        android:layout_alignStart="@+id/priorityText"
-        android:layout_marginTop="12dp" />
-
-    <Button
-        android:text="Save Task"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/saveTask"
-        android:layout_below="@+id/shareSwitch"
-        android:layout_alignStart="@+id/shareSwitch"
-        android:layout_marginStart="17dp"
-        android:layout_marginTop="25dp" />
-
     <Button
         android:text="Cancel"
         android:layout_width="wrap_content"
@@ -77,15 +19,72 @@
         android:layout_alignBottom="@+id/saveTask"
         android:layout_toEndOf="@+id/dueDate" />
 
+    <Button
+        android:text="Save Task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/saveTask"
+        android:layout_marginStart="19dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/shareSwitch"
+        android:layout_marginBottom="62dp" />
+
+    <Switch
+        android:text="Share?"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shareSwitch"
+        android:layout_above="@+id/saveTask"
+        android:layout_alignEnd="@+id/priorityText" />
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/priorityBar"
+        android:layout_above="@+id/shareSwitch"
+        android:layout_marginBottom="12dp"
+        android:layout_alignStart="@+id/priorityText" />
+
+    <TextView
+        android:text="Choose Priority"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/priorityText"
+        android:layout_marginStart="18dp"
+        android:layout_above="@+id/priorityBar"
+        android:layout_alignParentStart="true" />
+
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="date"
         android:ems="10"
         android:id="@+id/dueDate"
-        android:layout_marginTop="11dp"
-        android:layout_below="@+id/course"
+        android:hint="Due Date"
+        android:layout_above="@+id/priorityText"
         android:layout_alignParentStart="true"
-        android:hint="Due Date" />
+        android:layout_marginBottom="24dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/course"
+        android:hint="course"
+        android:layout_marginBottom="73dp"
+        android:layout_alignBottom="@+id/dueDate"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/taskName"
+        android:hint="Task Name"
+        android:layout_marginBottom="21dp"
+        android:layout_above="@+id/course"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
