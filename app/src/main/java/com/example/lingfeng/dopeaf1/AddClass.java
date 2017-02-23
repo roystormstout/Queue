@@ -44,6 +44,8 @@ public class AddClass extends AppCompatActivity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //Class front end Check
                 if ((cID.getText().length() > 0) && (classname.getText().length() > 5) && (q.getText().length() > 3) &&(sect.getText().length() > 2)) {
                     double cred = Double.parseDouble(credits.getText().toString());
                     final String id = cID.getText().toString();
@@ -55,34 +57,46 @@ public class AddClass extends AppCompatActivity {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    int newCFlag = 0;
+                                    int classExistFalg = 0;
+
+                                    //Iterator of the subclass
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                        Class aClass = snapshot.getValue(Class.class);
-                                        if(newClass.courseID.equals(aClass.courseID)) {
-                                            newCFlag = 1;
+
+                                        //Use class name, and get the return object of the snapshot
+                                        Class classToCheck = snapshot.getValue(Class.class);
+
+                                        //When the class is already exist
+                                        if(newClass.courseID.equals(classToCheck.courseID)) {
+                                            classExistFalg = 1;
 
                                             Toast.makeText(AddClass.this, "Class exists!", Toast.LENGTH_SHORT).show();
-                                            int flag = 0;
-                                            if(aClass.users!=null) {
-                                                for (String u : aClass.users) {
+                                            int userExistFlag = 0;
+
+                                            //Check if the user exist in the class already
+                                            if(classToCheck.users!=null) {
+                                                for (String u : classToCheck.users) {
                                                     if (u.equals(a.getUserID())) {
                                                         Toast.makeText(AddClass.this, "You already enrolled!", Toast.LENGTH_SHORT).show();
-                                                        flag = 1;
+                                                        userExistFlag = 1;
                                                     }
                                                 }
                                             }
-                                            if(flag==0){
+
+                                            //Add the student into the class if existFLag says the student is not in the class
+                                            if(userExistFlag==0){
                                                 Toast.makeText(AddClass.this, "Enrolling you to the course", Toast.LENGTH_SHORT).show();
-                                                aClass.addStudents(a.getUserID());
+                                                classToCheck.addStudents(a.getUserID());
                                                 a.addCourse(id);
-                                                mDatabase.child("classes").child(id).setValue(aClass);
+                                                mDatabase.child("classes").child(id).setValue(classToCheck);
                                                 mDatabase.child("users").child(a.getUserID()).setValue(a);
                                             }
                                             break;
                                         }
 
                                     }
-                                    if(newCFlag==0){
+
+                                    //When the class is new class, we add the class and enroll the student. Both.
+                                    if(classExistFalg==0){
                                         Toast.makeText(AddClass.this, "Adding new class!"+ n, Toast.LENGTH_SHORT).show();
                                         newClass.addStudents(a.getUserID());
                                         a.addCourse(id);
