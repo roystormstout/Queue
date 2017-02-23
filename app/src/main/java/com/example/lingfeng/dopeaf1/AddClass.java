@@ -2,12 +2,19 @@ package com.example.lingfeng.dopeaf1;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,9 +31,11 @@ public class AddClass extends AppCompatActivity {
     private Button btnAdd;
     private Button btnDrop;
     private Button btnAddTask;
+    private Button signOut;
+    private GoogleApiClient mGoogleApiClient = Login.mGoogleApiClient;
     public DatabaseReference mDatabase;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_class);
         Toast.makeText(AddClass.this, "Hi! "+a.getUsername()+ " Add class at this page", Toast.LENGTH_SHORT).show();
@@ -39,6 +48,7 @@ public class AddClass extends AppCompatActivity {
         btnDrop = (Button) findViewById(R.id.drop_class);
         btnAddTask = (Button) findViewById(R.id.btnAddTask);
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        signOut = (Button) findViewById(R.id.button_sign_out);
 
         //add class
         btnAdd.setOnClickListener(new View.OnClickListener() {
@@ -152,6 +162,23 @@ public class AddClass extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
 
-}
+        signOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //final String id = cID.getText().toString();
+                //Toast.makeText(AddTask.class, "Come to Add Task!", Toast.LENGTH_SHORT).show();
+                //define a jump
+                if (mGoogleApiClient.isConnected()) {
+                    Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+                    mGoogleApiClient.disconnect();
+                    //mGoogleApiClient.connect();
+                }
+                Intent intent = new Intent(AddClass.this, Login.class);
+                a.updateLastlogin();
+                //jump to add class
+                startActivity(intent);
+            }
+        });
+    }
+    }
