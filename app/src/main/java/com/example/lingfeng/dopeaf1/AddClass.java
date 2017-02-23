@@ -24,6 +24,7 @@ public class AddClass extends AppCompatActivity {
     private Button btnAdd;
     private Button btnDrop;
     private Button btnAddTask;
+    private Button btnMain;
     public DatabaseReference mDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,7 @@ public class AddClass extends AppCompatActivity {
         btnAdd = (Button) findViewById(R.id.add_class);
         btnDrop = (Button) findViewById(R.id.drop_class);
         btnAddTask = (Button) findViewById(R.id.btnAddTask);
+        btnMain = (Button) findViewById(R.id.btnMain);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         //add class
@@ -159,6 +161,20 @@ public class AddClass extends AppCompatActivity {
                 //Toast.makeText(AddTask.class, "Come to Add Task!", Toast.LENGTH_SHORT).show();
                 //define a jump
                 Intent intent = new Intent(AddClass.this, AddTask.class);
+
+                a.updateLastlogin();
+                mDatabase.child("users").child(a.getUserID()).setValue(a);
+                //jump to add class
+                startActivity(intent);
+            }
+        });
+        btnMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //final String id = cID.getText().toString();
+                //Toast.makeText(AddTask.class, "Come to Add Task!", Toast.LENGTH_SHORT).show();
+                //define a jump
+                Intent intent = new Intent(AddClass.this, TaskPresenter.class);
 
                 a.updateLastlogin();
                 mDatabase.child("users").child(a.getUserID()).setValue(a);

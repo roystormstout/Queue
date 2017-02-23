@@ -71,6 +71,29 @@ public class User {
         return true;
     }
 
+    public void addTask(String task){
+        if( inProgressTask == null){
+            inProgressTask = new ArrayList<String>();
+        }
+
+        inProgressTask.add(task);
+    }
+
+    public void finishTask(String task){
+        if( inProgressTask == null) return;
+
+        if( inProgressTask.contains(task)){
+            inProgressTask.remove(task);
+
+            if( finishedTask == null){
+                finishedTask = new ArrayList<String>();
+                finishedTask.add(task);
+            }
+        }
+    }
+
+
+
     public void setUCSDAccount(String UCSDEmail, String UCSDPassword) {
         setUCSDEmail(UCSDEmail);
         setUCSDPassword(UCSDPassword);

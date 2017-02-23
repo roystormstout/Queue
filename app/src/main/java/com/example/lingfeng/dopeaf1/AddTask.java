@@ -87,7 +87,6 @@ public class AddTask extends AppCompatActivity {
                                     //Course id is valid
                                     if (courseID.equals(aClass.courseID)) {
 
-                                        taskOfClass = aClass;
                                         validCourseID = true;
 
                                         break;
@@ -96,9 +95,12 @@ public class AddTask extends AppCompatActivity {
                                 }
                                 if (validCourseID) {
                                     Toast.makeText(AddTask.this, "Adding new task!" + taskName, Toast.LENGTH_SHORT).show();
-                                    //taskOfClass.addSharedTasks(nameOfTask);
-                                    mDatabase.child("classes").child(courseID).child(nameOfTask).setValue(newTask);
-                                    mDatabase.child("users").child(a.getUserID()).child("In Progress").setValue(newTask);
+
+                                    a.addTask(nameOfTask);
+
+
+                                    mDatabase.child("classes").child(courseID).child("taskList").child(nameOfTask).setValue(newTask);
+                                    mDatabase.child("users").child(a.getUserID()).child("inProgressTask").setValue(newTask);
 
                                     //define a jump
                                     Intent intent = new Intent(AddTask.this, AddClass.class);

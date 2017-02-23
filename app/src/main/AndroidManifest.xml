@@ -33,6 +33,8 @@
             android:label="@string/title_activity_add_class"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".AddTask" />
+        <activity android:name=".TaskPresenter" />
+        <activity android:name=".TaskPresenter$MainActivity" />
         <activity
             android:name=".Signup"
             android:label="@string/title_activity_signup" />
