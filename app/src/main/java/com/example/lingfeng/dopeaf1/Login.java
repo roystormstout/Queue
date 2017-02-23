@@ -244,7 +244,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             @Override
             public void onClick(View v) {
                 signIn();
-                int flag = 0;
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user != null) {
                     // Name, email address, and profile photo Url
