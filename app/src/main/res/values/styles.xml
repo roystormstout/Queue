@@ -3,11 +3,10 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#607D8B</item>
-        <item name="colorPrimaryDark">#263238</item>
-        <item name="colorAccent">#FFFF8D</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">#50E3C2</item>
     </style>
-
     <style name="EditTextDarkTheme" parent="@android:style/TextAppearance.Medium">
         <item name="colorControlNormal">@color/colorPrimary</item>
     </style>
