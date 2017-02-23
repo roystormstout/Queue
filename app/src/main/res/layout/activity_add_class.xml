@@ -81,6 +81,12 @@
             android:layout_height="wrap_content"
             android:id="@+id/btnMain" />
 
+        <Button
+            android:text="Sign Out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_sign_out" />
+
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
