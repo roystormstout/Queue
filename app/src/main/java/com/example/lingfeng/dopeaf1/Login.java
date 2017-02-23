@@ -59,24 +59,6 @@ public class Login extends AppCompatActivity {
         btnForgotPassword = (Button) findViewById(R.id.forgotPassword);
         btnGoogleSignIn = (Button) findViewById(R.id.googleBtn);
 
-       /*
-        btnGooglePlus = (SignInButton) findViewById(R.id.googleSignin);
-
-
-        //Use for google sign in,Default sign in and request the user mail
-        //info from the Google server side
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this )
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-        */
-
-
-
 
 
         if(loggedin != null) {
