@@ -17,6 +17,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -257,42 +259,23 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                     // The user's ID, unique to the Firebase project. Do NOT use this value to
                     // authenticate with your backend server, if you have one. Use
                     // FirebaseUser.getToken() instead.
-                    String uid = user.getUid();
+                    final String uid = user.getUid();
 
                     final User userNew = new User(name, email, uid, "123456");
                     //put user into users field
                     loggedin = userNew;
-
-                    //define a jump
-                    //TODO: change the view
-                            /*if(mGoogleApiClient.isConnected()){
-                                Intent intent = new Intent(Login.this, AddClass.class);
-
-                                loggedin.updateLastlogin();
-
-                                startActivity(intent);
-                            }
-                            else {
-                                Intent intent = new Intent(Login.this, Signup.class);
-
-                                loggedin.updateLastlogin();
-
-                                startActivity(intent);
-                            }*/
-                    mDatabase.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                    
+                    mDatabase.child("users").addValueEventListener(new ValueEventListener() {
                         int flag = 0;
-
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-
+                            //Toast.makeText(Login.this, "In!!!", Toast.LENGTH_SHORT).show();
                             //TODO: update searching to hashmap
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
                                 //search through each user
                                 User user = snapshot.getValue(User.class);
-
                                 //if the email and password all match
-                                if (email.equals(user.getUserEmail()) && name.equals(user.getUsername())) {
+                                if (uid.equals(user.getUserID())) {
                                     //define a jump
                                     Toast.makeText(Login.this, "Hello " + name, Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(Login.this, AddClass.class);
@@ -300,11 +283,11 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                     loggedin.updateLastlogin();
                                     //jump to add class
                                     startActivity(intent);
+                                    revokeAccess();
                                     break;
                                     //if the email matches but password does not match
                                 }
                             }
-
                             // if user enters a wrong password but valid email
                             if (flag == 0) {
                                 Toast.makeText(Login.this, "successfully added " + name, Toast.LENGTH_SHORT).show();
@@ -315,10 +298,10 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                 // if user enters new contents
                             }
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                         }
+
                     });
                 } else {
 
@@ -346,6 +329,19 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    private void revokeAccess() {
+        // Firebase sign out
+        mAuth.signOut();
+
+        // Google revoke access
+        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(@NonNull Status status) {
+
+                    }
+                });
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
