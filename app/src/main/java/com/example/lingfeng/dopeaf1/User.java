@@ -147,4 +147,6 @@ public class User {
         this.username = username;
     }
 
+    public List<String> getEnrolledCourses() { return this.enrolledCourses; }
+
 }

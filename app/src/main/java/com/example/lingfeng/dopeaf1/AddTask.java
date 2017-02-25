@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +20,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.List;
+
 public class AddTask extends AppCompatActivity {
 
     //Variables that link to the component in the page
@@ -25,8 +30,9 @@ public class AddTask extends AppCompatActivity {
     private Switch   shareSwitch;
     private RatingBar priorityBar;
     private EditText taskName;
-    private TextView courseText;
     private EditText dueDate;
+    Spinner courseSpinner;
+    String courseID;
 
     //Get the user from the Main
     public final User a = Login.loggedin;
@@ -49,11 +55,32 @@ public class AddTask extends AppCompatActivity {
         shareSwitch = (Switch) findViewById(R.id.shareSwitch);
         priorityBar = (RatingBar) findViewById(R.id.priorityBar);
         taskName = (EditText) findViewById(R.id.taskName);
-        courseText = (TextView) findViewById(R.id.course);
         dueDate = (EditText) findViewById(R.id.dueDate);
+        courseSpinner = (Spinner) findViewById(R.id.courseList);
+        final List<String> courseListToShow = a.getEnrolledCourses();
+        courseID = courseListToShow.get(0);
 
         //Get a instance of the firebase
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        // tie the adapter with the list of courses
+        ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, courseListToShow);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        //绑定 Adapter到控件
+        courseSpinner .setAdapter(adapter);
+        courseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int pos, long id) {
+                Toast.makeText(AddTask.this, "你点击的是:"+courseListToShow.get(pos), Toast.LENGTH_LONG).show();
+                courseID = courseListToShow.get(pos);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Another interface callback
+            }
+        });
 
         //add task save button listener
         saveTask.setOnClickListener(new View.OnClickListener() {
@@ -67,15 +94,8 @@ public class AddTask extends AppCompatActivity {
                 //is the course. The user must enrolled to the course
                 float priorityValue = priorityBar.getRating();
                 final String nameOfTask = taskName.getText().toString();
-                final String courseID = courseText.getText().toString();
                 String due = dueDate.getText().toString();
                 boolean share = shareSwitch.isChecked();
-
-                //checking if the user is enrolled
-                if(!a.enrolledCourses.contains(courseID)){
-                    Toast.makeText(AddTask.this, "You are not enrolled in this course!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
                 final Task newTask = new Task(nameOfTask, courseID, due, priorityValue, share);
 

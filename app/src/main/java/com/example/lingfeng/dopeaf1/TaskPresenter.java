@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -30,6 +31,10 @@ public class TaskPresenter extends AppCompatActivity {
             mMyAdapter = new MyAdapter(TaskPresenter.this, initData());
             mRecyclerView.setAdapter(mMyAdapter);
 
+            if(user.inProgressTask == null || user.inProgressTask.size() == 0){
+                Toast.makeText(TaskPresenter.this, "Horrray!! No Due!!!!.", Toast.LENGTH_LONG).show();
+            }
+
             mMyAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
                 @Override
                 public void onClick(View parent, int position) {
@@ -40,6 +45,7 @@ public class TaskPresenter extends AppCompatActivity {
             mMyAdapter.setOnItemLongClickListener(new MyAdapter.OnItemLongClickListener() {
                 @Override
                 public boolean onLongClick(View parent, int position) {
+                    Toast.makeText(TaskPresenter.this, "You have delete the task.", Toast.LENGTH_SHORT).show();
                     user.finishTask(user.inProgressTask.get(position));
                     mdatabase.child("users").child(user.getUserID()).setValue(user);
                     mMyAdapter.notifyItemRemoved(position);
