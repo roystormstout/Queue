@@ -87,8 +87,8 @@ public class User {
 
             if( finishedTask == null){
                 finishedTask = new ArrayList<String>();
-                finishedTask.add(task);
             }
+            finishedTask.add(task);
         }
     }
 

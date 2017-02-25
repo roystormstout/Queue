@@ -121,6 +121,7 @@ public class Signup extends AppCompatActivity {
                             }
 
                             user.updateLastlogin();
+                            Toast.makeText(Signup.this, "successfully added " + user.getUsername(), Toast.LENGTH_SHORT).show();
                             mDatabase.child("users").child(user.getUserID()).setValue(user);
 
                             //jump to main page

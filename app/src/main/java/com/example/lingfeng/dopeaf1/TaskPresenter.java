@@ -1,19 +1,16 @@
 package com.example.lingfeng.dopeaf1;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
 import android.view.View;
 
-import java.util.ArrayList;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.List;
 
-/**
- * Created by Jas on 2017/2/22.
- */
 
 public class TaskPresenter extends AppCompatActivity {
 
@@ -21,6 +18,7 @@ public class TaskPresenter extends AppCompatActivity {
         private RecyclerView mRecyclerView;
         private MyAdapter mMyAdapter;
         private User user = Login.loggedin;
+        private DatabaseReference mdatabase = FirebaseDatabase.getInstance().getReference();
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +41,7 @@ public class TaskPresenter extends AppCompatActivity {
                 @Override
                 public boolean onLongClick(View parent, int position) {
                     user.finishTask(user.inProgressTask.get(position));
+                    mdatabase.child("users").child(user.getUserID()).setValue(user);
                     mMyAdapter.notifyItemRemoved(position);
                     return false;
                 }

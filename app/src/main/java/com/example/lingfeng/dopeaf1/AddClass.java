@@ -69,7 +69,7 @@ public class AddClass extends AppCompatActivity {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    int classExistFalg = 0;
+                                    int classExistFlag = 0;
 
                                     //Iterator of the subclass
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -79,7 +79,7 @@ public class AddClass extends AppCompatActivity {
 
                                         //When the class is already exist
                                         if(newClass.courseID.equals(classToCheck.courseID)) {
-                                            classExistFalg = 1;
+                                            classExistFlag = 1;
 
                                             Toast.makeText(AddClass.this, "Class exists!", Toast.LENGTH_SHORT).show();
                                             int userExistFlag = 0;
@@ -108,7 +108,7 @@ public class AddClass extends AppCompatActivity {
                                     }
 
                                     //When the class is new class, we add the class and enroll the student. Both.
-                                    if(classExistFalg==0){
+                                    if(classExistFlag==0){
                                         Toast.makeText(AddClass.this, "Adding new class!"+ n, Toast.LENGTH_SHORT).show();
                                         newClass.addStudents(a.getUserID());
                                         a.addCourse(id);

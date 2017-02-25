@@ -186,9 +186,8 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
                         final User userNew = new User("NEW USER", emailU, uniqueID, passwordU);
                         //put user into users field
-                        Toast.makeText(Login.this, "successfully added " + userNew.getUsername(), Toast.LENGTH_SHORT).show();
+
                         loggedin = userNew;
-                        Toast.makeText(Login.this, "Hello " + loggedin.getUsername(), Toast.LENGTH_SHORT).show();
 
                         //define a jump
                         //TODO: change the view
