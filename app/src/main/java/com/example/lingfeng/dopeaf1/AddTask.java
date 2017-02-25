@@ -71,6 +71,11 @@ public class AddTask extends AppCompatActivity {
                 String due = dueDate.getText().toString();
                 boolean share = shareSwitch.isChecked();
 
+                //checking if the user is enrolled
+                if(!a.enrolledCourses.contains(courseID)){
+                    Toast.makeText(AddTask.this, "You are not enrolled in this course!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 final Task newTask = new Task(nameOfTask, courseID, due, priorityValue, share);
 
@@ -79,7 +84,7 @@ public class AddTask extends AppCompatActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 boolean validCourseID = false;
-                                Class taskOfClass;
+                                Class taskOfClass=new Class();
                                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                     Class aClass = snapshot.getValue(Class.class);
 
@@ -87,6 +92,7 @@ public class AddTask extends AppCompatActivity {
                                     //Course id is valid
                                     if (courseID.equals(aClass.courseID)) {
 
+                                        taskOfClass=aClass;
                                         validCourseID = true;
 
                                         break;
@@ -94,12 +100,12 @@ public class AddTask extends AppCompatActivity {
 
                                 }
                                 if (validCourseID) {
-                                    Toast.makeText(AddTask.this, "Adding new task!" + taskName, Toast.LENGTH_SHORT).show();
-
+                                    Toast.makeText(AddTask.this, "Adding new task! " + nameOfTask, Toast.LENGTH_SHORT).show();
+                                    newTask.addUserID(a.getUserID());
                                     a.addTask(nameOfTask);
-
-
-                                    mDatabase.child("classes").child(courseID).child("taskList").child(nameOfTask).setValue(newTask);
+                                    mDatabase.child("tasks").child(nameOfTask).setValue(newTask);
+                                    taskOfClass.addTasks(nameOfTask);
+                                    mDatabase.child("classes").child(courseID).setValue(taskOfClass);
                                     mDatabase.child("users").child(a.getUserID()).child("inProgressTask").setValue(newTask);
 
                                     //define a jump
