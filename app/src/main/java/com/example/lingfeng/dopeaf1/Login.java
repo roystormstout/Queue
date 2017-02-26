@@ -19,6 +19,8 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -121,6 +123,8 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                     mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
                                     //jump to add class
                                     startActivity(intent);
+
+                                    revokeAccess();
 
                                     //if the email matches but password does not match
                                 } else if (flag != 1 && emailU.equals(user.getUserEmail()) && !passwordU.equals(user.getUserPassword())) {
@@ -340,9 +344,25 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         }
     }
 
+
+
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    private void revokeAccess() {
+        // Firebase sign out
+        mAuth.signOut();
+
+        // Google revoke access
+        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(@NonNull Status status) {
+
+                    }
+                });
     }
 
 
