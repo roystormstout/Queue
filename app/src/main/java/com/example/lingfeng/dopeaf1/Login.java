@@ -17,8 +17,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -99,6 +97,34 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                     final String emailU = email.getText().toString();
                     final String passwordU = password.getText().toString();
 
+                    mAuth.signInWithEmailAndPassword(emailU, passwordU)
+                            .addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    // If sign in fails, display a message to the user. If sign in succeeds
+                                    // the auth state listener will be notified and logic to handle the
+                                    // signed in user can be handled in the listener
+                                    if (!task.isSuccessful()) {
+                                        // there was an error
+
+                                            Toast.makeText(Login.this, "Failes", Toast.LENGTH_LONG).show();
+
+                                    } else {
+                                        Toast.makeText(Login.this, "Success", Toast.LENGTH_LONG).show();
+                                        FirebaseUser userB = FirebaseAuth.getInstance().getCurrentUser();
+                                        if(!userB.isEmailVerified()){
+                                            Toast.makeText(Login.this, userB.getEmail() + " Not Email verified", Toast.LENGTH_LONG).show();
+                                        }
+                                        else {
+                                            Intent intent = new Intent(Login.this, AddClass.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    }
+                                }
+                            });
+
+                    /*
                     mDatabase.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                         int flag = 0;
 
@@ -143,7 +169,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                         }
-                    });
+                    });*/
                 } else if (email.getText().length() < 1) {
                     //notify user that the email is invalid
                     Toast.makeText(Login.this, "Email address has not entered yet!", Toast.LENGTH_SHORT).show();
@@ -259,23 +285,42 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                     // The user's ID, unique to the Firebase project. Do NOT use this value to
                     // authenticate with your backend server, if you have one. Use
                     // FirebaseUser.getToken() instead.
-                    final String uid = user.getUid();
+                    String uid = user.getUid();
 
                     final User userNew = new User(name, email, uid, "123456");
                     //put user into users field
                     loggedin = userNew;
-                    
-                    mDatabase.child("users").addValueEventListener(new ValueEventListener() {
+
+                    //define a jump
+                    //TODO: change the view
+                            /*if(mGoogleApiClient.isConnected()){
+                                Intent intent = new Intent(Login.this, AddClass.class);
+
+                                loggedin.updateLastlogin();
+
+                                startActivity(intent);
+                            }
+                            else {
+                                Intent intent = new Intent(Login.this, Signup.class);
+
+                                loggedin.updateLastlogin();
+
+                                startActivity(intent);
+                            }*/
+                    mDatabase.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                         int flag = 0;
+
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            //Toast.makeText(Login.this, "In!!!", Toast.LENGTH_SHORT).show();
+
                             //TODO: update searching to hashmap
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
                                 //search through each user
                                 User user = snapshot.getValue(User.class);
+
                                 //if the email and password all match
-                                if (uid.equals(user.getUserID())) {
+                                if (email.equals(user.getUserEmail()) && name.equals(user.getUsername())) {
                                     //define a jump
                                     Toast.makeText(Login.this, "Hello " + name, Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(Login.this, AddClass.class);
@@ -283,11 +328,11 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                     loggedin.updateLastlogin();
                                     //jump to add class
                                     startActivity(intent);
-                                    revokeAccess();
                                     break;
                                     //if the email matches but password does not match
                                 }
                             }
+
                             // if user enters a wrong password but valid email
                             if (flag == 0) {
                                 Toast.makeText(Login.this, "successfully added " + name, Toast.LENGTH_SHORT).show();
@@ -298,10 +343,10 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                 // if user enters new contents
                             }
                         }
+
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                         }
-
                     });
                 } else {
 
@@ -329,19 +374,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    private void revokeAccess() {
-        // Firebase sign out
-        mAuth.signOut();
-
-        // Google revoke access
-        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(@NonNull Status status) {
-
-                    }
-                });
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
