@@ -5,21 +5,10 @@
     <rotate
         android:duration="300"
         android:fromDegrees="0"
-        android:toDegrees="45"
+        android:toDegrees="180"
         android:interpolator="@android:anim/linear_interpolator"
         android:pivotX="50%"
         android:pivotY="50%"
         />
 
-</se<?xml version="1.0" encoding="utf-8"?>
-<t xmlns:android="http://schemas.android.com/apk/res/android"
-android:fillAfter="true">
-
-<rotate
-    android:duration="300"
-    android:fromDegrees="0"
-    android:toDegrees="45"
-    android:interpolator="@android:anim/linear_interpolator"
-    android:pivotX="50%"
-    android:pivotY="50%"
-    />t>
+</set>
