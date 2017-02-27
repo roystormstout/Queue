@@ -1,12 +1,16 @@
 package com.example.lingfeng.dopeaf1;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -34,6 +38,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.UUID;
 
+import static android.R.string.ok;
+
 public class Login extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -46,6 +52,14 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     private Button btnSignUp;
     private Button btnForgotPassword;
     private SignInButton googleSignin;
+    private CheckBox rememberMe;
+    private CheckBox autoLogin;
+    private SharedPreferences loginPreferences;
+    private SharedPreferences.Editor loginPrefsEditor;
+    private Boolean saveLogin;
+    private String username;
+    private String pswd;
+
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -60,6 +74,18 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         btnSignUp = (Button) findViewById(R.id.register);
         btnForgotPassword = (Button) findViewById(R.id.forgotPassword);
         googleSignin = (SignInButton) findViewById(R.id.sign_in_button);
+        rememberMe = (CheckBox)findViewById(R.id.rememberme);
+        autoLogin = (CheckBox)findViewById(R.id.autoLogin);
+        loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        loginPrefsEditor = loginPreferences.edit();
+
+        saveLogin = loginPreferences.getBoolean("saveLogin", false);
+        if (saveLogin == true) {
+            email.setText(loginPreferences.getString("username", ""));
+            password.setText(loginPreferences.getString("password", ""));
+            rememberMe.setChecked(true);
+            autoLogin.setChecked(loginPreferences.getBoolean("autoLogin", false));
+        }
 
         if (loggedin != null) {
             email.setText(loggedin.getUserEmail());
@@ -229,6 +255,50 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             }
         });
 
+        rememberMe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(email.getWindowToken(), 0);
+
+                    username= email.getText().toString();
+                    pswd = password.getText().toString();
+
+                    if(!rememberMe.isChecked()) {
+                        autoLogin.setChecked(false);
+                    }
+
+                    if(rememberMe.isChecked()) {
+                        loginPrefsEditor.putBoolean("saveLogin", true);
+                        loginPrefsEditor.putString("username", username);
+                        loginPrefsEditor.putString("password", pswd);
+                        loginPrefsEditor.commit();
+                    } else {
+                        loginPrefsEditor.clear();
+                        loginPrefsEditor.commit();
+                    }
+                    //Do something here if needed
+            }
+        });
+
+        autoLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(autoLogin.isChecked()) {
+                    rememberMe.setChecked(true);
+                    loginPrefsEditor.putBoolean("saveLogin", true);
+                    loginPrefsEditor.putString("username", username);
+                    loginPrefsEditor.putString("password", pswd);
+                    loginPrefsEditor.putBoolean("autoLogin", true);
+                    loginPrefsEditor.commit();
+                } else {
+                    loginPrefsEditor.putBoolean("autoLogin", false);
+                    loginPrefsEditor.commit();
+                }
+            }
+        });
+
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         // Configure Google Sign In
@@ -334,6 +404,9 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
+        if(autoLogin.isChecked()) {
+            btnLogin.performClick();
+        }
     }
 
     @Override
@@ -410,4 +483,5 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
+
 }
