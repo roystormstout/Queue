@@ -1,5 +1,6 @@
 package com.example.lingfeng.dopeaf1;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -18,7 +19,6 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -67,7 +67,7 @@ public class AddTask extends AppCompatActivity {
         dueDate = (EditText) findViewById(R.id.dueDate);
         courseSpinner = (Spinner) findViewById(R.id.courseList);
         final List<String> courseListToShow = a.getEnrolledCourses();
-        courseID = courseListToShow.get(0);
+        //courseID = courseListToShow.get(0);
 
         //Get a instance of the firebase
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -204,7 +204,7 @@ public class AddTask extends AppCompatActivity {
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
 
-            return new TimePickerDialog(getActivity(),this,hour,minute, DateFormat.is24HourFormat(getActivity()));
+            return new TimePickerDialog(getActivity(),R.style.EditTextDarkTheme,this,hour,minute, DateFormat.is24HourFormat(getActivity()));
         }
 
         @Override
@@ -214,6 +214,8 @@ public class AddTask extends AppCompatActivity {
     }
 
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+        @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final Calendar c = Calendar.getInstance();
             int year = c.get(Calendar.YEAR);
