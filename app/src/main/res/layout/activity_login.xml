@@ -44,6 +44,25 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="99dp" />
 
+    <CheckBox
+        android:id="@+id/rememberme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remember me"
+        android:layout_below="@+id/password"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        />
+
+    <CheckBox
+        android:text="Auto Login    "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/autoLogin"
+        android:layout_toRightOf="@+id/rememberme"
+        android:layout_below="@+id/password"
+        android:layout_marginTop="10dp" />
+
     <Button
         android:text="Login"
         android:layout_width="match_parent"
@@ -76,7 +95,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_below="@+id/register"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true" />
 
     <RelativeLayout
         android:orientation="vertical"
