@@ -3,20 +3,26 @@ package com.example.lingfeng.dopeaf1;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class AddClass extends AppCompatActivity {
+public class AddClass extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private EditText cID;
     private EditText classname;
     private EditText q;
@@ -27,9 +33,12 @@ public class AddClass extends AppCompatActivity {
     private Button btnDrop;
     private Button btnAddTask;
     private Button signOut;
-    private GoogleApiClient mGoogleApiClient = Login.mGoogleApiClient;
     private Button btnMain;
     public DatabaseReference mDatabase;
+    private GoogleApiClient mGoogleApiClient;
+    private static final String TAG = "GoogleActivity";
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +55,18 @@ public class AddClass extends AppCompatActivity {
         btnMain = (Button) findViewById(R.id.btnMain);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         signOut = (Button) findViewById(R.id.button_sign_out);
+
+
+        mAuth = FirebaseAuth.getInstance();
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
 
         //add class
         btnAdd.setOnClickListener(new View.OnClickListener() {
@@ -198,7 +219,27 @@ public class AddClass extends AppCompatActivity {
                 a.updateLastlogin();
                 //jump to add class
                 startActivity(intent);
+                revokeAccess();
             }
         });
     }
+    private void revokeAccess() {
+
+        mAuth.signOut();
+
+        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        // ...
+                    }
+                });
     }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        // An unresolvable error has occurred and Google APIs (including Sign-In) will not
+        // be available.
+        Log.d(TAG, "onConnectionFailed:" + connectionResult);
+    }
+}
