@@ -150,7 +150,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                         }
                                         else {
                                             Toast.makeText(Login.this, userB.getEmail() + " Email verified", Toast.LENGTH_LONG).show();
-                                            loggedin = new User(userB.getDisplayName(),userB.getEmail(),userB.getUid(),"password");
+                                            loggedin = new User("New User",userB.getEmail(),userB.getUid(),"password");
                                             //Toast.makeText(Login.this, userB.getDisplayName(), Toast.LENGTH_LONG).show();
                                             Intent intent = new Intent(Login.this, TaskPresenter.class);
                                             startActivity(intent);
