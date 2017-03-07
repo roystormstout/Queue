@@ -20,8 +20,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        ATTENTION: This was auto-generated to add Google Play services to your project for
+        App Indexing. See https://g.co/AppIndexing/AndroidStudio for more information.
         -->
         <meta-data
             android:name="com.google.android.gms.version"
@@ -32,11 +32,13 @@
             android:label="@string/title_activity_add_class"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".AddTask" />
-        <activity android:name=".TaskPresenter" />
-        <activity android:name=".TaskPresenter$MainActivity" />
         <activity
             android:name=".Signup"
             android:label="@string/title_activity_signup" />
+        <activity
+            android:name=".Navigation"
+            android:label="@string/title_activity_navigation_main"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

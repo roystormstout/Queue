@@ -138,7 +138,7 @@ public class AddTask extends AppCompatActivity {
                                     mDatabase.child("users").child(a.getUserID()).child("inProgressTask").setValue(newTask);
 
                                     //define a jump
-                                    Intent intent = new Intent(AddTask.this, TaskPresenter.class);
+                                    Intent intent = new Intent(AddTask.this, Navigation.class);
 
                                     a.updateLastlogin();
                                     mDatabase.child("users").child(a.getUserID()).setValue(a);
@@ -171,7 +171,7 @@ public class AddTask extends AppCompatActivity {
 
 
                                 //define a jump
-                                Intent intent = new Intent(AddTask.this, TaskPresenter.class);
+                                Intent intent = new Intent(AddTask.this, Navigation.class);
 
                                 a.updateLastlogin();
                                 mDatabase.child("users").child(a.getUserID()).setValue(a);

@@ -4,8 +4,10 @@
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/activity_main"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.lingfeng.dopeaf1.TaskPresenter">
+    tools:context="com.example.lingfeng.dopeaf1.Navigation"
+    tools:showIn="@layout/app_bar_navigation_main">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"

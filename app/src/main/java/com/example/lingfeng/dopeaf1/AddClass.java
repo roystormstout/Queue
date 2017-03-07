@@ -179,7 +179,7 @@ public class AddClass extends AppCompatActivity {
                 //final String id = cID.getText().toString();
                 //Toast.makeText(AddTask.class, "Come to Add Task!", Toast.LENGTH_SHORT).show();
                 //define a jump
-                Intent intent = new Intent(AddClass.this, TaskPresenter.class);
+                Intent intent = new Intent(AddClass.this, Navigation.class);
 
                 a.updateLastlogin();
                 mDatabase.child("users").child(a.getUserID()).setValue(a);

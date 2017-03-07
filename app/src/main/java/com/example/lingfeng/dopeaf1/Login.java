@@ -118,7 +118,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                     Toast.makeText(Login.this, "Hello " + loggedin.getUsername(), Toast.LENGTH_SHORT).show();
                                     flag = 1;
                                     //define a jump
-                                    Intent intent = new Intent(Login.this, TaskPresenter.class);
+                                    Intent intent = new Intent(Login.this, Navigation.class);
 
                                     loggedin.updateLastlogin();
                                     mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
