@@ -44,6 +44,7 @@ public class Navigation extends AppCompatActivity
 
     boolean fabOpen = false;
 
+    private List<String> output = new ArrayList<>();
 
 
     @Override
@@ -211,11 +212,15 @@ public class Navigation extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        //output.clear();
 
         for (String str: user.enrolledCourses) {
+            Log.d("check", str);
+            Log.d("inprogress task", Integer.toString(user.inProgressTask.size()));
             if (item.toString().equals(str)) {
-                mMyAdapter = new MyAdapter(Navigation.this, specificCourseTask(str));
-                mRecyclerView.setAdapter(mMyAdapter);
+                Log.d("hello", str);
+                specificCourseTask(str);
+                break;
             }
         }
 
@@ -237,6 +242,9 @@ public class Navigation extends AppCompatActivity
 
         }*/
 
+        mMyAdapter.setData(output);
+        Log.d("list num 1", Integer.toString(output.size()));
+        mMyAdapter.notifyDataSetChanged();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -247,31 +255,37 @@ public class Navigation extends AppCompatActivity
         return user.inProgressTask;
     }
 
-    private List<String> specificCourseTask(String courseID) {
+    private void specificCourseTask(final String courseID) {
         Log.d("courseID", courseID);
-        List<String> output = new ArrayList<>();
-        for (String taskName: user.inProgressTask) {
-            String course;
+
+        Log.d("inprogress task", Integer.toString(user.inProgressTask.size()));
+        if (user.inProgressTask.size() == 0)
+            return;
+
+        for (final String taskName: user.inProgressTask) {
 
             mdatabase.child("tasks").child(taskName).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Task task = dataSnapshot.getValue(Task.class);
-                    course = task.courseID;
+                    String course = task.courseID;
+                    Log.d("course", course);
+                    if (course.equals(courseID)) {
+                        output.add(taskName);
+                        Log.d("taskName", taskName);
+                        Log.d("list num inside", Integer.toString(output.size()));
+                    }
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
+
             });
 
-            Log.d("course", course);
-            if (course.equals(courseID)) {
-                output.add(taskName);
-                Log.d("taskName", taskName);
-            }
+
         }
-        return output;
+        Log.d("list num", Integer.toString(output.size()));
     }
 }
