@@ -3,7 +3,6 @@ package com.example.lingfeng.dopeaf1;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -43,8 +42,6 @@ public class Navigation extends AppCompatActivity
     Animation FabOpen,FabClose,FabClock,FabAntiClock;
 
     boolean fabOpen = false;
-
-    private List<String> output = new ArrayList<>();
 
 
     @Override
@@ -171,6 +168,7 @@ public class Navigation extends AppCompatActivity
 
 
         Menu drawerMenu = navigationView.getMenu();
+        drawerMenu.add("All Tasks");
         for (String str: user.enrolledCourses) {
             drawerMenu.add(str);
         }
@@ -212,13 +210,18 @@ public class Navigation extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        //output.clear();
+
+        //oneCourseTask.clear();
+
+        if (item.toString().equalsIgnoreCase("All Tasks")) {
+            mMyAdapter.setData(initData());
+            mMyAdapter.notifyDataSetChanged();
+        }
 
         for (String str: user.enrolledCourses) {
-            Log.d("check", str);
-            Log.d("inprogress task", Integer.toString(user.inProgressTask.size()));
-            if (item.toString().equals(str)) {
-                Log.d("hello", str);
+            if (item.toString().equalsIgnoreCase(str)) {
+                mMyAdapter.setData(new ArrayList<String>());
+                mMyAdapter.notifyDataSetChanged();
                 specificCourseTask(str);
                 break;
             }
@@ -242,9 +245,9 @@ public class Navigation extends AppCompatActivity
 
         }*/
 
-        mMyAdapter.setData(output);
-        Log.d("list num 1", Integer.toString(output.size()));
-        mMyAdapter.notifyDataSetChanged();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(item.toString());
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -256,24 +259,22 @@ public class Navigation extends AppCompatActivity
     }
 
     private void specificCourseTask(final String courseID) {
-        Log.d("courseID", courseID);
 
-        Log.d("inprogress task", Integer.toString(user.inProgressTask.size()));
-        if (user.inProgressTask.size() == 0)
+        if (user.inProgressTask == null || user.inProgressTask.size() == 0)
             return;
 
-        for (final String taskName: user.inProgressTask) {
+        for (int i = 0; i < user.inProgressTask.size(); ++i) {
+
+            final String taskName = user.inProgressTask.get(i);
 
             mdatabase.child("tasks").child(taskName).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Task task = dataSnapshot.getValue(Task.class);
                     String course = task.courseID;
-                    Log.d("course", course);
                     if (course.equals(courseID)) {
-                        output.add(taskName);
-                        Log.d("taskName", taskName);
-                        Log.d("list num inside", Integer.toString(output.size()));
+                        mMyAdapter.addData(taskName);
+                        mMyAdapter.notifyDataSetChanged();
                     }
                 }
 
@@ -284,8 +285,6 @@ public class Navigation extends AppCompatActivity
 
             });
 
-
         }
-        Log.d("list num", Integer.toString(output.size()));
     }
 }

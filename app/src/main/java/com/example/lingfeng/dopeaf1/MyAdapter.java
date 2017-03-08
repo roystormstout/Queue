@@ -103,6 +103,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
         datas.add(position,content);
     }
 
+    public void addData(String content) { datas.add(content); }
+
     public void setData(List<String> newData) { datas = newData; }
 
     public void removeData(int position){
