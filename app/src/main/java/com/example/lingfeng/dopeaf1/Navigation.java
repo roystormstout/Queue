@@ -169,8 +169,10 @@ public class Navigation extends AppCompatActivity
 
         Menu drawerMenu = navigationView.getMenu();
         drawerMenu.add("All Tasks");
-        for (String str: user.enrolledCourses) {
-            drawerMenu.add(str);
+        if (user.enrolledCourses != null) {
+            for (String str : user.enrolledCourses) {
+                drawerMenu.add(str);
+            }
         }
 
     }
@@ -218,12 +220,14 @@ public class Navigation extends AppCompatActivity
             mMyAdapter.notifyDataSetChanged();
         }
 
-        for (String str: user.enrolledCourses) {
-            if (item.toString().equalsIgnoreCase(str)) {
-                mMyAdapter.setData(new ArrayList<String>());
-                mMyAdapter.notifyDataSetChanged();
-                specificCourseTask(str);
-                break;
+        if (user.enrolledCourses != null) {
+            for (String str : user.enrolledCourses) {
+                if (item.toString().equalsIgnoreCase(str)) {
+                    mMyAdapter.setData(new ArrayList<String>());
+                    mMyAdapter.notifyDataSetChanged();
+                    specificCourseTask(str);
+                    break;
+                }
             }
         }
 
@@ -254,9 +258,7 @@ public class Navigation extends AppCompatActivity
     }
 
 
-    private List<String> initData() {
-        return user.inProgressTask;
-    }
+    private List<String> initData() { return user.inProgressTask; }
 
     private void specificCourseTask(final String courseID) {
 
