@@ -101,17 +101,17 @@
                 android:layout_above="@+id/UCSDPassword" />
 
             <EditText
+                android:id="@+id/UCSDPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
+                android:layout_above="@+id/spaceAboveRegister"
                 android:ems="10"
-                android:id="@+id/UCSDPassword"
                 android:hint="Password - UCSD"
-                android:theme="@style/EditTextDarkTheme"
+                android:inputType="textPassword"
                 android:textColor="@color/colorAccent"
                 android:textColorHighlight="@color/colorAccent"
                 android:textColorHint="@color/colorPrimary"
-                android:layout_above="@+id/spaceAboveRegister" />
+                android:theme="@style/EditTextDarkTheme" />
 
             <Space
                 android:layout_width="match_parent"

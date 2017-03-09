@@ -54,17 +54,17 @@
         android:layout_alignStart="@+id/priorityText" />
 
     <EditText
+        android:id="@+id/dueDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="date"
-        android:ems="10"
-        android:id="@+id/dueDate"
-        android:hint="Due Date:"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         android:layout_above="@+id/priorityText"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:ems="10"
+        android:hint="Due Date:"
+        android:inputType="date" />
 
     <RatingBar
         android:id="@+id/priorityBar"
@@ -81,33 +81,34 @@
         android:layout_alignStart="@+id/priorityText" />
 
     <EditText
+        android:id="@+id/taskName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/taskName"
-        android:hint="Task Name:"
-        android:layout_marginLeft="16dp"
-        android:lines="@integer/google_play_services_version"
-        android:layout_marginTop="20dp"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/dueDate" />
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="18dp"
+        android:ems="10"
+        android:hint="Task Name:"
+        android:inputType="textPersonName"
+        android:lines="@integer/google_play_services_version" />
 
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/courseList"
-        android:layout_above="@+id/dueDate"
-        android:layout_alignParentStart="true" />
+        android:layout_below="@+id/textView"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="13dp" />
 
     <TextView
-        android:text="Course Name"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView"
+        android:layout_alignStart="@+id/taskName"
         android:layout_below="@+id/taskName"
-        android:layout_alignEnd="@+id/saveTask"
-        android:layout_marginTop="17dp" />
+        android:layout_marginTop="17dp"
+        android:text="Course Name" />
 
 
 </RelativeLayout>
