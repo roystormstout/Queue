@@ -233,7 +233,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
                 //define a jump
                 //TODO: change the view, and may need to PASS the EMAIL user entered, so that they does not need to enter it again
-                Intent intent = new Intent(Login.this, AddClass.class);
+                Intent intent = new Intent(Login.this, TaskPresenter.class);
                 final User userNew = new User("Forgot Password", "Forgot Password", "Forgot Password", "Forgot Password");
                 loggedin = userNew;
                 mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
