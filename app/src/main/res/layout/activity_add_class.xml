@@ -7,6 +7,8 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="com.example.lingfeng.dopeaf1.AddClass"
+    android:theme="@android:style/Theme.Material"
+    android:background="@color/windowBackground"
     app:layout_collapseParallaxMultiplier="1.0"
     android:elevation="1dp">
 

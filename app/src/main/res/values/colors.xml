@@ -4,6 +4,10 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#50e3c2</color>
     <color name="windowBackground">#424242</color>
+    <color name="splashBackground">#fdfdfd</color>
+    <color name="colorWhite">#fdfdfd</color>
+    <color name="colorHint">#212121</color>
+
 
     <color name="fab1_color">#4CAF50</color>
     <color name="fab2_color">#2196F3</color>
