@@ -380,6 +380,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             } else {
                 // Google Sign In failed, update UI appropriately
                 // ...
+                System.out.print("not success!");
             }
         }
     }
@@ -400,6 +401,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                             Log.w(TAG, "signInWithCredential", task.getException());
                             Toast.makeText(Login.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+
                         }
                         // ...
                     }
