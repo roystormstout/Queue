@@ -50,7 +50,7 @@ public class TaskPresenter extends AppCompatActivity {
 
 
             if(user.inProgressTask == null || user.inProgressTask.size() == 0){
-                Toast.makeText(TaskPresenter.this, "Horrray!! No Due!!!!.", Toast.LENGTH_LONG).show();
+                Toast.makeText(TaskPresenter.this, "Horrray!! No Due!!!!.", Toast.LENGTH_SHORT).show();
             }
 
             fab_plus.setOnClickListener(new View.OnClickListener() {
