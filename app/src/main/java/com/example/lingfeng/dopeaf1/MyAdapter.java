@@ -106,25 +106,33 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
     public void addData(int position, String content){
         datas.add(position,content);
     }
+
     public String getData(int pos) { return datas.get(pos); }
 
     public void addData(String content) { datas.add(content); }
 
     public void setData(List<String> newData) { datas = newData; }
 
-    public void removeData(int position){
+  //  public void removeData(int position){
         //String toRemove = datas[position]
-        datas.remove(position);
-    }
+     //   datas.remove(position);
+ //   }
 
     @Override
     public void onItemDismiss(int position) {
+        System.out.println("From what user have in their inProgrss list size "+user.inProgressTask.size());
+        System.out.println("Datas updated, size is now "+datas.size());
+        System.out.println("Happ the position we intent to access is...."+position);
+
         String currTask = getData(position);
         user.finishTask(currTask);
+        System.err.println(currTask+" was deleteing");
+        System.out.println("Current list has size as......"+datas.size());
+        System.out.println("And the position we intent to access is...."+position);
         mdatabase.child("users").child(user.getUserID()).setValue(user);
         //notifyItemRemoved(position);
         //删除mItems数据
-        //datas.remove(position);
+       datas.remove(currTask);
         //删除RecyclerView列表对应item
         notifyItemRemoved(position);
     }
