@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -23,6 +24,7 @@ public class TaskPresenter extends AppCompatActivity {
         private RecyclerView mRecyclerView;
         private MyAdapter mMyAdapter;
         private User user = Login.loggedin;
+        private ItemTouchHelper mItemTouchHelper;
         private DatabaseReference mdatabase = FirebaseDatabase.getInstance().getReference();
         private FloatingActionButton fab_plus,fab_add_class, fab_add_task;
         Animation FabOpen,FabClose,FabClock,FabAntiClock;
@@ -48,7 +50,9 @@ public class TaskPresenter extends AppCompatActivity {
             FabClock = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_clockwise);
             FabAntiClock = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_anticlockwise);
 
-
+            ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mMyAdapter);
+            mItemTouchHelper = new ItemTouchHelper(callback);
+            mItemTouchHelper.attachToRecyclerView(mRecyclerView);
             if(user.inProgressTask == null || user.inProgressTask.size() == 0){
                 Toast.makeText(TaskPresenter.this, "Horrray!! No Due!!!!.", Toast.LENGTH_SHORT).show();
             }
@@ -121,16 +125,17 @@ public class TaskPresenter extends AppCompatActivity {
                     //mMyAdapter.notifyItemInserted(position);
                 }
             });
-            mMyAdapter.setOnItemLongClickListener(new MyAdapter.OnItemLongClickListener() {
-                @Override
-                public boolean onLongClick(View parent, int position) {
-                    Toast.makeText(TaskPresenter.this, "You have delete the task.", Toast.LENGTH_SHORT).show();
-                    user.finishTask(user.inProgressTask.get(position));
-                    mdatabase.child("users").child(user.getUserID()).setValue(user);
-                    mMyAdapter.notifyItemRemoved(position);
-                    return false;
-                }
-            });
+          //  mMyAdapter.setOnItemLongClickListener(new MyAdapter.OnItemLongClickListener() {
+            //    @Override
+           //     public boolean onLongClick(View parent, int position) {
+             //       Toast.makeText(TaskPresenter.this, "You have delete the task.", Toast.LENGTH_SHORT).show();
+           //         String currTask = mMyAdapter.getData(position);
+            //        user.finishTask(currTask);
+            //        mdatabase.child("users").child(user.getUserID()).setValue(user);
+           //         mMyAdapter.notifyItemRemoved(position);
+          //          return false;
+           //     }
+           // });
 
 
 

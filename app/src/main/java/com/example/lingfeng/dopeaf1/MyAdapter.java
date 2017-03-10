@@ -9,19 +9,23 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import java.util.List;
 
 /**
  * Created by Jas on 2017/2/22.
  */
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
+public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> implements onSwipeListener {
 
     private static final String TAG = "MyAdapter";
     private List<String> datas;
     private LayoutInflater inflater;
     public OnItemClickListener mOnItemClickListener;
     public OnItemLongClickListener mOnItemLongClickListener;
+    private DatabaseReference mdatabase = FirebaseDatabase.getInstance().getReference();
+    private User user = Login.loggedin;
 
     public MyAdapter(Context context, List<String> datas) {
         this.datas = datas;
@@ -102,13 +106,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>  {
     public void addData(int position, String content){
         datas.add(position,content);
     }
+    public String getData(int pos) { return datas.get(pos); }
 
     public void removeData(int position){
         //String toRemove = datas[position]
         datas.remove(position);
     }
 
-
+    @Override
+    public void onItemDismiss(int position) {
+        String currTask = getData(position);
+        user.finishTask(currTask);
+        mdatabase.child("users").child(user.getUserID()).setValue(user);
+        //notifyItemRemoved(position);
+        //删除mItems数据
+        //datas.remove(position);
+        //删除RecyclerView列表对应item
+        notifyItemRemoved(position);
+    }
 
 
 
