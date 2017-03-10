@@ -72,17 +72,17 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_login);
-        email = (EditText) findViewById(R.id.email);
-        password = (EditText) findViewById(R.id.password);
-        btnLogin = (Button) findViewById(R.id.login);
-        btnSignUp = (Button) findViewById(R.id.register);
+        //email = (EditText) findViewById(R.id.email);
+        //password = (EditText) findViewById(R.id.password);
+        //btnLogin = (Button) findViewById(R.id.login);
+        //btnSignUp = (Button) findViewById(R.id.register);
         btnForgotPassword = (Button) findViewById(R.id.forgotPassword);
         googleSignin = (SignInButton) findViewById(R.id.sign_in_button);
-        rememberMe = (CheckBox)findViewById(R.id.rememberme);
-        autoLogin = (CheckBox)findViewById(R.id.autoLogin);
-        loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
-        loginPrefsEditor = loginPreferences.edit();
-
+        //rememberMe = (CheckBox)findViewById(R.id.rememberme);
+        //autoLogin = (CheckBox)findViewById(R.id.autoLogin);
+        //loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        //loginPrefsEditor = loginPreferences.edit();
+/*
         saveLogin = loginPreferences.getBoolean("saveLogin", false);
         if (saveLogin == true) {
             email.setText(loginPreferences.getString("username", ""));
@@ -90,20 +90,21 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             rememberMe.setChecked(true);
             autoLogin.setChecked(loginPreferences.getBoolean("autoLogin", false));
         }
+        */
 
         googleSignin.setColorScheme(0);
         TextView textView = (TextView) googleSignin.getChildAt(0);
         textView.setText("Sign in with Google");
-
+/*
         if (loggedin != null) {
             email.setText(loggedin.getUserEmail());
             password.setText(loggedin.getUserPassword());
         }
-
+*/
         //connect to our own database using google-services.json
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
-
+/*
         //triggered when click on login button
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,7 +139,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                             Toast.makeText(Login.this, userB.getEmail() + " Email verified", Toast.LENGTH_LONG).show();
                                             loggedin = new User("New User",userB.getEmail(),userB.getUid(),"password");
                                             //Toast.makeText(Login.this, userB.getDisplayName(), Toast.LENGTH_LONG).show();
-                                            Intent intent = new Intent(Login.this, TaskPresenter.class);
+                                            Intent intent = new Intent(Login.this, Navigation.class);
                                             startActivity(intent);
                                             finish();
                                         }
@@ -208,7 +209,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
             }
         });
-
+*/
         //TODO FORGOT PSWD
         //triggered when click on forgot password button
         btnForgotPassword.setOnClickListener(new View.OnClickListener() {
@@ -227,7 +228,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 startActivity(intent);
             }
         });
-
+/*
         rememberMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -272,7 +273,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 }
             }
         });
-
+*/
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         // Configure Google Sign In
@@ -309,11 +310,15 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                     // FirebaseUser.getToken() instead.
                     final String uid = user.getUid();
 
-                    final User userNew = new User(name, email, uid, "123456");
+                    //final User userNew =
+
                     //put user into users field
-                    loggedin = userNew;
+                    loggedin = new User(name, email, uid, "123456");
 
                     mDatabase.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+
+                        boolean isNewUser = true;
+
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -327,18 +332,22 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                 //if the email and password all match
                                 if (uid.equals(user.getUserID())) {
                                     //define a jump
+                                    System.err.println("Found the user in database!!");
+                                    loggedin = user;
                                     Toast.makeText(Login.this, "Hello " + name, Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(Login.this, TaskPresenter.class);
+                                    Intent intent = new Intent(Login.this, Navigation.class);
                                     loggedin.updateLastlogin();
                                     //jump to add class
                                     startActivity(intent);
                                     finish();
+                                    isNewUser = false;
                                     break;
                                     //if the email matches but password does not match
                                 }
                             }
-                            mDatabase.child("users").child(userNew.getUserID()).setValue(userNew);
-                            Intent intent = new Intent(Login.this, TaskPresenter.class);
+
+                            mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
+                            Intent intent = new Intent(Login.this, Navigation.class);
                             loggedin.updateLastlogin();
                             //jump to add class
                             startActivity(intent);
@@ -390,9 +399,11 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 }
             });
         }
+        /*
         if(autoLogin.isChecked()) {
             btnLogin.performClick();
         }
+        */
     }
 
     @Override
@@ -455,7 +466,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
-            Intent intent = new Intent(this, TaskPresenter.class);
+            Intent intent = new Intent(this, Navigation.class);
             startActivity(intent);
             finish();
         } else {
