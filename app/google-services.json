@@ -15,10 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "700971486111-pijpun7dhks9l0bkc38glmdh80pv6p4f.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
           "client_id": "700971486111-ajqeasv9i5a62e0tanla8esrr5c6gko9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -52,14 +48,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "700971486111-110uitlcb1t5q9ic28gu65snbcg3avcq.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "Shangyuan-Tong.CSE110Project-iOS"
-              }
-            },
-            {
-              "client_id": "700971486111-pijpun7dhks9l0bkc38glmdh80pv6p4f.apps.googleusercontent.com",
+              "client_id": "700971486111-difngrpa9942udtnr6s3f0vap9qiojjq.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

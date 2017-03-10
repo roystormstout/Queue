@@ -125,9 +125,8 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         // Configure Google Sign In
-        System.out.println("web id is : "+getString(R.string.default_web_client_id));
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken("700971486111-difngrpa9942udtnr6s3f0vap9qiojjq.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 
@@ -137,6 +136,8 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
+
 
         //TODO
         /*
@@ -418,29 +419,21 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         System.out.println("Entering the signIn(), line 404");
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
-        System.out.println("\n\n\nTHE RC_SIGN_IN is "+RC_SIGN_IN+"\n\n\n");
     }
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        System.out.println("Now we enter line 428, onActivitiyResult");
-        System.out.println("The request code is now "+requestCode);
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            int statuscode=result.getStatus().getStatusCode();
-            System.out.println("status code is"+statuscode);
             if (result.isSuccess()) {
-                System.out.println("Mother fucker, success!");
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
             } else {
                 // Google Sign In failed, update UI appropriately
-                System.out.println("Oh shit, the result says its failed");
                 // ...
             }
         }
