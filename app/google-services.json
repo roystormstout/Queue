@@ -48,13 +48,6 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "700971486111-110uitlcb1t5q9ic28gu65snbcg3avcq.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "Shangyuan-Tong.CSE110Project-iOS"
-              }
-            },
-            {
               "client_id": "700971486111-difngrpa9942udtnr6s3f0vap9qiojjq.apps.googleusercontent.com",
               "client_type": 3
             }

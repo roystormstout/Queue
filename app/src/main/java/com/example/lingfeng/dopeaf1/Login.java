@@ -20,8 +20,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.common.api.ResultCallback;
@@ -99,6 +101,26 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             password.setText(loggedin.getUserPassword());
         }
 
+        //connect to our own database using google-services.json
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                    //Toast.makeText(Login.this, "Failed", Toast.LENGTH_SHORT).show();
+                }
+                // ...
+            }
+        };
+
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -114,28 +136,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
-
-        //connect to our own database using google-services.json
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mAuth = FirebaseAuth.getInstance();
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "MTFKKKKK onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "MTFKKKK onAuthStateChanged:signed_out");
-                    //Toast.makeText(Login.this, "Failed", Toast.LENGTH_SHORT).show();
-                }
-                // ...
-            }
-        };
-
 
 
 
@@ -334,8 +334,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                     // Name, email address, and profile photo Url
                     final String name = user.getDisplayName();
                     final String email = user.getEmail();
-
-                    System.out.println(name+" FUCKKKKKK "+email);
                     //Toast.makeText(Login.this, "successfully added " + name, Toast.LENGTH_SHORT).show();
 
                     // Check if user's email is verified
@@ -346,9 +344,9 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                     // FirebaseUser.getToken() instead.
                     final String uid = user.getUid();
 
-                    //
+                    final User userNew = new User(name, email, uid, "123456");
                     //put user into users field
-
+                    loggedin = userNew;
 
                     mDatabase.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                         int flag = 0;
@@ -365,7 +363,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                 //if the email and password all match
                                 if (uid.equals(user.getUserID())) {
                                     //define a jump
-                                    loggedin=user;
                                     Toast.makeText(Login.this, "Hello " + name, Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(Login.this, Navigation.class);
                                     flag = 1;
@@ -379,9 +376,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
                             // if user enters a wrong password but valid email
                             if (flag == 0) {
-                                final User userNew = new User(name, email, uid, "123456");
-                                loggedin=userNew;
-                                mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
                                 Toast.makeText(Login.this, "successfully added " + name, Toast.LENGTH_SHORT).show();
                                 Toast.makeText(Login.this, "Hello " + name, Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(Login.this, Signup.class);
