@@ -96,6 +96,8 @@ public class AddClass extends AppCompatActivity {
                                                 a.addCourse(id);
                                                 mDatabase.child("classes").child(id).setValue(classToCheck);
                                                 mDatabase.child("users").child(a.getUserID()).setValue(a);
+
+                                                //TODO:INTEND BACK TO MAIN PAGE
                                             }
                                             break;
                                         }
