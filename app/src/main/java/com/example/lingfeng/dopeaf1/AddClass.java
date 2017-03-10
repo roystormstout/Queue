@@ -212,26 +212,22 @@ public class AddClass extends AppCompatActivity implements GoogleApiClient.OnCon
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //final String id = cID.getText().toString();
-                //Toast.makeText(AddTask.class, "Come to Add Task!", Toast.LENGTH_SHORT).show();
-                //define a jump
-                Intent intent = new Intent(AddClass.this, Login.class);
-                a.updateLastlogin();
-                //jump to add class
-                startActivity(intent);
-                revokeAccess();
+                signOut();
             }
         });
     }
-    private void revokeAccess() {
+    private void signOut() {
 
         mAuth.signOut();
 
-        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
-                        // ...
+                        Intent intent = new Intent(AddClass.this, Login.class);
+                        a.updateLastlogin();
+                        //jump to add class
+                        startActivity(intent);
                     }
                 });
     }

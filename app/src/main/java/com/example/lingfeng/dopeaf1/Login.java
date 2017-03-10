@@ -1,5 +1,6 @@
 package com.example.lingfeng.dopeaf1;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,10 +21,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.common.api.ResultCallback;
@@ -52,11 +52,11 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     private EditText email;
     private EditText password;
     private Button btnLogin;
-    //private Button btnSignUp;
+    private Button btnSignUp;
     private Button btnForgotPassword;
     private SignInButton googleSignin;
-    //private CheckBox rememberMe;
-    //private CheckBox autoLogin;
+    private CheckBox rememberMe;
+    private CheckBox autoLogin;
     private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
     private Boolean saveLogin;
@@ -65,24 +65,24 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         getSupportActionBar().hide();
         setContentView(R.layout.activity_login);
         email = (EditText) findViewById(R.id.email);
         password = (EditText) findViewById(R.id.password);
-        //btnLogin = (Button) findViewById(R.id.login);
-        //btnSignUp = (Button) findViewById(R.id.register);
+        btnLogin = (Button) findViewById(R.id.login);
+        btnSignUp = (Button) findViewById(R.id.register);
         btnForgotPassword = (Button) findViewById(R.id.forgotPassword);
         googleSignin = (SignInButton) findViewById(R.id.sign_in_button);
-        //rememberMe = (CheckBox)findViewById(R.id.rememberme);
-        //autoLogin = (CheckBox)findViewById(R.id.autoLogin);
+        rememberMe = (CheckBox)findViewById(R.id.rememberme);
+        autoLogin = (CheckBox)findViewById(R.id.autoLogin);
         loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
-/*
+
         saveLogin = loginPreferences.getBoolean("saveLogin", false);
         if (saveLogin == true) {
             email.setText(loginPreferences.getString("username", ""));
@@ -90,7 +90,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             rememberMe.setChecked(true);
             autoLogin.setChecked(loginPreferences.getBoolean("autoLogin", false));
         }
-        */
 
         googleSignin.setColorScheme(0);
         TextView textView = (TextView) googleSignin.getChildAt(0);
@@ -105,42 +104,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                    //Toast.makeText(Login.this, "Failed", Toast.LENGTH_SHORT).show();
-                }
-                // ...
-            }
-        };
-
-
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("700971486111-difngrpa9942udtnr6s3f0vap9qiojjq.apps.googleusercontent.com")
-                .requestEmail()
-                .build();
-
-        // Build a GoogleApiClient with access to the Google Sign-In API and the
-        // options specified by gso.
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-
-
-        //TODO
-        /*
         //triggered when click on login button
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,7 +138,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                             Toast.makeText(Login.this, userB.getEmail() + " Email verified", Toast.LENGTH_LONG).show();
                                             loggedin = new User("New User",userB.getEmail(),userB.getUid(),"password");
                                             //Toast.makeText(Login.this, userB.getDisplayName(), Toast.LENGTH_LONG).show();
-                                            Intent intent = new Intent(Login.this, Navigation.class);
+                                            Intent intent = new Intent(Login.this, TaskPresenter.class);
                                             startActivity(intent);
                                             finish();
                                         }
@@ -246,8 +209,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             }
         });
 
-        */
-
         //TODO FORGOT PSWD
         //triggered when click on forgot password button
         btnForgotPassword.setOnClickListener(new View.OnClickListener() {
@@ -258,7 +219,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
                 //define a jump
                 //TODO: change the view, and may need to PASS the EMAIL user entered, so that they does not need to enter it again
-                Intent intent = new Intent(Login.this, Navigation.class);
+                Intent intent = new Intent(Login.this, AddClass.class);
                 final User userNew = new User("Forgot Password", "Forgot Password", "Forgot Password", "Forgot Password");
                 loggedin = userNew;
                 mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
@@ -266,30 +227,30 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 startActivity(intent);
             }
         });
-/*
+
         rememberMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(email.getWindowToken(), 0);
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(email.getWindowToken(), 0);
 
-                username= email.getText().toString();
-                pswd = password.getText().toString();
+                    username= email.getText().toString();
+                    pswd = password.getText().toString();
 
-                if(!rememberMe.isChecked()) {
-                    autoLogin.setChecked(false);
-                }
+                    if(!rememberMe.isChecked()) {
+                        autoLogin.setChecked(false);
+                    }
 
-                if(rememberMe.isChecked()) {
-                    loginPrefsEditor.putBoolean("saveLogin", true);
-                    loginPrefsEditor.putString("username", username);
-                    loginPrefsEditor.putString("password", pswd);
-                    loginPrefsEditor.commit();
-                } else {
-                    loginPrefsEditor.clear();
-                    loginPrefsEditor.commit();
-                }
-                //Do something here if needed
+                    if(rememberMe.isChecked()) {
+                        loginPrefsEditor.putBoolean("saveLogin", true);
+                        loginPrefsEditor.putString("username", username);
+                        loginPrefsEditor.putString("password", pswd);
+                        loginPrefsEditor.commit();
+                    } else {
+                        loginPrefsEditor.clear();
+                        loginPrefsEditor.commit();
+                    }
+                    //Do something here if needed
             }
         });
 
@@ -312,25 +273,29 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             }
         });
 
-        */
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("700971486111-pijpun7dhks9l0bkc38glmdh80pv6p4f.apps.googleusercontent.com")
+                .requestEmail()
+                .build();
+        // Build a GoogleApiClient with access to the Google Sign-In API and the
+        // options specified by gso.
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
 
+        mAuth = FirebaseAuth.getInstance();
 
-
-        System.out.println("Process to this step!");
-
-        googleSignin.setOnClickListener(new View.OnClickListener() {
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
-            public void onClick(View v) {
-                signIn();
-
-                System.out.println("Finished signIn");
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                System.out.println("Firebase authen user");
-
-                if (user == null){
-                    System.out.println("The user is currently a null object dude");
-                }
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     // Name, email address, and profile photo Url
                     final String name = user.getDisplayName();
                     final String email = user.getEmail();
@@ -349,7 +314,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                     loggedin = userNew;
 
                     mDatabase.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                        int flag = 0;
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -364,25 +328,21 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                 if (uid.equals(user.getUserID())) {
                                     //define a jump
                                     Toast.makeText(Login.this, "Hello " + name, Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(Login.this, Navigation.class);
-                                    flag = 1;
+                                    Intent intent = new Intent(Login.this, TaskPresenter.class);
                                     loggedin.updateLastlogin();
                                     //jump to add class
                                     startActivity(intent);
+                                    finish();
                                     break;
                                     //if the email matches but password does not match
                                 }
                             }
-
-                            // if user enters a wrong password but valid email
-                            if (flag == 0) {
-                                Toast.makeText(Login.this, "successfully added " + name, Toast.LENGTH_SHORT).show();
-                                Toast.makeText(Login.this, "Hello " + name, Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(Login.this, Signup.class);
-                                loggedin.updateLastlogin();
-                                startActivity(intent);
-                                // if user enters new contents
-                            }
+                            mDatabase.child("users").child(userNew.getUserID()).setValue(userNew);
+                            Intent intent = new Intent(Login.this, TaskPresenter.class);
+                            loggedin.updateLastlogin();
+                            //jump to add class
+                            startActivity(intent);
+                            finish();
                         }
 
                         @Override
@@ -390,8 +350,18 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                         }
                     });
                 } else {
-
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                    //Toast.makeText(Login.this, "Failed", Toast.LENGTH_SHORT).show();
                 }
+                // ...
+            }
+        };
+
+        googleSignin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signIn();
             }
         });
     }
@@ -400,9 +370,29 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-//        if(autoLogin.isChecked()) {
-//            btnLogin.performClick();
-//        }
+        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+        if (opr.isDone()) {
+            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
+            // and the GoogleSignInResult will be available instantly.
+            Log.d(TAG, "Got cached sign-in");
+            GoogleSignInResult result = opr.get();
+            handleSignInResult(result);
+        } else {
+            // If the user has not previously signed in on this device or the sign-in has expired,
+            // this asynchronous branch will attempt to sign in the user silently.  Cross-device
+            // single sign-on will occur in this branch.
+            showProgressDialog();
+            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                @Override
+                public void onResult(GoogleSignInResult googleSignInResult) {
+                    hideProgressDialog();
+                    handleSignInResult(googleSignInResult);
+                }
+            });
+        }
+        if(autoLogin.isChecked()) {
+            btnLogin.performClick();
+        }
     }
 
     @Override
@@ -413,12 +403,10 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         }
     }
 
-
-
     private void signIn() {
-        System.out.println("Entering the signIn(), line 404");
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
+        //Toast.makeText(Login.this, "SignIn 1", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -433,6 +421,8 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
             } else {
+                Toast.makeText(Login.this, (result.getStatus()).toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(Login.this, "SigIn Fails", Toast.LENGTH_SHORT).show();
                 // Google Sign In failed, update UI appropriately
                 // ...
             }
@@ -440,7 +430,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        System.out.println("Entering firebase Auth with google");
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -453,17 +442,41 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
-                            System.out.println("Clicked Login and success");
                             Log.w(TAG, "signInWithCredential", task.getException());
                             Toast.makeText(Login.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
-                        else{
-                            System.out.println("Clicked Login and failed");
-                        }
                         // ...
                     }
                 });
+    }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            Intent intent = new Intent(this, TaskPresenter.class);
+            startActivity(intent);
+            finish();
+        } else {
+            // Signed out, show unauthenticated UI.
+        }
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
     }
 
     @Override
