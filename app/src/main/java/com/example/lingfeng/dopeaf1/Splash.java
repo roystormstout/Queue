@@ -17,7 +17,6 @@ import java.io.InputStream;
 
 public class Splash extends AppCompatActivity {
     private GifImageView gifImageView;
-    //private ProgressBar progressBar;
     private static int SPLASH_TIME_OUT = 1800; // set the time for splash screen
 
     @Override
@@ -25,8 +24,6 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         gifImageView = (GifImageView)findViewById(R.id.gifImageView);
-        //progressBar = (ProgressBar)findViewById(R.id.progressBar);
-        //progressBar.setVisibility(progressBar.VISIBLE);
 
         // set the gif Image
         try {
@@ -38,12 +35,13 @@ public class Splash extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // wait for 2s and then dispaly the main screen
+        // wait for 2s and then display the main screen
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 Intent homeIntent = new Intent(Splash.this, Login.class);
                 startActivity(homeIntent);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 finish();
             }
         }, SPLASH_TIME_OUT);
