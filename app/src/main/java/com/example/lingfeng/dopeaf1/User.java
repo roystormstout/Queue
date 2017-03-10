@@ -149,4 +149,18 @@ public class User {
 
     public List<String> getEnrolledCourses() { return this.enrolledCourses; }
 
+    public List<String> getCurrentClassTask(String classnName) {
+
+        List<String> courseTask = new ArrayList<>();
+
+        //Do a search in the in progress tasks, locate all the task according
+        // to the name of the task.
+
+
+
+
+        //return the generated string list.
+        return courseTask;
+    }
+
 }

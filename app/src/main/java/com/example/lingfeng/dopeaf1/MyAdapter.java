@@ -108,6 +108,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
     }
     public String getData(int pos) { return datas.get(pos); }
 
+    public void addData(String content) { datas.add(content); }
+
+    public void setData(List<String> newData) { datas = newData; }
+
     public void removeData(int position){
         //String toRemove = datas[position]
         datas.remove(position);

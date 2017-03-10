@@ -4,16 +4,18 @@
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/activity_main"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@android:style/Theme.Material"
     android:background="@color/windowBackground"
-    tools:context="com.example.lingfeng.dopeaf1.TaskPresenter">
+    tools:context="com.example.lingfeng.dopeaf1.Navigation"
+    tools:showIn="@layout/app_bar_navigation_main">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context="com.slack.cse110_dopeaf.TaskPresenter"
+        tools:context="com.example.lingfeng.dopeaf1.Navigation"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
 
