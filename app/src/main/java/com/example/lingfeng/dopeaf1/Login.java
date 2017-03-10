@@ -1,5 +1,6 @@
 package com.example.lingfeng.dopeaf1;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +23,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.common.api.ResultCallback;
@@ -63,6 +65,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,22 +103,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         //connect to our own database using google-services.json
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                    //Toast.makeText(Login.this, "Failed", Toast.LENGTH_SHORT).show();
-                }
-                // ...
-            }
-        };
 
         //triggered when click on login button
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -290,7 +277,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("700971486111-difngrpa9942udtnr6s3f0vap9qiojjq.apps.googleusercontent.com")
+                .requestIdToken("700971486111-pijpun7dhks9l0bkc38glmdh80pv6p4f.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
         // Build a GoogleApiClient with access to the Google Sign-In API and the
@@ -300,12 +287,15 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        googleSignin.setOnClickListener(new View.OnClickListener() {
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
-            public void onClick(View v) {
-                signIn();
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     // Name, email address, and profile photo Url
                     final String name = user.getDisplayName();
                     final String email = user.getEmail();
@@ -324,7 +314,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                     loggedin = userNew;
 
                     mDatabase.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                        int flag = 0;
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -340,24 +329,20 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                     //define a jump
                                     Toast.makeText(Login.this, "Hello " + name, Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(Login.this, TaskPresenter.class);
-                                    flag = 1;
                                     loggedin.updateLastlogin();
                                     //jump to add class
                                     startActivity(intent);
+                                    finish();
                                     break;
                                     //if the email matches but password does not match
                                 }
                             }
-
-                            // if user enters a wrong password but valid email
-                            if (flag == 0) {
-                                Toast.makeText(Login.this, "successfully added " + name, Toast.LENGTH_SHORT).show();
-                                Toast.makeText(Login.this, "Hello " + name, Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(Login.this, Signup.class);
-                                loggedin.updateLastlogin();
-                                startActivity(intent);
-                                // if user enters new contents
-                            }
+                            mDatabase.child("users").child(userNew.getUserID()).setValue(userNew);
+                            Intent intent = new Intent(Login.this, TaskPresenter.class);
+                            loggedin.updateLastlogin();
+                            //jump to add class
+                            startActivity(intent);
+                            finish();
                         }
 
                         @Override
@@ -365,8 +350,18 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                         }
                     });
                 } else {
-
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                    //Toast.makeText(Login.this, "Failed", Toast.LENGTH_SHORT).show();
                 }
+                // ...
+            }
+        };
+
+        googleSignin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signIn();
             }
         });
     }
@@ -375,6 +370,26 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
+        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+        if (opr.isDone()) {
+            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
+            // and the GoogleSignInResult will be available instantly.
+            Log.d(TAG, "Got cached sign-in");
+            GoogleSignInResult result = opr.get();
+            handleSignInResult(result);
+        } else {
+            // If the user has not previously signed in on this device or the sign-in has expired,
+            // this asynchronous branch will attempt to sign in the user silently.  Cross-device
+            // single sign-on will occur in this branch.
+            showProgressDialog();
+            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                @Override
+                public void onResult(GoogleSignInResult googleSignInResult) {
+                    hideProgressDialog();
+                    handleSignInResult(googleSignInResult);
+                }
+            });
+        }
         if(autoLogin.isChecked()) {
             btnLogin.performClick();
         }
@@ -388,11 +403,10 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         }
     }
 
-
-
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
+        //Toast.makeText(Login.this, "SignIn 1", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -407,6 +421,8 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
             } else {
+                Toast.makeText(Login.this, (result.getStatus()).toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(Login.this, "SigIn Fails", Toast.LENGTH_SHORT).show();
                 // Google Sign In failed, update UI appropriately
                 // ...
             }
@@ -433,6 +449,34 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                         // ...
                     }
                 });
+    }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            Intent intent = new Intent(this, TaskPresenter.class);
+            startActivity(intent);
+            finish();
+        } else {
+            // Signed out, show unauthenticated UI.
+        }
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
     }
 
     @Override

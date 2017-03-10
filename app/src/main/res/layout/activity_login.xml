@@ -52,7 +52,7 @@
         android:layout_below="@+id/password"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
-        android:textColor="@color/common_google_signin_btn_text_light_focused" />
+        android:textColor="@color/colorAccent" />
 
     <CheckBox
         android:text="Auto Login    "
@@ -62,7 +62,7 @@
         android:layout_toRightOf="@+id/rememberme"
         android:layout_below="@+id/password"
         android:layout_marginTop="10dp"
-        android:textColor="@color/common_google_signin_btn_text_light_focused" />
+        android:textColor="@color/colorAccent" />
 
     <Button
         android:text="Login"
@@ -99,7 +99,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true" />
 
-    <RelativeLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -122,7 +121,5 @@
             android:textColor="@color/colorAccent"
             android:layout_alignParentBottom="true"
             style="@style/Widget.AppCompat.Button.Borderless.Colored" />
-
-    </RelativeLayout>
 
 </RelativeLayout>

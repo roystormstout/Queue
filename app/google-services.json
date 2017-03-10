@@ -15,20 +15,24 @@
       },
       "oauth_client": [
         {
-          "client_id": "700971486111-j7n1i9nbafpcbndgm7r4ve4uumjuu603.apps.googleusercontent.com",
+          "client_id": "700971486111-adkkhakmuktvbhlrgii62ljtkvppo065.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.lingfeng.dopeaf1",
-            "certificate_hash": "6edbc541f67e206c8882ab019a9a751367016dab"
+            "certificate_hash": "8b91dbf598cd6e95f764347a2ae0f445fb7ec21d"
           }
         },
         {
-          "client_id": "700971486111-1l6j778ijaeeh7al4t38evk05ikjnvp5.apps.googleusercontent.com",
+          "client_id": "700971486111-gog4glus2tataq8uc29ju4rcb30vuo4v.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.lingfeng.dopeaf1",
-            "certificate_hash": "b00281bc3a79b0a58e1a5007a61a71d6f8681a08"
+            "certificate_hash": "8cbe4605dc202b07c546b221c455bf394c0e84bc"
           }
+        },
+        {
+          "client_id": "700971486111-pijpun7dhks9l0bkc38glmdh80pv6p4f.apps.googleusercontent.com",
+          "client_type": 3
         },
         {
           "client_id": "700971486111-difngrpa9942udtnr6s3f0vap9qiojjq.apps.googleusercontent.com",
@@ -48,8 +52,15 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "700971486111-difngrpa9942udtnr6s3f0vap9qiojjq.apps.googleusercontent.com",
+              "client_id": "700971486111-pijpun7dhks9l0bkc38glmdh80pv6p4f.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "700971486111-110uitlcb1t5q9ic28gu65snbcg3avcq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "Shangyuan-Tong.CSE110Project-iOS"
+              }
             }
           ]
         },
