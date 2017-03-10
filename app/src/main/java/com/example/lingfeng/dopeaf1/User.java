@@ -147,7 +147,11 @@ public class User {
         this.username = username;
     }
 
-    public List<String> getEnrolledCourses() { return this.enrolledCourses; }
+    public List<String> getEnrolledCourses() {
+        if(this.enrolledCourses == null){
+            this.enrolledCourses = new ArrayList<String>();
+        }
+        return this.enrolledCourses; }
 
     public List<String> getCurrentClassTask(String classnName) {
 
