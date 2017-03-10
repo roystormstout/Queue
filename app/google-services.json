@@ -15,19 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "700971486111-j7n1i9nbafpcbndgm7r4ve4uumjuu603.apps.googleusercontent.com",
+          "client_id": "700971486111-ajqeasv9i5a62e0tanla8esrr5c6gko9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.lingfeng.dopeaf1",
-            "certificate_hash": "6edbc541f67e206c8882ab019a9a751367016dab"
+            "certificate_hash": "8b91dbf598cd6e95f764347a2ae0f445fb7ec21d"
           }
         },
         {
-          "client_id": "700971486111-1l6j778ijaeeh7al4t38evk05ikjnvp5.apps.googleusercontent.com",
+          "client_id": "700971486111-kn93ang15i32k8p39n474m4f92tbjg6u.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.lingfeng.dopeaf1",
-            "certificate_hash": "b00281bc3a79b0a58e1a5007a61a71d6f8681a08"
+            "certificate_hash": "8ff088a830bc15113a4f9e1e86c7198b3306c5e1"
           }
         },
         {
@@ -47,6 +47,13 @@
         "appinvite_service": {
           "status": 2,
           "other_platform_oauth_client": [
+            {
+              "client_id": "700971486111-110uitlcb1t5q9ic28gu65snbcg3avcq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "Shangyuan-Tong.CSE110Project-iOS"
+              }
+            },
             {
               "client_id": "700971486111-difngrpa9942udtnr6s3f0vap9qiojjq.apps.googleusercontent.com",
               "client_type": 3
