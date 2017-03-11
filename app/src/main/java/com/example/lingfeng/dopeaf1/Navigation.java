@@ -133,6 +133,7 @@ public class Navigation extends AppCompatActivity
                 Intent intent = new Intent(Navigation.this, AddClass.class);
                 user.updateLastlogin();
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 
@@ -143,6 +144,7 @@ public class Navigation extends AppCompatActivity
                 Intent intent = new Intent(Navigation.this, AddTask.class);
                 user.updateLastlogin();
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 

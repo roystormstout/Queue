@@ -39,6 +39,13 @@ public class AddClass extends AppCompatActivity implements GoogleApiClient.OnCon
     private static final String TAG = "GoogleActivity";
     private FirebaseAuth mAuth;
 
+    // override the back-key pending transition
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -192,6 +199,7 @@ public class AddClass extends AppCompatActivity implements GoogleApiClient.OnCon
                 mDatabase.child("users").child(a.getUserID()).setValue(a);
                 //jump to add class
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
         btnMain.setOnClickListener(new View.OnClickListener() {
@@ -206,6 +214,7 @@ public class AddClass extends AppCompatActivity implements GoogleApiClient.OnCon
                 mDatabase.child("users").child(a.getUserID()).setValue(a);
                 //jump to add class
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
 

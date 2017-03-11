@@ -48,7 +48,11 @@ public class AddTask extends AppCompatActivity {
 
     //Use for database
     public DatabaseReference mDatabase;
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
     //Create the on click action
     @Override
     protected void onCreate(Bundle savedInstanceState) {
