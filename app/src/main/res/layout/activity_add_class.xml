@@ -13,82 +13,91 @@
     android:elevation="1dp">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:weightSum="1">
 
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
             android:id="@+id/courseID"
-            android:inputType="text"
-            android:hint="Course ID" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Course ID"
+            android:inputType="text" />
 
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="10"
             android:id="@+id/className"
-            android:hint="Course Name" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Course Name"
+            android:inputType="textPersonName" />
 
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="10"
             android:id="@+id/quarter"
-            android:hint="quarter" />
-
-        <EditText
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
+            android:hint="quarter"
+            android:inputType="textPersonName" />
+
+        <EditText
             android:id="@+id/credit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
             android:hint="credit"
             android:inputType="numberDecimal" />
 
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="10"
             android:id="@+id/section"
-            android:hint="Section" />
-
-        <Button
-            android:text="add class"
-            android:layout_width="98dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/add_class"
-            android:layout_weight="0.05" />
-
-        <Button
-            android:text="Drop Class"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/drop_class"
-            android:layout_weight="0.07" />
+            android:ems="10"
+            android:hint="Section"
+            android:inputType="textPersonName" />
 
-        <Button
-            android:text="Add Task"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/btnAddTask" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/add_class"
+                android:layout_marginTop="45dp"
+                android:layout_width="98dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="add class" />
+
+            <Button
+                android:id="@+id/drop_class"
+                android:layout_marginTop="45dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Drop Class" />
+        </LinearLayout>
 
         <Button
-            android:text="Go Main"
+            android:layout_marginTop="50dp"
+            android:id="@+id/btnAddTask"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/btnMain" />
+            android:text="Add Task" />
 
         <Button
-            android:text="Sign Out"
+            android:id="@+id/btnMain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/button_sign_out" />
+            android:text="Go Main" />
+
+        <Button
+            android:id="@+id/button_sign_out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign Out" />
 
     </LinearLayout>
 

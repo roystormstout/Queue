@@ -226,6 +226,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
                 //jump to add class
                 startActivity(intent);
+                //haha
             }
         });
 /*
