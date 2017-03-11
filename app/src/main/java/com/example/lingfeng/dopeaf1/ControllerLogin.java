@@ -43,7 +43,7 @@ import java.util.UUID;
 
 import static android.R.string.ok;
 
-public class Login extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class ControllerLogin extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
     public static User loggedin;
@@ -115,7 +115,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
                 //define a jump
                 //TODO: change the view, and may need to PASS the EMAIL user entered, so that they does not need to enter it again
-                Intent intent = new Intent(Login.this, Navigation.class);
+                Intent intent = new Intent(ControllerLogin.this, ViewNavigation.class);
                 final User userNew = new User("Forgot Password", "Forgot Password", "Forgot Password");
                 loggedin = userNew;
                 mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
@@ -184,7 +184,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                     //define a jump
                                     System.err.println("Found the user in database!!");
                                     loggedin = user;
-                                    Toast.makeText(Login.this, "Hello " + name, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ControllerLogin.this, "Hello " + name, Toast.LENGTH_SHORT).show();
                                     //Intent intent = new Intent(Login.this, Navigation.class);
                                     loggedin.updateLastlogin();
                                     //jump to add class
@@ -196,7 +196,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                             }
 
                             mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
-                            Intent intent = new Intent(Login.this, Navigation.class);
+                            Intent intent = new Intent(ControllerLogin.this, ViewNavigation.class);
                             loggedin.updateLastlogin();
                             //jump to Navigation class
                             startActivity(intent);
@@ -283,8 +283,8 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
             } else {
-                Toast.makeText(Login.this, (result.getStatus()).toString(), Toast.LENGTH_SHORT).show();
-                Toast.makeText(Login.this, "SigIn Fails", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ControllerLogin.this, (result.getStatus()).toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ControllerLogin.this, "SigIn Fails", Toast.LENGTH_SHORT).show();
                 // Google Sign In failed, update UI appropriately
                 // ...
             }
@@ -305,7 +305,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(Login.this, "Authentication failed.",
+                            Toast.makeText(ControllerLogin.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
                         // ...

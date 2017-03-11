@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ProgressBar;
 
-import com.example.lingfeng.dopeaf1.R;
 import com.felipecsl.gifimageview.library.GifImageView;
 
 import org.apache.commons.io.IOUtils;
@@ -15,7 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-public class Splash extends AppCompatActivity {
+public class ViewIntroSplash extends AppCompatActivity {
     private GifImageView gifImageView;
     private static int SPLASH_TIME_OUT = 1800; // set the time for splash screen
 
@@ -39,7 +37,7 @@ public class Splash extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent homeIntent = new Intent(Splash.this, Login.class);
+                Intent homeIntent = new Intent(ViewIntroSplash.this, ControllerLogin.class);
                 startActivity(homeIntent);
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 finish();

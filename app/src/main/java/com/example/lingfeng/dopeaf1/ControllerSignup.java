@@ -25,7 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 /**
  * A login screen that offers login via email/password.
  */
-public class Signup extends AppCompatActivity {
+public class ControllerSignup extends AppCompatActivity {
 
     public DatabaseReference mDatabase;
     private EditText email;
@@ -35,7 +35,7 @@ public class Signup extends AppCompatActivity {
     private EditText UCSDPassword;
     private Button btnRegister;
     private Button btnBack;
-    public final User user = Login.loggedin;
+    public final User user = ControllerLogin.loggedin;
     private FirebaseAuth mAuth;
 
     @Override
@@ -72,38 +72,38 @@ public class Signup extends AppCompatActivity {
                 final String UCSDPasswordU = UCSDPassword.getText().toString();
                 if(email.getText().length() < 1){
                     //notify user that the email is invalid
-                    Toast.makeText(Signup.this, "Email address has not entered yet!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ControllerSignup.this, "Email address has not entered yet!", Toast.LENGTH_SHORT).show();
                 } else if(password.getText().length() <= 5) {
-                    Toast.makeText(Signup.this, "Password should have at least 6 characters!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ControllerSignup.this, "Password should have at least 6 characters!", Toast.LENGTH_SHORT).show();
                 } else if(!confirmPassword.getText().toString().equals(password.getText().toString())) {
-                    Toast.makeText(Signup.this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ControllerSignup.this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
                 } else if(UCSDEmail.getText().length() < 1) {
-                    Toast.makeText(Signup.this, "UCSD Email address has not entered yet!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ControllerSignup.this, "UCSD Email address has not entered yet!", Toast.LENGTH_SHORT).show();
                 } else if(UCSDPassword.getText().length() <= 5) {
-                    Toast.makeText(Signup.this, "UCSD Password should have at least 6 characters!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ControllerSignup.this, "UCSD Password should have at least 6 characters!", Toast.LENGTH_SHORT).show();
                 } else {
                     mAuth = FirebaseAuth.getInstance();
                     mAuth.createUserWithEmailAndPassword(emailU, passwordU)
-                            .addOnCompleteListener(Signup.this, new OnCompleteListener<AuthResult>() {
+                            .addOnCompleteListener(ControllerSignup.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
-                                    Toast.makeText(Signup.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ControllerSignup.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
                                     //progressBar.setVisibility(View.GONE);
                                     // If sign in fails, display a message to the user. If sign in succeeds
                                     // the auth state listener will be notified and logic to handle the
                                     // signed in useår can be handled in the listener.
                                     if (!task.isSuccessful()) {
-                                        Toast.makeText(Signup.this, "Authentication failed." + task.getException(),
+                                        Toast.makeText(ControllerSignup.this, "Authentication failed." + task.getException(),
                                                 Toast.LENGTH_SHORT).show();
                                     } else {
-                                        Toast.makeText(Signup.this, "Authentication success." + task.getException(),
+                                        Toast.makeText(ControllerSignup.this, "Authentication success." + task.getException(),
                                                 Toast.LENGTH_SHORT).show();
                                         FirebaseUser userB = task.getResult().getUser();
                                         userB.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    Toast.makeText(Signup.this, "Email Sent!", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(ControllerSignup.this, "Email Sent!", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         });
@@ -139,7 +139,7 @@ public class Signup extends AppCompatActivity {
                                             }
                                         });
                                         mAuth.signOut();
-                                        Intent intent = new Intent(Signup.this, Login.class);
+                                        Intent intent = new Intent(ControllerSignup.this, ControllerLogin.class);
                                         startActivity(intent);
                                     }
                                 }
@@ -156,7 +156,7 @@ public class Signup extends AppCompatActivity {
             public void onClick(View v) {
 
                 //send user back to login view
-                Intent intent = new Intent(Signup.this, Login.class);
+                Intent intent = new Intent(ControllerSignup.this, ControllerLogin.class);
                 startActivity(intent);
             }
         });

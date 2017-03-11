@@ -25,7 +25,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
     public OnItemClickListener mOnItemClickListener;
     public OnItemLongClickListener mOnItemLongClickListener;
     private DatabaseReference mdatabase = FirebaseDatabase.getInstance().getReference();
-    private User user = Login.loggedin;
+    private User user = ControllerLogin.loggedin;
 
     public MyAdapter(Context context, List<String> datas) {
         this.datas = datas;

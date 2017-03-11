@@ -30,7 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Navigation extends AppCompatActivity
+public class ViewNavigation extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
@@ -38,7 +38,7 @@ public class Navigation extends AppCompatActivity
     private RecyclerView mRecyclerView;
     private View mainView;
     private MyAdapter mMyAdapter;
-    private User user = Login.loggedin;
+    private User user = ControllerLogin.loggedin;
     private DatabaseReference mdatabase = FirebaseDatabase.getInstance().getReference();
     private FloatingActionButton fab_plus,fab_add_class, fab_add_task;
     Animation FabOpen,FabClose,FabClock,FabAntiClock;
@@ -71,7 +71,7 @@ public class Navigation extends AppCompatActivity
 
         mRecyclerView = (RecyclerView) mainView.findViewById(R.id.rv_main);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mMyAdapter = new MyAdapter(Navigation.this, initData());
+        mMyAdapter = new MyAdapter(ViewNavigation.this, initData());
         mRecyclerView.setAdapter(mMyAdapter);
 
 
@@ -142,7 +142,7 @@ public class Navigation extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 //define a jump
-                Intent intent = new Intent(Navigation.this, AddClass.class);
+                Intent intent = new Intent(ViewNavigation.this, AddClass.class);
                 user.updateLastlogin();
                 startActivity(intent);
             }
@@ -152,7 +152,7 @@ public class Navigation extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 //define a jump
-                Intent intent = new Intent(Navigation.this, AddTask.class);
+                Intent intent = new Intent(ViewNavigation.this, AddTask.class);
                 user.updateLastlogin();
                 startActivity(intent);
             }

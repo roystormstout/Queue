@@ -44,7 +44,7 @@ public class AddTask extends AppCompatActivity {
     String courseID;
 
     //Get the user from the Main
-    public final User a = Login.loggedin;
+    public final User a = ControllerLogin.loggedin;
 
     //Use for database
     public DatabaseReference mDatabase;
@@ -138,7 +138,7 @@ public class AddTask extends AppCompatActivity {
                                     mDatabase.child("users").child(a.getUserID()).child("inProgressTask").setValue(newTask);
 
                                     //define a jump
-                                    Intent intent = new Intent(AddTask.this, Navigation.class);
+                                    Intent intent = new Intent(AddTask.this, ViewNavigation.class);
 
                                     a.updateLastlogin();
                                     mDatabase.child("users").child(a.getUserID()).setValue(a);
@@ -171,7 +171,7 @@ public class AddTask extends AppCompatActivity {
 
 
                                 //define a jump
-                                Intent intent = new Intent(AddTask.this, Navigation.class);
+                                Intent intent = new Intent(AddTask.this, ViewNavigation.class);
 
                                 a.updateLastlogin();
                                 mDatabase.child("users").child(a.getUserID()).setValue(a);

@@ -9,7 +9,7 @@
     android:paddingLeft="72dp"
     android:paddingRight="72dp"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.lingfeng.dopeaf1.Signup"
+    tools:context="com.example.lingfeng.dopeaf1.ControllerSignup"
     android:background="@color/colorPrimaryDark">
 
     <!-- Login progress -->

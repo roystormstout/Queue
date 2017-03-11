@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:theme="@android:style/Theme.Material"
     android:background="@color/windowBackground"
-    tools:context="com.example.lingfeng.dopeaf1.Login">
+    tools:context="com.example.lingfeng.dopeaf1.ControllerLogin">
 
 
     <ImageView

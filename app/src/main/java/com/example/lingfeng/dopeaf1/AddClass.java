@@ -28,7 +28,7 @@ public class AddClass extends AppCompatActivity implements GoogleApiClient.OnCon
     private EditText q;
     private EditText sect;
     private EditText credits;
-    public final User a = Login.loggedin;
+    public final User a = ControllerLogin.loggedin;
     private Button btnAdd;
     private Button btnDrop;
     private Button btnAddTask;
@@ -200,7 +200,7 @@ public class AddClass extends AppCompatActivity implements GoogleApiClient.OnCon
                 //final String id = cID.getText().toString();
                 //Toast.makeText(AddTask.class, "Come to Add Task!", Toast.LENGTH_SHORT).show();
                 //define a jump
-                Intent intent = new Intent(AddClass.this, Navigation.class);
+                Intent intent = new Intent(AddClass.this, ViewNavigation.class);
 
                 a.updateLastlogin();
                 mDatabase.child("users").child(a.getUserID()).setValue(a);
@@ -224,7 +224,7 @@ public class AddClass extends AppCompatActivity implements GoogleApiClient.OnCon
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
-                        Intent intent = new Intent(AddClass.this, Login.class);
+                        Intent intent = new Intent(AddClass.this, ControllerLogin.class);
                         a.updateLastlogin();
                         //jump to add class
                         startActivity(intent);
