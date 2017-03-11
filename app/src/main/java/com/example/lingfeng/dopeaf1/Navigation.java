@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -33,7 +34,7 @@ public class Navigation extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    //private static final String TAG = "TaskPresenter";
+
     private RecyclerView mRecyclerView;
     private View mainView;
     private MyAdapter mMyAdapter;
@@ -41,7 +42,7 @@ public class Navigation extends AppCompatActivity
     private DatabaseReference mdatabase = FirebaseDatabase.getInstance().getReference();
     private FloatingActionButton fab_plus,fab_add_class, fab_add_task;
     Animation FabOpen,FabClose,FabClock,FabAntiClock;
-
+    private ItemTouchHelper mItemTouchHelper;
     boolean fabOpen = false;
 
 
@@ -84,7 +85,9 @@ public class Navigation extends AppCompatActivity
         FabClock = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_clockwise);
         FabAntiClock = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_anticlockwise);
 
-
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mMyAdapter);
+        mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         if(user.inProgressTask == null || user.inProgressTask.size() == 0) {
             //System.err.println("Entering Navigation class "+user.getUsername());
@@ -162,7 +165,7 @@ public class Navigation extends AppCompatActivity
                 //mMyAdapter.notifyItemInserted(position);
             }
         });
-        mMyAdapter.setOnItemLongClickListener(new MyAdapter.OnItemLongClickListener() {
+       /* mMyAdapter.setOnItemLongClickListener(new MyAdapter.OnItemLongClickListener() {
             @Override
             public boolean onLongClick(View parent, int position) {
                 Toast.makeText(Navigation.this, "You have delete the task.", Toast.LENGTH_SHORT).show();
@@ -171,7 +174,7 @@ public class Navigation extends AppCompatActivity
                 mMyAdapter.notifyItemRemoved(position);
                 return false;
             }
-        });
+        });*/
 
 
 
@@ -267,9 +270,15 @@ public class Navigation extends AppCompatActivity
     }
 
 
-    private List<String> initData() { return user.inProgressTask; }
+    private List<String> initData() {
+        System.out.println("initing data!!");
+        if(user.inProgressTask==null)
+            user.inProgressTask= new ArrayList<String>();
+        return user.inProgressTask; }
 
     private void specificCourseTask(final String courseID) {
+
+        System.err.println("Now updating the course specific task as "+courseID);
 
         if (user.inProgressTask == null || user.inProgressTask.size() == 0)
             return;

@@ -119,7 +119,7 @@ public class AddTask extends AppCompatActivity {
 
                                     //Loop through the whole data base to check if the
                                     //Course id is valid
-                                    if (courseID.equals(aClass.courseID)) {
+                                    if (courseID!=null&&courseID.equals(aClass.courseID)) {
 
                                         taskOfClass=aClass;
                                         validCourseID = true;
