@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
+import android.support.design.widget.Snackbar;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -51,6 +52,10 @@ public class Navigation extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -81,9 +86,13 @@ public class Navigation extends AppCompatActivity
 
 
 
-        if(user.inProgressTask == null || user.inProgressTask.size() == 0){
-            Toast.makeText(Navigation.this, "Horrray!! No Due!!!!.", Toast.LENGTH_LONG).show();
+        if(user.inProgressTask == null || user.inProgressTask.size() == 0) {
+            //System.err.println("Entering Navigation class "+user.getUsername());
+            Snackbar.make(findViewById(R.id.rv_main), "Hooooray No Task At ALLLLL!!!", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
         }
+
+
 
         fab_plus.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -220,7 +220,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
                 //define a jump
                 //TODO: change the view, and may need to PASS the EMAIL user entered, so that they does not need to enter it again
-                Intent intent = new Intent(Login.this, AddClass.class);
+                Intent intent = new Intent(Login.this, Navigation.class);
                 final User userNew = new User("Forgot Password", "Forgot Password", "Forgot Password", "Forgot Password");
                 loggedin = userNew;
                 mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
@@ -288,7 +288,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        mAuth = FirebaseAuth.getInstance();
+        //mAuth = FirebaseAuth.getInstance();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -317,11 +317,11 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
                     mDatabase.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
 
-                        boolean isNewUser = true;
-
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            boolean isNewUser = true;
 
                             //TODO: update searching to hashmap
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -335,12 +335,11 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                     System.err.println("Found the user in database!!");
                                     loggedin = user;
                                     Toast.makeText(Login.this, "Hello " + name, Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(Login.this, Navigation.class);
+                                    //Intent intent = new Intent(Login.this, Navigation.class);
                                     loggedin.updateLastlogin();
                                     //jump to add class
-                                    startActivity(intent);
+                                    //startActivity(intent);
                                     finish();
-                                    isNewUser = false;
                                     break;
                                     //if the email matches but password does not match
                                 }
@@ -349,7 +348,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                             mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
                             Intent intent = new Intent(Login.this, Navigation.class);
                             loggedin.updateLastlogin();
-                            //jump to add class
+                            //jump to Navigation class
                             startActivity(intent);
                             finish();
                         }
@@ -465,9 +464,10 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
-            Intent intent = new Intent(this, Navigation.class);
-            startActivity(intent);
+
+            //Signed in successfully, show authenticated UI.
+            //Intent intent = new Intent(this, Navigation.class);
+            //startActivity(intent);
             finish();
         } else {
             // Signed out, show unauthenticated UI.
