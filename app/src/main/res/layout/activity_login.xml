@@ -27,19 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:layout_below="@+id/imageView"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentEnd="true"
-        android:orientation="vertical"
-        android:weightSum="1"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"/>
-
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:id="@+id/spaceAboveLogin"
-            android:layout_above="@+id/sign_in_button"/>
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/forgotPassword"
@@ -51,5 +39,16 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/sign_in_button" />
+
+    <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/spin_kit"
+        style="@style/SpinKitView.Large.Wave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center|fill"
+        app:SpinKit_Color="@color/splashBackground"
+        android:layout_marginBottom="56dp"
+        android:layout_above="@+id/forgotPassword"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

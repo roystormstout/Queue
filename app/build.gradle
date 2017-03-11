@@ -30,6 +30,8 @@ android {
 
 dependencies {
     //classpath 'com.google.gms:google-services:3.0.0'
+    //classpath 'com.github.dcendents:android-maven-plugin:1.2'
+
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -46,6 +48,8 @@ dependencies {
     // for splash screen
     compile 'com.felipecsl:gifimageview:2.1.0'
     compile 'commons-io:commons-io:2.4'
+    compile 'com.github.zzz40500:android-shapeLoadingView:1.0.3.2'
+    compile 'com.github.ybq:Android-SpinKit:1.1.0'
 }
 
 

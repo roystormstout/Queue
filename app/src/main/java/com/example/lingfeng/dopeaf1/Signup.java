@@ -55,8 +55,6 @@ public class Signup extends AppCompatActivity {
         btnBack = (Button) findViewById(R.id.back);
 
         email.setText(user.getUserEmail());
-        password.setText(user.getUserPassword());
-        confirmPassword.requestFocus();
 
         //connect to our own database using google-services.json
         mDatabase = FirebaseDatabase.getInstance().getReference();

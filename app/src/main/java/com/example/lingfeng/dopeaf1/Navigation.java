@@ -53,7 +53,7 @@ public class Navigation extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-
+        System.err.println("Enter Navigation class");
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -72,6 +72,8 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_login);
+
+        System.err.println("Enter Login class");
         //email = (EditText) findViewById(R.id.email);
         //password = (EditText) findViewById(R.id.password);
         //btnLogin = (Button) findViewById(R.id.login);
@@ -95,121 +97,14 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         googleSignin.setColorScheme(0);
         TextView textView = (TextView) googleSignin.getChildAt(0);
         textView.setText("Sign in with Google");
-/*
-        if (loggedin != null) {
-            email.setText(loggedin.getUserEmail());
-            password.setText(loggedin.getUserPassword());
-        }
-*/
+
+        System.err.println("Finished set textview");
+        System.err.println("...........");
+
         //connect to our own database using google-services.json
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
-/*
-        //triggered when click on login button
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                //check if email and password are valid
-                //
-                //todo: add more checks to the format
-                if ((email.getText().length() > 0) && (password.getText().length() > 5)) {
-
-                    final String emailU = email.getText().toString();
-                    final String passwordU = password.getText().toString();
-
-                    mAuth.signInWithEmailAndPassword(emailU, passwordU)
-                            .addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    // If sign in fails, display a message to the user. If sign in succeeds
-                                    // the auth state listener will be notified and logic to handle the
-                                    // signed in user can be handled in the listener
-                                    if (!task.isSuccessful()) {
-                                        Toast.makeText(Login.this, "Failes", Toast.LENGTH_LONG).show();
-
-                                    } else {
-                                        Toast.makeText(Login.this, "Success", Toast.LENGTH_LONG).show();
-
-                                        FirebaseUser userB = task.getResult().getUser();
-                                        if(!userB.isEmailVerified()){
-                                            Toast.makeText(Login.this, userB.getEmail() + " Not Email verified", Toast.LENGTH_LONG).show();
-                                        }
-                                        else {
-                                            Toast.makeText(Login.this, userB.getEmail() + " Email verified", Toast.LENGTH_LONG).show();
-                                            loggedin = new User("New User",userB.getEmail(),userB.getUid(),"password");
-                                            //Toast.makeText(Login.this, userB.getDisplayName(), Toast.LENGTH_LONG).show();
-                                            Intent intent = new Intent(Login.this, Navigation.class);
-                                            startActivity(intent);
-                                            finish();
-                                        }
-                                    }
-                                }
-                            });
-                } else if (email.getText().length() < 1) {
-                    //notify user that the email is invalid
-                    Toast.makeText(Login.this, "Email address has not entered yet!", Toast.LENGTH_SHORT).show();
-                } else if (password.getText().length() <= 5) {
-                    Toast.makeText(Login.this, "Password should have at least 6 characters!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-
-        //triggered when click on login button
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //check if email and password are valid
-                //
-                //todo: add more checks to the format
-
-                final String emailU = email.getText().toString();
-                final String passwordU = password.getText().toString();
-
-                mDatabase.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                    int flag = 0;
-
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                        //TODO: Use a random unique user ID instead
-                        String uniqueID = UUID.randomUUID().toString();
-
-                        boolean unique = false;
-                        while (!unique) {
-                            unique = true;
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                if (snapshot.getValue(User.class).getUserID().toString().equals(uniqueID)) {
-                                    unique = false;
-                                }
-                            }
-                        }
-
-                        final User userNew = new User("NEW USER", emailU, uniqueID, passwordU);
-                        //put user into users field
-
-                        loggedin = userNew;
-
-                        //define a jump
-                        Intent intent = new Intent(Login.this, Signup.class);
-
-                        loggedin.updateLastlogin();
-                        //mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
-                        //jump to add class
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-
-            }
-        });
-*/
         //TODO FORGOT PSWD
         //triggered when click on forgot password button
         btnForgotPassword.setOnClickListener(new View.OnClickListener() {
@@ -221,60 +116,14 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 //define a jump
                 //TODO: change the view, and may need to PASS the EMAIL user entered, so that they does not need to enter it again
                 Intent intent = new Intent(Login.this, Navigation.class);
-                final User userNew = new User("Forgot Password", "Forgot Password", "Forgot Password", "Forgot Password");
+                final User userNew = new User("Forgot Password", "Forgot Password", "Forgot Password");
                 loggedin = userNew;
                 mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
                 //jump to add class
                 startActivity(intent);
-                //haha
-            }
-        });
-/*
-        rememberMe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(email.getWindowToken(), 0);
-
-                    username= email.getText().toString();
-                    pswd = password.getText().toString();
-
-                    if(!rememberMe.isChecked()) {
-                        autoLogin.setChecked(false);
-                    }
-
-                    if(rememberMe.isChecked()) {
-                        loginPrefsEditor.putBoolean("saveLogin", true);
-                        loginPrefsEditor.putString("username", username);
-                        loginPrefsEditor.putString("password", pswd);
-                        loginPrefsEditor.commit();
-                    } else {
-                        loginPrefsEditor.clear();
-                        loginPrefsEditor.commit();
-                    }
-                    //Do something here if needed
             }
         });
 
-        autoLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if(autoLogin.isChecked() && rememberMe.isChecked()) {
-                    loginPrefsEditor.putBoolean("autoLogin", true);
-                    loginPrefsEditor.commit();
-                } else if(autoLogin.isChecked() && !rememberMe.isChecked()) {
-                    rememberMe.performClick();
-                    loginPrefsEditor.putBoolean("autoLogin", true);
-                    loginPrefsEditor.commit();
-                }
-                else {
-                    loginPrefsEditor.putBoolean("autoLogin", false);
-                    loginPrefsEditor.commit();
-                }
-            }
-        });
-*/
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         // Configure Google Sign In
@@ -314,7 +163,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                     //final User userNew =
 
                     //put user into users field
-                    loggedin = new User(name, email, uid, "123456");
+                    loggedin = new User(name, email, uid);
 
                     mDatabase.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -378,6 +227,8 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     @Override
     public void onStart() {
         super.onStart();
+
+        System.err.println("On Start");
         mAuth.addAuthStateListener(mAuthListener);
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
@@ -469,7 +320,8 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             //Signed in successfully, show authenticated UI.
             //Intent intent = new Intent(this, Navigation.class);
             //startActivity(intent);
-            finish();
+            showProgressDialog();
+            //finish();
         } else {
             // Signed out, show unauthenticated UI.
         }

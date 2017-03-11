@@ -18,7 +18,7 @@ public class User {
     private String username;
     private String email;
     private int numTasks;
-    private String password;
+    //private String password;
     private String createDate;
     private String lastlogin;
     private String UCSDEmail;
@@ -31,8 +31,7 @@ public class User {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    User(String username, String email, String userID, String password) {
-        this.password = password;
+    User(String username, String email, String userID ) {
         this.userID = userID;
         //TODO: Do we really need USERNAME? Personally, I think we'd better not to have it
         this.username = username;
@@ -131,13 +130,6 @@ public class User {
         this.email = email;
     }
 
-    public String getUserPassword() {
-        return password;
-    }
-
-    public void setUserPassword(String password) {
-        this.password = password;
-    }
 
     public String getUsername() {
         return username;
