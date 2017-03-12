@@ -1,6 +1,9 @@
 package com.example.lingfeng.dopeaf1;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -96,10 +99,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
+        private TextView subtitle;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.rv_main_item_title);
+            subtitle = (TextView)itemView.findViewById(R.id.rv_date);
         }
     }
 
@@ -113,7 +118,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         Log.e(TAG, "set value to item:" + position);
-        holder.title.setText(datas.get(position).taskName+ " "+datas.get(position).dueDate);
+        holder.title.setText(datas.get(position).taskName);
+        holder.subtitle.setText(datas.get(position).dueDate.substring(0, 11));
         // 设置事件响应
         if (mOnItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
