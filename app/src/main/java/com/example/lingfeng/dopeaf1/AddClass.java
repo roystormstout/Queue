@@ -118,6 +118,10 @@ public class AddClass extends AppCompatActivity implements GoogleApiClient.OnCon
                                                 mDatabase.child("classes").child(id).setValue(classToCheck);
                                                 mDatabase.child("users").child(a.getUserID()).setValue(a);
                                             }
+
+                                            Intent intent = new Intent(AddClass.this, ViewNavigation.class);
+                                            //jump to add class
+                                            startActivity(intent);
                                             break;
                                         }
 
@@ -130,6 +134,10 @@ public class AddClass extends AppCompatActivity implements GoogleApiClient.OnCon
                                         a.addCourse(id);
                                         mDatabase.child("classes").child(id).setValue(newClass);
                                         mDatabase.child("users").child(a.getUserID()).setValue(a);
+
+                                        Intent intent = new Intent(AddClass.this, ViewNavigation.class);
+                                        //jump to add class
+                                        startActivity(intent);
                                     }
                                 }
                                 @Override
