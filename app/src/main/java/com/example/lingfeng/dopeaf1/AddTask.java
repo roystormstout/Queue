@@ -30,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 public class AddTask extends AppCompatActivity {
 
@@ -105,9 +106,9 @@ public class AddTask extends AppCompatActivity {
                 final String nameOfTask = taskName.getText().toString();
                 String due = dueDate.getText().toString();
                 boolean share = shareSwitch.isChecked();
-
-                final Task newTask = new Task(nameOfTask, courseID, due, priorityValue, share);
-
+                final String taskID = UUID.randomUUID().toString();
+                final Task newTask = new Task(nameOfTask, courseID, due, priorityValue);
+                newTask.addTaskID(taskID);
                 mDatabase.child("classes")
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -131,16 +132,17 @@ public class AddTask extends AppCompatActivity {
                                 if (validCourseID) {
                                     Toast.makeText(AddTask.this, "Adding new task! " + nameOfTask, Toast.LENGTH_SHORT).show();
                                     newTask.addUserID(a.getUserID());
-                                    a.addTask(nameOfTask);
-                                    mDatabase.child("tasks").child(nameOfTask).setValue(newTask);
-                                    taskOfClass.addTasks(nameOfTask);
-                                    mDatabase.child("classes").child(courseID).setValue(taskOfClass);
-                                    mDatabase.child("users").child(a.getUserID()).child("inProgressTask").setValue(newTask);
+                                    a.addTask(taskID);
+
+                                    mDatabase.child("tasks").child(taskID).setValue(newTask);
+                                    //taskOfClass.addTasks(taskID);
+                                    //mDatabase.child("classes").child(courseID).setValue(taskOfClass);
+                                    mDatabase.child("users").child(a.getUserID()).child("inProgressTask").setValue(taskID);
 
                                     //define a jump
                                     Intent intent = new Intent(AddTask.this, ViewNavigation.class);
 
-                                    a.updateLastlogin();
+
                                     mDatabase.child("users").child(a.getUserID()).setValue(a);
                                     //jump to add class
                                     startActivity(intent);
@@ -173,7 +175,7 @@ public class AddTask extends AppCompatActivity {
                                 //define a jump
                                 Intent intent = new Intent(AddTask.this, ViewNavigation.class);
 
-                                a.updateLastlogin();
+
                                 mDatabase.child("users").child(a.getUserID()).setValue(a);
                                 //jump to add class
                                 startActivity(intent);

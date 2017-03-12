@@ -188,7 +188,7 @@ public class AddClass extends AppCompatActivity implements GoogleApiClient.OnCon
                 //define a jump
                 Intent intent = new Intent(AddClass.this, AddTask.class);
 
-                a.updateLastlogin();
+
                 mDatabase.child("users").child(a.getUserID()).setValue(a);
                 //jump to add class
                 startActivity(intent);
@@ -202,7 +202,7 @@ public class AddClass extends AppCompatActivity implements GoogleApiClient.OnCon
                 //define a jump
                 Intent intent = new Intent(AddClass.this, ViewNavigation.class);
 
-                a.updateLastlogin();
+
                 mDatabase.child("users").child(a.getUserID()).setValue(a);
                 //jump to add class
                 startActivity(intent);
@@ -225,7 +225,7 @@ public class AddClass extends AppCompatActivity implements GoogleApiClient.OnCon
                     @Override
                     public void onResult(Status status) {
                         Intent intent = new Intent(AddClass.this, ControllerLogin.class);
-                        a.updateLastlogin();
+
                         //jump to add class
                         startActivity(intent);
                     }

@@ -15,7 +15,8 @@ public class Class {
     public double credits;
     public String sectionID;
     public String quarter;
-    public List<String> taskList;
+    public List<String> verifiedtaskList;
+    public List<String> sharedtaskList;
 
     public Class() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -29,7 +30,8 @@ public class Class {
         this.sectionID=sectionID;
         this.quarter=quarter;
         this.credits=credits;
-        taskList = new ArrayList<String>();
+        verifiedtaskList = new ArrayList<String>();
+        sharedtaskList= new ArrayList<String>();
     }
 
     public void addStudents(String studentID){
@@ -48,11 +50,11 @@ public class Class {
         return true;
     }
 
-    public void addTasks(String task){
+/*    public void addTasks(String task){
         if(taskList==null)
             taskList = new ArrayList<String>();
         taskList.add(task);
-    }
+    }*/
 
 
 }

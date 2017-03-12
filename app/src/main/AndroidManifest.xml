@@ -31,9 +31,6 @@
             android:label="@string/title_activity_add_class"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity android:name=".AddTask" />
-        <activity
-            android:name=".ControllerSignup"
-            android:label="@string/title_activity_signup" />
         <activity android:name=".ViewIntroSplash"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

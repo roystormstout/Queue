@@ -17,12 +17,12 @@ public class User {
     private String userID;
     private String username;
     private String email;
-    private int numTasks;
+    //private int numTasks;
     //private String password;
-    private String createDate;
-    private String lastlogin;
-    private String UCSDEmail;
-    private String UCSDPassword;
+   // private String createDate;
+    //private String lastlogin;
+   // private String UCSDEmail;
+    //private String UCSDPassword;
     public List<String> enrolledCourses;
     public List<String> finishedTask;
     public List<String> inProgressTask;
@@ -36,23 +36,11 @@ public class User {
         //TODO: Do we really need USERNAME? Personally, I think we'd better not to have it
         this.username = username;
         this.email = email;
-        UCSDEmail = "";
-        UCSDPassword = "";
-        numTasks = 0;
-        DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-        Date dateobj = new Date();
-        createDate = df.format(dateobj);
-        lastlogin="";
         enrolledCourses = new ArrayList<String>();
         finishedTask = new ArrayList<String>();
         inProgressTask = new ArrayList<String>();
     }
 
-    public void updateLastlogin(){
-        DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-        Date dateobj = new Date();
-        lastlogin=df.format(dateobj);
-    }
 
     public void addCourse(String courseID){
         if(enrolledCourses==null)
@@ -91,28 +79,6 @@ public class User {
         }
     }
 
-
-
-    public void setUCSDAccount(String UCSDEmail, String UCSDPassword) {
-        setUCSDEmail(UCSDEmail);
-        setUCSDPassword(UCSDPassword);
-    }
-
-    public String getUCSDEmail() {
-        return UCSDEmail;
-    }
-
-    public void setUCSDEmail(String UCSDEmail) {
-        this.UCSDEmail = UCSDEmail;
-    }
-
-    public String getUCSDPassword() {
-        return UCSDPassword;
-    }
-
-    public void setUCSDPassword(String UCSDPassword) {
-        this.UCSDPassword = UCSDPassword;
-    }
 
     public String getUserID() {
         return userID;

@@ -1,7 +1,7 @@
 package com.example.lingfeng.dopeaf1;
 
 import java.util.ArrayList;
-
+import java.util.*;
 /**
  * Created by yechenwei on 2/18/17.
  */
@@ -16,7 +16,8 @@ public class Task {
     public String taskDescription = "";
     //public double completePercentage = 0;
     //public int completedPerson;
-    public boolean share = false;
+    //public boolean share = false;
+    public boolean verified = false;
     //public int status;
     // 0: in progress; 1: completed; 2: missed
 
@@ -24,14 +25,12 @@ public class Task {
 
     }
 
-    public Task(String taskName, String courseID, String dueDate, float priority,
-                boolean shared) {
+    public Task(String taskName, String courseID, String dueDate, float priority) {
         this.taskName = taskName;
         this.courseID = courseID;
         this.dueDate = dueDate;
         this.priority = priority;
-        this.share = shared;
-        this.taskID = getTaskID(taskName);
+        //this.share = shared;
 
     }
 
@@ -54,7 +53,7 @@ public class Task {
         //completePercentage = completedPerson / (double) userID.size();
     }
 */
-    public String getTaskID(String taskName){
-        return "";
+    public void addTaskID(String taskName){
+        taskID = taskName;
     }
 }

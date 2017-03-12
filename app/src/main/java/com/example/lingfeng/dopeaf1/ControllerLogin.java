@@ -186,7 +186,7 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
                                     loggedin = user;
                                     Toast.makeText(ControllerLogin.this, "Hello " + name, Toast.LENGTH_SHORT).show();
                                     //Intent intent = new Intent(Login.this, Navigation.class);
-                                    loggedin.updateLastlogin();
+
                                     //jump to add class
                                     //startActivity(intent);
                                     finish();
@@ -197,7 +197,7 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
 
                             mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
                             Intent intent = new Intent(ControllerLogin.this, ViewNavigation.class);
-                            loggedin.updateLastlogin();
+
                             //jump to Navigation class
                             startActivity(intent);
                             finish();

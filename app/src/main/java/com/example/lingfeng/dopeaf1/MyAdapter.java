@@ -20,18 +20,17 @@ import java.util.List;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> implements onSwipeListener {
 
     private static final String TAG = "MyAdapter";
-    private List<String> datas;
+    private List<Task> datas;
     private LayoutInflater inflater;
     public OnItemClickListener mOnItemClickListener;
     public OnItemLongClickListener mOnItemLongClickListener;
     private DatabaseReference mdatabase = FirebaseDatabase.getInstance().getReference();
     private User user = ControllerLogin.loggedin;
 
-    public MyAdapter(Context context, List<String> datas) {
+    public MyAdapter(Context context, List<Task> datas) {
         this.datas = datas;
         inflater = LayoutInflater.from(context);
     }
-
 
     public interface OnItemClickListener {
         public void onClick(View parent, int position);
@@ -68,7 +67,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         Log.e(TAG, "set value to item:" + position);
-        holder.title.setText(datas.get(position));
+        holder.title.setText(datas.get(position).taskName);
 
         // 设置事件响应
         if (mOnItemClickListener != null) {
@@ -103,15 +102,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
         return datas.size();
     }
 
-    public void addData(int position, String content){
+    public void addData(int position, Task content){
         datas.add(position,content);
     }
 
-    public String getData(int pos) { return datas.get(pos); }
+    public Task getData(int pos) { return datas.get(pos); }
 
-    public void addData(String content) { datas.add(content); }
+    public void addData(Task content) { datas.add(content); }
 
-    public void setData(List<String> newData) { datas = newData; }
+    public void setData(List<Task> newData) { datas = newData; }
 
   //  public void removeData(int position){
         //String toRemove = datas[position]
@@ -124,13 +123,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
         System.out.println("Datas updated, size is now "+datas.size());
         System.out.println("Happ the position we intent to access is...."+position);
 
-        String currTask = getData(position);
-        user.finishTask(currTask);
+        Task currTask = getData(position);
+        user.finishTask(currTask.taskID);
         System.err.println(currTask+" was deleteing");
         System.out.println("Current list has size as......"+datas.size());
         System.out.println("And the position we intent to access is...."+position);
         mdatabase.child("users").child(user.getUserID()).setValue(user);
-        //notifyItemRemoved(position);
         //删除mItems数据
        datas.remove(currTask);
         //删除RecyclerView列表对应item

@@ -143,7 +143,7 @@ public class ViewNavigation extends AppCompatActivity
             public void onClick(View v) {
                 //define a jump
                 Intent intent = new Intent(ViewNavigation.this, AddClass.class);
-                user.updateLastlogin();
+
                 startActivity(intent);
             }
         });
@@ -153,7 +153,7 @@ public class ViewNavigation extends AppCompatActivity
             public void onClick(View v) {
                 //define a jump
                 Intent intent = new Intent(ViewNavigation.this, AddTask.class);
-                user.updateLastlogin();
+
                 startActivity(intent);
             }
         });
@@ -235,7 +235,7 @@ public class ViewNavigation extends AppCompatActivity
         if (user.enrolledCourses != null) {
             for (String str : user.enrolledCourses) {
                 if (item.toString().equalsIgnoreCase(str)) {
-                    mMyAdapter.setData(new ArrayList<String>());
+                    mMyAdapter.setData(new ArrayList<Task>());
                     mMyAdapter.notifyDataSetChanged();
                     specificCourseTask(str);
                     break;
@@ -270,11 +270,35 @@ public class ViewNavigation extends AppCompatActivity
     }
 
 
-    private List<String> initData() {
+    private List<Task> initData() {
         System.out.println("initing data!!");
-        if(user.inProgressTask==null)
-            user.inProgressTask= new ArrayList<String>();
-        return user.inProgressTask; }
+        final ArrayList<Task> newDatas = new ArrayList<Task>();
+        if (user.inProgressTask == null) {
+            user.inProgressTask = new ArrayList<String>();
+            return newDatas;
+        } else {
+            for (int i = 0; i < user.inProgressTask.size(); ++i) {
+
+                final String taskID = user.inProgressTask.get(i);
+
+                mdatabase.child("tasks").child(taskID).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Task task = dataSnapshot.getValue(Task.class);
+                        newDatas.add(task);
+                        mMyAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+
+                });
+            }
+        }
+        return newDatas;
+    }
 
     private void specificCourseTask(final String courseID) {
 
@@ -285,15 +309,15 @@ public class ViewNavigation extends AppCompatActivity
 
         for (int i = 0; i < user.inProgressTask.size(); ++i) {
 
-            final String taskName = user.inProgressTask.get(i);
+                final String taskID = user.inProgressTask.get(i);
 
-            mdatabase.child("tasks").child(taskName).addListenerForSingleValueEvent(new ValueEventListener() {
+            mdatabase.child("tasks").child(taskID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Task task = dataSnapshot.getValue(Task.class);
                     String course = task.courseID;
                     if (course.equals(courseID)) {
-                        mMyAdapter.addData(taskName);
+                        mMyAdapter.addData(task);
                         mMyAdapter.notifyDataSetChanged();
                     }
                 }
