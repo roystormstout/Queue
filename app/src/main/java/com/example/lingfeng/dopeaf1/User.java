@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
@@ -37,7 +38,7 @@ public class User {
         this.username = username;
         this.email = email;
         enrolledCourses = new ArrayList<String>();
-        finishedTask = new ArrayList<String>();
+        finishedTask = new Stack<String>();
         inProgressTask = new ArrayList<String>();
     }
 
@@ -73,7 +74,7 @@ public class User {
             inProgressTask.remove(task);
 
             if( finishedTask == null){
-                finishedTask = new ArrayList<String>();
+                finishedTask = new Stack<String>();
             }
             finishedTask.add(task);
         }

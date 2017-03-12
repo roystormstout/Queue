@@ -50,6 +50,12 @@ public class Class {
         return true;
     }
 
+    public void addShareableTask(String taskID) {
+        if(sharedtaskList==null)
+            sharedtaskList = new ArrayList<>();
+        sharedtaskList.add(taskID);
+    }
+
 /*    public void addTasks(String task){
         if(taskList==null)
             taskList = new ArrayList<String>();

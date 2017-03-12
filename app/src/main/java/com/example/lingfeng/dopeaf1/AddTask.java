@@ -105,7 +105,7 @@ public class AddTask extends AppCompatActivity {
                 float priorityValue = priorityBar.getRating();
                 final String nameOfTask = taskName.getText().toString();
                 String due = dueDate.getText().toString();
-                boolean share = shareSwitch.isChecked();
+                final boolean share = shareSwitch.isChecked();
                 final String taskID = UUID.randomUUID().toString();
                 final Task newTask = new Task(nameOfTask, courseID, due, priorityValue);
                 newTask.addTaskID(taskID);
@@ -138,6 +138,11 @@ public class AddTask extends AppCompatActivity {
                                     //taskOfClass.addTasks(taskID);
                                     //mDatabase.child("classes").child(courseID).setValue(taskOfClass);
                                     mDatabase.child("users").child(a.getUserID()).child("inProgressTask").setValue(taskID);
+
+                                    if (share) {
+                                        taskOfClass.addShareableTask(taskID);
+                                        mDatabase.child("classes").child(courseID).setValue(taskOfClass);
+                                    }
 
                                     //define a jump
                                     Intent intent = new Intent(AddTask.this, ViewNavigation.class);

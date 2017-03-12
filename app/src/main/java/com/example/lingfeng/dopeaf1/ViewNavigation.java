@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -27,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -38,6 +40,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Stack;
 
 
 public class ViewNavigation extends AppCompatActivity
@@ -54,6 +57,13 @@ public class ViewNavigation extends AppCompatActivity
     Animation FabOpen,FabClose,FabClock,FabAntiClock;
     private ItemTouchHelper mItemTouchHelper;
     boolean fabOpen = false;
+    private SmartTabLayout myTab;
+    private ViewPager mViewPager;
+    private boolean isPersonal = true;
+    private String currentClass = "All Tasks";
+    private Menu drawerMenu;
+    private NavigationView navigationView;
+
     Comparator<Task> Order =  new Comparator<Task>(){
         public int compare(Task o1, Task o2) {
             // TODO Auto-generated method stub
@@ -102,24 +112,28 @@ public class ViewNavigation extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-        System.err.println("Enter Navigation class");
 
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        myTab = (SmartTabLayout) findViewById(R.id.viewpagertab);
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mViewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+
+        myTab.setViewPager(mViewPager);
 
 
         mainView = findViewById(R.id.activity_main);
 
         mRecyclerView = (RecyclerView) mainView.findViewById(R.id.rv_main);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mMyAdapter = new MyAdapter(ViewNavigation.this, initData());
+        mMyAdapter = new MyAdapter(ViewNavigation.this, initPersonalData());
         mRecyclerView.setAdapter(mMyAdapter);
         mMyAdapter.sortData();
 
@@ -224,17 +238,37 @@ public class ViewNavigation extends AppCompatActivity
             }
         });*/
 
+       myTab.setOnTabClickListener(new SmartTabLayout.OnTabClickListener() {
+           @Override
+           public void onTabClicked(int position) {
+               if (isPersonal != (position == 0)) {
+                   if (isPersonal) {
+                       drawerMenu.clear();
+                       initMenu();
+                       setSharableTasks();
+                   } else {
+                       drawerMenu.add("Completed Tasks");
+                       setPersonalTasks();
+                   }
+               }
+               isPersonal = position == 0;
+           }
+       });
 
 
+        drawerMenu = navigationView.getMenu();
+        initMenu();
+        drawerMenu.add("Completed Tasks");
 
-        Menu drawerMenu = navigationView.getMenu();
+    }
+
+    private void initMenu() {
         drawerMenu.add("All Tasks");
         if (user.enrolledCourses != null) {
             for (String str : user.enrolledCourses) {
                 drawerMenu.add(str);
             }
         }
-
     }
 
     @Override
@@ -247,6 +281,7 @@ public class ViewNavigation extends AppCompatActivity
         }
     }
 
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -268,47 +303,80 @@ public class ViewNavigation extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+    */
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    private void setPersonalTasks() {
 
-        //oneCourseTask.clear();
+        if (currentClass.equalsIgnoreCase("Completed Tasks")) {
+            mMyAdapter.setData(new ArrayList<Task>());
+            mMyAdapter.notifyDataSetChanged();
+            initCompletedTasks();
+        }
 
-        if (item.toString().equalsIgnoreCase("All Tasks")) {
-            mMyAdapter.setData(initData());
+        if (currentClass.equalsIgnoreCase("All Tasks")) {
+            mMyAdapter.setData(initPersonalData());
             mMyAdapter.notifyDataSetChanged();
         }
 
         if (user.enrolledCourses != null) {
             for (String str : user.enrolledCourses) {
-                if (item.toString().equalsIgnoreCase(str)) {
+                if (currentClass.equalsIgnoreCase(str)) {
                     mMyAdapter.setData(new ArrayList<Task>());
                     mMyAdapter.notifyDataSetChanged();
-                    specificCourseTask(str);
+                    personalSpecificCourseTask(str);
+                    mMyAdapter.sortData();
+                    break;
+                }
+            }
+        }
+    }
+
+    private void setSharableTasks() {
+
+        if (user.enrolledCourses == null) {
+            mMyAdapter.setData(new ArrayList<Task>());
+            mMyAdapter.notifyDataSetChanged();
+            return;
+        }
+
+        if (currentClass.equalsIgnoreCase("Completed Tasks")) {
+            mMyAdapter.setData(new ArrayList<Task>());
+            mMyAdapter.notifyDataSetChanged();
+            return;
+        }
+
+        if (currentClass.equalsIgnoreCase("All Tasks")) {
+            mMyAdapter.setData(new ArrayList<Task>());
+            mMyAdapter.notifyDataSetChanged();
+            sharableAllTasks();
+            mMyAdapter.sortData();
+        } else {
+            for (String str : user.enrolledCourses) {
+                if (currentClass.equalsIgnoreCase(str)) {
+                    mMyAdapter.setData(new ArrayList<Task>());
+                    mMyAdapter.notifyDataSetChanged();
+                    shareableSpecificCourseTask(str);
                     mMyAdapter.sortData();
                     break;
                 }
             }
         }
 
+    }
 
-        /*// Handle navigation view item clicks here.
-        int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_slideshow) {
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
 
-        } else if (id == R.id.nav_manage) {
+        currentClass = item.toString();
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }*/
+        if (isPersonal) {
+            setPersonalTasks();
+        } else {
+            setSharableTasks();
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(item.toString());
@@ -318,7 +386,7 @@ public class ViewNavigation extends AppCompatActivity
         return true;
     }
 
-    private List<Task> initData() {
+    private List<Task> initPersonalData() {
         System.out.println("initing data!!");
         final ArrayList<Task> newDatas = new ArrayList<Task>();
         if (user.inProgressTask == null) {
@@ -350,7 +418,36 @@ public class ViewNavigation extends AppCompatActivity
         return newDatas;
     }
 
-    private void specificCourseTask(final String courseID) {
+    private void initCompletedTasks() {
+        if (user.finishedTask == null) {
+            user.finishedTask = new Stack<>();
+            return;
+        } else {
+            for (int i = 0; i < user.finishedTask.size(); ++i) {
+
+                final String taskID = user.finishedTask.get(i);
+
+                mdatabase.child("tasks").child(taskID).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Task task = dataSnapshot.getValue(Task.class);
+                        mMyAdapter.addData(task);
+                        mMyAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+
+                });
+            }
+        }
+
+        return;
+    }
+
+    private void personalSpecificCourseTask(final String courseID) {
 
         System.err.println("Now updating the course specific task as "+courseID);
 
@@ -381,5 +478,80 @@ public class ViewNavigation extends AppCompatActivity
             });
 
         }
+    }
+
+    private void shareableSpecificCourseTask(final String courseID) {
+        mdatabase.child("classes").child(courseID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshoto) {
+                Class thisClass = dataSnapshoto.getValue(Class.class);
+                if (thisClass.sharedtaskList == null) {
+                    return;
+                }
+                for (String taskID: thisClass.sharedtaskList) {
+                    mdatabase.child("tasks").child(taskID).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshoti) {
+                            Task task = dataSnapshoti.getValue(Task.class);
+                            mMyAdapter.addData(task);
+                            mMyAdapter.sortData();
+                            mMyAdapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void sharableAllTasks() {
+        mdatabase.child("classes").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshoto) {
+                for (DataSnapshot dss: dataSnapshoto.getChildren()) {
+                    Class classInList = dss.getValue(Class.class);
+                    Log.d("hello", classInList.courseID);
+                    if (user.enrolledCourses.contains(classInList.courseID)) {
+                        Log.d("hello", "should come here" + classInList.courseID);
+                        if (classInList.sharedtaskList == null) {
+                            continue;
+                        }
+                        for (String taskID: classInList.sharedtaskList) {
+                            mdatabase.child("tasks").child(taskID).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshoti) {
+                                    Task task = dataSnapshoti.getValue(Task.class);
+                                    mMyAdapter.addData(task);
+                                    mMyAdapter.sortData();
+                                    mMyAdapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+
+                            });
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
     }
 }

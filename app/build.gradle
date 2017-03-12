@@ -50,6 +50,7 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile 'com.github.zzz40500:android-shapeLoadingView:1.0.3.2'
     compile 'com.github.ybq:Android-SpinKit:1.1.0'
+    compile 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
 }
 
 
