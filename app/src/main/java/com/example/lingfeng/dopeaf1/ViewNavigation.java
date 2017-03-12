@@ -1,5 +1,6 @@
 package com.example.lingfeng.dopeaf1;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.design.widget.Snackbar;
 
@@ -28,7 +31,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.mxn.soul.flowingdrawer_core.ElasticDrawer;
+import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
+import com.squareup.picasso.Picasso;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -110,7 +116,6 @@ public class ViewNavigation extends AppCompatActivity
         setContentView(R.layout.activity_navigation_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -259,6 +264,24 @@ public class ViewNavigation extends AppCompatActivity
         drawerMenu = navigationView.getMenu();
         initMenu();
         drawerMenu.add("Completed Tasks");
+        initInfo();
+
+    }
+
+    private void initInfo() {
+        View info = navigationView.getHeaderView(0);
+        //View info = findViewById(R.id.info);
+        //ImageView imageV = (ImageView) info.findViewById(R.id.user_icon);
+        if (ControllerLogin.personPhoto != null) {
+            ImageView imgView = (ImageView) info.findViewById(R.id.user_icon);
+            // Download photo and set to image
+            Context context = imgView.getContext();
+            Picasso.with(context).load(ControllerLogin.personPhoto).transform(new circleTransformation()).resize(150, 150).into(imgView);
+        }
+        TextView textView_name = (TextView) info.findViewById(R.id.user_name);
+        textView_name.setText(ControllerLogin.personName);
+        TextView textView_email = (TextView) info.findViewById(R.id.user_email);
+        textView_email.setText(ControllerLogin.personEmail);
 
     }
 

@@ -4,15 +4,16 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +28,6 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,15 +38,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.UUID;
-
-import static android.R.string.ok;
+import com.squareup.picasso.Picasso;
 
 public class ControllerLogin extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
     public static User loggedin;
+    public static Uri personPhoto = null; //get the photo of the user
+    public static String personName; //ge the name of the user
+    public static String personEmail; // get the email of the user
     public static GoogleApiClient mGoogleApiClient;
     public DatabaseReference mDatabase;
     private EditText email;
@@ -316,7 +316,12 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
-
+            // Signed in successfolly, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();;
+            personPhoto = acct.getPhotoUrl();
+            personEmail = acct.getEmail();
+            personName = acct.getDisplayName();
+            //ImageView imageV = (ImageView) findViewById(R.id.imageView);
             //Signed in successfully, show authenticated UI.
             //Intent intent = new Intent(this, Navigation.class);
             //startActivity(intent);

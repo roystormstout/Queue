@@ -43,7 +43,7 @@
         android:layout_marginBottom="14dp"
         android:elevation="0dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/textView" />
+        android:layout_alignEnd="@+id/user_email" />
 
     <Switch
         android:text="Share    "
@@ -100,12 +100,12 @@
         android:textColor="#ffffff"
         android:layout_width="232dp"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/textView"
-        android:layout_below="@+id/textView"
+        android:layout_alignStart="@+id/user_email"
+        android:layout_below="@+id/user_email"
         android:layout_marginTop="13dp" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/user_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/taskName"
