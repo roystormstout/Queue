@@ -34,19 +34,20 @@
         <activity
             android:name=".ControllerSignup"
             android:label="@string/title_activity_signup" />
-        <activity android:name=".ViewIntroSplash"
+        <activity
+            android:name=".ViewIntroSplash"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".ViewNavigation"
             android:label="@string/title_activity_navigation_main"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ShareableActivity"></activity>
     </application>
 
 </manifest>

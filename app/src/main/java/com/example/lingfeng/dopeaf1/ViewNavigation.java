@@ -3,10 +3,16 @@ package com.example.lingfeng.dopeaf1;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.ListFragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,8 +22,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.design.widget.Snackbar;
 
@@ -26,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,14 +47,23 @@ public class ViewNavigation extends AppCompatActivity
 
 
     private RecyclerView mRecyclerView;
+    private RecyclerView shareableRecyclerView;
     private View mainView;
+    private View shareableView;
     private MyAdapter mMyAdapter;
+    private MyAdapter shareableAdapter;
     private User user = ControllerLogin.loggedin;
     private DatabaseReference mdatabase = FirebaseDatabase.getInstance().getReference();
     private FloatingActionButton fab_plus,fab_add_class, fab_add_task;
     Animation FabOpen,FabClose,FabClock,FabAntiClock;
     private ItemTouchHelper mItemTouchHelper;
+    private Menu drawerMenu;
+    private ViewPager viewPager;
+    private SmartTabLayout viewPagerTab;
     boolean fabOpen = false;
+
+
+    static final int NUM_ITEMS = 2;
 
 
     @Override
@@ -53,8 +73,6 @@ public class ViewNavigation extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-        System.err.println("Enter Navigation class");
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -66,10 +84,60 @@ public class ViewNavigation extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         mainView = findViewById(R.id.activity_main);
-
         mRecyclerView = (RecyclerView) mainView.findViewById(R.id.rv_main);
+
+        shareableView = findViewById(R.id.activity_shareable);
+        shareableRecyclerView = (RecyclerView) shareableView.findViewById(R.id.rv_shareable);
+
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpagertab);
+
+
+        initPersonalActivity();
+        initShareableActivity();
+        initPage();
+        initPageTab();
+
+
+        drawerMenu = navigationView.getMenu();
+        drawerMenu.add("All Tasks");
+        if (user.enrolledCourses != null) {
+            for (String str : user.enrolledCourses) {
+                drawerMenu.add(str);
+            }
+        }
+        drawerMenu.add("Finished Tasks");
+
+    }
+
+
+    private void initPageTab() {
+        viewPagerTab.setViewPager(viewPager);
+    }
+
+
+    private void initPage() {
+        FragmentOne fragmentOne = new FragmentOne();
+        FragmentTwo fragmentTwo= new FragmentTwo();
+
+        MyPagerAdapter pagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
+        pagerAdapter.addFragment(fragmentOne);
+        pagerAdapter.addFragment(fragmentTwo);
+
+        viewPager.setAdapter(pagerAdapter);
+    }
+
+
+    private void initShareableActivity() {
+        shareableRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        shareableAdapter = new MyAdapter(ViewNavigation.this, createShareable("All"));
+        shareableRecyclerView.setAdapter(shareableAdapter);
+    }
+
+
+
+    private void initPersonalActivity() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mMyAdapter = new MyAdapter(ViewNavigation.this, initData());
         mRecyclerView.setAdapter(mMyAdapter);
@@ -90,7 +158,6 @@ public class ViewNavigation extends AppCompatActivity
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         if(user.inProgressTask == null || user.inProgressTask.size() == 0) {
-            //System.err.println("Entering Navigation class "+user.getUsername());
             Snackbar.make(findViewById(R.id.rv_main), "Hooooray No Task At ALLLLL!!!", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
@@ -175,19 +242,11 @@ public class ViewNavigation extends AppCompatActivity
                 return false;
             }
         });*/
-
-
-
-
-        Menu drawerMenu = navigationView.getMenu();
-        drawerMenu.add("All Tasks");
-        if (user.enrolledCourses != null) {
-            for (String str : user.enrolledCourses) {
-                drawerMenu.add(str);
-            }
-        }
-
     }
+
+
+
+
 
     @Override
     public void onBackPressed() {
@@ -273,10 +332,10 @@ public class ViewNavigation extends AppCompatActivity
 
 
     private List<String> initData() {
-        System.out.println("initing data!!");
         if(user.inProgressTask==null)
-            user.inProgressTask= new ArrayList<String>();
-        return user.inProgressTask; }
+            user.inProgressTask= new ArrayList<>();
+        return user.inProgressTask;
+    }
 
     private void specificCourseTask(final String courseID) {
 
@@ -309,4 +368,8 @@ public class ViewNavigation extends AppCompatActivity
 
         }
     }
+
+
+    private List<String> createShareable(final String course) { return new ArrayList<>(); }
+
 }
