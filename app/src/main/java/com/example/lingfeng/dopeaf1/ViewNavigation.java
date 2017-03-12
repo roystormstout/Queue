@@ -3,6 +3,7 @@ package com.example.lingfeng.dopeaf1;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.AsyncTaskLoader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -27,8 +28,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
 
 public class ViewNavigation extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -44,7 +54,45 @@ public class ViewNavigation extends AppCompatActivity
     Animation FabOpen,FabClose,FabClock,FabAntiClock;
     private ItemTouchHelper mItemTouchHelper;
     boolean fabOpen = false;
+    Comparator<Task> Order =  new Comparator<Task>(){
+        public int compare(Task o1, Task o2) {
+            // TODO Auto-generated method stub
+            Date date1 = new Date();
+            Date date2= new Date();
+            String dateS1= o1.dueDate;
+            String dateS2 = o2.dueDate;
+            SimpleDateFormat format=new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            try {
+                date1=format.parse(dateS1);
+            } catch (ParseException e) {
 
+                e.printStackTrace();
+            }
+            try {
+                date2=format.parse(dateS2);
+            } catch (ParseException e) {
+
+                e.printStackTrace();
+            }
+            Timestamp timestamp1 = new java.sql.Timestamp(date1.getTime());
+            Timestamp timestamp2 = new java.sql.Timestamp(date2.getTime());
+
+            if(timestamp2.after( timestamp1))
+            {
+
+                return -1;
+            }
+            else if(timestamp2.before( timestamp1))
+            {
+
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +121,7 @@ public class ViewNavigation extends AppCompatActivity
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mMyAdapter = new MyAdapter(ViewNavigation.this, initData());
         mRecyclerView.setAdapter(mMyAdapter);
-
+        mMyAdapter.sortData();
 
         fab_plus = (FloatingActionButton) mainView.findViewById(R.id.fab_add);
         fab_add_class = (FloatingActionButton) mainView.findViewById(R.id.fab_add_class);
@@ -238,6 +286,7 @@ public class ViewNavigation extends AppCompatActivity
                     mMyAdapter.setData(new ArrayList<Task>());
                     mMyAdapter.notifyDataSetChanged();
                     specificCourseTask(str);
+                    mMyAdapter.sortData();
                     break;
                 }
             }
@@ -269,7 +318,6 @@ public class ViewNavigation extends AppCompatActivity
         return true;
     }
 
-
     private List<Task> initData() {
         System.out.println("initing data!!");
         final ArrayList<Task> newDatas = new ArrayList<Task>();
@@ -286,6 +334,7 @@ public class ViewNavigation extends AppCompatActivity
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Task task = dataSnapshot.getValue(Task.class);
                         newDatas.add(task);
+                        Collections.sort(newDatas,Order);
                         mMyAdapter.notifyDataSetChanged();
                     }
 
@@ -297,6 +346,7 @@ public class ViewNavigation extends AppCompatActivity
                 });
             }
         }
+
         return newDatas;
     }
 
@@ -309,7 +359,7 @@ public class ViewNavigation extends AppCompatActivity
 
         for (int i = 0; i < user.inProgressTask.size(); ++i) {
 
-                final String taskID = user.inProgressTask.get(i);
+            final String taskID = user.inProgressTask.get(i);
 
             mdatabase.child("tasks").child(taskID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -318,6 +368,7 @@ public class ViewNavigation extends AppCompatActivity
                     String course = task.courseID;
                     if (course.equals(courseID)) {
                         mMyAdapter.addData(task);
+                        mMyAdapter.sortData();
                         mMyAdapter.notifyDataSetChanged();
                     }
                 }

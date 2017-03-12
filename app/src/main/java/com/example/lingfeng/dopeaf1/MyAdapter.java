@@ -9,13 +9,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Comparator;
 import java.util.List;
 
-/**
- * Created by Jas on 2017/2/22.
- */
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> implements onSwipeListener {
 
@@ -26,6 +32,46 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
     public OnItemLongClickListener mOnItemLongClickListener;
     private DatabaseReference mdatabase = FirebaseDatabase.getInstance().getReference();
     private User user = ControllerLogin.loggedin;
+
+    Comparator<Task> Order =  new Comparator<Task>(){
+        public int compare(Task o1, Task o2) {
+            // TODO Auto-generated method stub
+            Date date1 = new Date();
+            Date date2= new Date();
+            String dateS1= o1.dueDate;
+            String dateS2 = o2.dueDate;
+            SimpleDateFormat format=new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            try {
+                date1=format.parse(dateS1);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            try {
+                date2=format.parse(dateS2);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Timestamp timestamp1 = new java.sql.Timestamp(date1.getTime());
+            Timestamp timestamp2 = new java.sql.Timestamp(date2.getTime());
+            //System.out.println("Almost there!!!!!");
+            if(timestamp2.after( timestamp1))
+            {
+                //System.out.println("second one older!");
+                return -1;
+            }
+            else if(timestamp2.before( timestamp1))
+            {
+                //System.out.println("first one older!");
+                return 1;
+            }
+            else
+            {
+                //System.out.println("same");
+                return 0;
+            }
+        }
+    };
+
 
     public MyAdapter(Context context, List<Task> datas) {
         this.datas = datas;
@@ -67,8 +113,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         Log.e(TAG, "set value to item:" + position);
-        holder.title.setText(datas.get(position).taskName);
-
+        holder.title.setText(datas.get(position).taskName+ " "+datas.get(position).dueDate);
         // 设置事件响应
         if (mOnItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +136,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
         }
     }
 
+    public void sortData(){
+        Collections.sort(datas,Order);
+        notifyDataSetChanged();
+    }
     @Override
     public int getItemCount() {
 

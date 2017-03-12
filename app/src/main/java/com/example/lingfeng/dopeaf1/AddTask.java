@@ -211,7 +211,10 @@ public class AddTask extends AppCompatActivity {
 
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            dueDate.setText(dueDate.getText()+" "+hourOfDay+":"+minute);
+            if(minute<10)
+                dueDate.setText(dueDate.getText()+" "+hourOfDay+":"+"0"+minute);
+            else
+                dueDate.setText(dueDate.getText()+" "+hourOfDay+":"+minute);
         }
     }
 
@@ -228,7 +231,14 @@ public class AddTask extends AppCompatActivity {
         }
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            dueDate.setText(dayOfMonth+"/"+(month+1)+"/"+year);
+            if(dayOfMonth<10&&month>8)
+                dueDate.setText("0"+dayOfMonth+"/"+(month+1)+"/"+year);
+            else if(dayOfMonth<10&&month<9)
+                dueDate.setText("0"+dayOfMonth+"/"+"0"+(month+1)+"/"+year);
+            else if(dayOfMonth>10&&month<9)
+                dueDate.setText(dayOfMonth+"/"+"0"+(month+1)+"/"+year);
+            else
+                dueDate.setText(dayOfMonth+"/"+(month+1)+"/"+year);
         }
     }
 
