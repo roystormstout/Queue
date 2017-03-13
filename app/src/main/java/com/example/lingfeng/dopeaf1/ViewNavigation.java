@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -31,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.lhh.ptrrv.library.PullToRefreshRecyclerView;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.squareup.picasso.Picasso;
 
@@ -51,7 +53,7 @@ public class ViewNavigation extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private RecyclerView mRecyclerViewPersonal;
-    private RecyclerView mRecyclerViewShareable;
+    private PullToRefreshRecyclerView mRecyclerViewShareable;
     private RecyclerView mRecyclerViewFinished;
     private View mainView;
     private MyAdapter mMyAdapter;
@@ -140,7 +142,7 @@ public class ViewNavigation extends AppCompatActivity
 
         mRecyclerViewPersonal = (RecyclerView) mainView.findViewById(R.id.rv_main);
         mRecyclerViewPersonal.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerViewShareable = (RecyclerView) mainView.findViewById(R.id.rv_shareable);
+        mRecyclerViewShareable = (PullToRefreshRecyclerView) mainView.findViewById(R.id.rv_shareable);
         mRecyclerViewShareable.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerViewFinished = (RecyclerView) mainView.findViewById(R.id.rv_finished);
         mRecyclerViewFinished.setLayoutManager(new LinearLayoutManager(this));
@@ -172,12 +174,14 @@ public class ViewNavigation extends AppCompatActivity
         mFinishItemTouchHelper = new ItemTouchHelper(finishCallback);
 
         mItemTouchHelper.attachToRecyclerView(mRecyclerViewPersonal);
-        mShareableItemTouchHelper.attachToRecyclerView(mRecyclerViewShareable);
+        mShareableItemTouchHelper.attachToRecyclerView(mRecyclerViewShareable.getRecyclerView());
         mFinishItemTouchHelper.attachToRecyclerView(mRecyclerViewFinished);
 
         mRecyclerViewPersonal.setVisibility(View.VISIBLE);
         mRecyclerViewShareable.setVisibility(View.GONE);
         mRecyclerViewFinished.setVisibility(View.GONE);
+
+        initPullToRefresh();
 
         if(user.inProgressTask == null || user.inProgressTask.size() == 0) {
             //System.err.println("Entering Navigation class "+user.getUsername());
@@ -288,19 +292,19 @@ public class ViewNavigation extends AppCompatActivity
                    if (isPersonal) {
                        drawerMenu.clear();
                        initMenu();
+                       setSharableTasks();
                        mRecyclerViewPersonal.setVisibility(View.GONE);
                        mRecyclerViewFinished.setVisibility(View.GONE);
                        mRecyclerViewShareable.setVisibility(View.VISIBLE);
-                       setSharableTasks();
                    } else {
                        drawerMenu.add("Completed Tasks");
+                       setPersonalTasks();
                        mRecyclerViewShareable.setVisibility(View.GONE);
                        if (currentClass.equals("Completed Tasks")) {
                            mRecyclerViewFinished.setVisibility(View.VISIBLE);
                        } else {
                            mRecyclerViewPersonal.setVisibility(View.VISIBLE);
                        }
-                       setPersonalTasks();
                    }
                }
                isPersonal = position == 0;
@@ -313,6 +317,23 @@ public class ViewNavigation extends AppCompatActivity
         drawerMenu.add("Completed Tasks");
         initInfo();
 
+    }
+
+    private void initPullToRefresh() {
+
+
+        // set true to open swipe(pull to refresh, default is true)
+        mRecyclerViewShareable.setSwipeEnable(true);
+
+
+        // set OnRefreshListener
+        mRecyclerViewShareable.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                setSharableTasks();
+                mRecyclerViewShareable.setOnRefreshComplete();
+            }
+        });
     }
 
     private void initInfo() {
@@ -378,16 +399,14 @@ public class ViewNavigation extends AppCompatActivity
     private void setPersonalTasks() {
 
         if (currentClass.equalsIgnoreCase("Completed Tasks")) {
-            mRecyclerViewPersonal.setVisibility(View.GONE);
-            mRecyclerViewFinished.setVisibility(View.VISIBLE);
             mMyFinishedAdapter.setData(new ArrayList<Task>());
             mMyFinishedAdapter.notifyDataSetChanged();
             initCompletedTasks();
+            mRecyclerViewPersonal.setVisibility(View.GONE);
+            mRecyclerViewFinished.setVisibility(View.VISIBLE);
             return;
         }
 
-        mRecyclerViewPersonal.setVisibility(View.VISIBLE);
-        mRecyclerViewFinished.setVisibility(View.GONE);
         if (currentClass.equalsIgnoreCase("All Tasks")) {
             mMyAdapter.setData(initPersonalData());
             mMyAdapter.notifyDataSetChanged();
@@ -404,6 +423,8 @@ public class ViewNavigation extends AppCompatActivity
                 }
             }
         }
+        mRecyclerViewPersonal.setVisibility(View.VISIBLE);
+        mRecyclerViewFinished.setVisibility(View.GONE);
     }
 
     private void setSharableTasks() {
