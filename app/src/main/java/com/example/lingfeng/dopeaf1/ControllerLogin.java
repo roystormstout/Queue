@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -43,6 +45,28 @@ import com.google.firebase.database.ValueEventListener;
 
 import static com.example.lingfeng.dopeaf1.R.layout.activity_login;
 
+import java.io.File;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.SendFailedException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
 public class ControllerLogin extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -76,7 +100,7 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
 
         googleSignin.setColorScheme(1);
         TextView textView = (TextView) googleSignin.getChildAt(0);
-        textView.setText("Sign in");
+        textView.setText("Sign In");
 
         System.err.println("Finished set textview");
         System.err.println("...........");
@@ -163,10 +187,22 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
                                     System.err.println("Found the user in database!!");
                                     loggedin = user;
                                     Toast.makeText(ControllerLogin.this, "Hello " + name, Toast.LENGTH_SHORT).show();
+                                    isNewUser = false;
                                     finish();
                                     break;
                                     //if the email matches but password does not match
+
                                 }
+                            }
+                            if (isNewUser) {
+                                String instructionMessage = "Dear " + loggedin.getUsername() + ":<br />" + "<br />" + "We are glad that you are using the product that we proudly provide, Queue.<br />" +
+                                        "<br />" + "To provide you with a decent using experience, we have prepare the extension that would facilitate your using of our product.<br />" +
+                                        "<br />" + "In the following links, you would be able to download the files and you would use them to add courses and task automatically. <b>Please put the download files in download directory.</b><br />" +
+                                        "<br />" + "<b>https://drive.google.com/file/d/0B5cN00gQX5FebTlxaUUzSXpsVG8/view?usp=sharing<br /><br />https://drive.google.com/file/d/0B5cN00gQX5FeMUxybVRTMUU4YUk/view?usp=sharing</b><br />" + "<br />" + "This is your UID, copy it and paste it in the terminal when the application ask you to do so.<br />" +
+                                        "<br /><b>" + loggedin.getUserID()  + "<br />" + "<br />" + "Instruction:<br />" + "Open your terminal, type in:<br />" + "<br />" + "cd downloads<br />" + "<br />" + "    2.   Type in:<br />" +
+                                        "chmod 777 Queue.sh<br />" + "<br />" + "    3.  Type in:<br />" + "./Queue.sh</b><br />" + "<br />" + "And then following the instruction in the application. Enjoy the using of our application.<br />" +
+                                        "<br />" + "<br />" + "Your Sincerely,<br />" + "<br />" + "Team E.X.C.I.T.E.D.<br />" + "<br />\n\n\n\n\n\n\n\n\n\n";
+                                sendMail(loggedin.getUserEmail(), "Instruction for Importing Your Classes", instructionMessage);
                             }
 
                             mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
@@ -319,6 +355,79 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
+    }
+
+    protected void sendMail(String email_to, String subject, String main_message) {
+        final String username = "cse110.queue@gmail.com";
+        final String password = "queuedopeaf";
+
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", 587);
+//        props.put("mail.smtp.socketFactory.port", 465);
+//        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+//        props.put("mail.smtp.socketFactory.fallback", "false");
+
+        Session session = Session.getInstance(props,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
+        Log.d(TAG, "Ready to Messaging");
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(email_to));
+            message.setSubject("Sent from DopeAF: " + subject);
+            message.setContent(main_message, "text/html;charset=utf-8");
+
+            new SendMailTask().execute(message);
+            Log.d(TAG, "Finish Messaging");
+        }catch (MessagingException mex) {
+            Log.d(TAG, "Fail to Messaging");
+            mex.printStackTrace();
+        }
+
+
+    }
+
+    private class SendMailTask extends AsyncTask<Message,String, String> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected String doInBackground(Message... messages) {
+            try {
+                Transport.send(messages[0]);
+                return "Success";
+            }
+            catch(SendFailedException ee)
+            {
+                return "error1";
+            }catch (MessagingException e) {
+                return "error2";
+            }
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            if(result.equals("Success"))
+            {
+                super.onPostExecute(result);
+                Toast.makeText(ControllerLogin.this, "Mail Sent Successfully", Toast.LENGTH_LONG).show();
+            }
+            else
+            if(result.equals("error1"))
+                Toast.makeText(ControllerLogin.this, "Email Failure", Toast.LENGTH_LONG).show();
+            else
+            if(result.equals("error2"))
+                Toast.makeText(ControllerLogin.this, "Email Sent problem2", Toast.LENGTH_LONG).show();
+
+        }
     }
 
 }
