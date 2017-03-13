@@ -79,7 +79,7 @@
             android:layout_alignParentTop="true"
             android:background="#424242" />
 
-        <android.support.v7.widget.RecyclerView
+        <com.lhh.ptrrv.library.PullToRefreshRecyclerView
             android:id="@+id/rv_shareable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
