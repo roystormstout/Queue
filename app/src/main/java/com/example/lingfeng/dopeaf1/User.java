@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Queue;
 import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.UUID;
@@ -38,7 +39,7 @@ public class User {
         this.username = username;
         this.email = email;
         enrolledCourses = new ArrayList<String>();
-        finishedTask = new Stack<String>();
+        finishedTask = new ArrayList<>();
         inProgressTask = new ArrayList<String>();
     }
 
@@ -64,7 +65,9 @@ public class User {
             inProgressTask = new ArrayList<String>();
         }
 
-        inProgressTask.add(task);
+        if (!inProgressTask.contains(task)) {
+            inProgressTask.add(task);
+        }
     }
 
     public void finishTask(String task){
@@ -74,9 +77,17 @@ public class User {
             inProgressTask.remove(task);
 
             if( finishedTask == null){
-                finishedTask = new Stack<String>();
+                finishedTask = new ArrayList<>();
             }
-            finishedTask.add(task);
+            finishedTask.add(0, task);
+        }
+    }
+
+    public void deleteTask(String task) {
+        if (finishedTask == null) return;
+
+        if (finishedTask.contains(task)) {
+            finishedTask.remove(task);
         }
     }
 

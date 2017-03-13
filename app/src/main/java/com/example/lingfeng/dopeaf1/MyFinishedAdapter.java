@@ -170,6 +170,11 @@ public class MyFinishedAdapter extends RecyclerView.Adapter<MyFinishedAdapter.My
     //   datas.remove(position);
     //   }
 
+
+    public void removeData(Task task) {
+        datas.remove(task);
+    }
+
     @Override
     public void onItemDismiss(int position) {
         System.out.println("From what user have in their inProgrss list size "+user.inProgressTask.size());
@@ -177,13 +182,13 @@ public class MyFinishedAdapter extends RecyclerView.Adapter<MyFinishedAdapter.My
         System.out.println("Happ the position we intent to access is...."+position);
 
         Task currTask = getData(position);
-        user.resumeTask(currTask.taskID);
-        System.err.println(currTask+" was resuming");
+        user.deleteTask(currTask.taskID);
+        System.err.println(currTask+" was deleting");
         System.out.println("Current list has size as......"+datas.size());
         System.out.println("And the position we intent to access is...."+position);
         mdatabase.child("users").child(user.getUserID()).setValue(user);
         //删除mItems数据
-        datas.remove(currTask);
+        removeData(currTask);
         //删除RecyclerView列表对应item
         notifyItemRemoved(position);
     }
