@@ -73,6 +73,7 @@ public class ViewNavigation extends AppCompatActivity
     private String currentClass = "All Tasks";
     private Menu drawerMenu;
     private NavigationView navigationView;
+    public static Task taskToPresent;
 
     Comparator<Task> Order =  new Comparator<Task>(){
         public int compare(Task o1, Task o2) {
@@ -267,11 +268,27 @@ public class ViewNavigation extends AppCompatActivity
             }
         });
 
+        mMyFinishedAdapter.setOnItemClickListener(new MyFinishedAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(View parent, int position) {
+                //mMyAdapter.addData(position,"add item:"+position);
+                //mMyAdapter.notifyItemInserted(position);
+                taskToPresent = mMyFinishedAdapter.getData(position);
+                //define a jump
+                Intent intent = new Intent(ViewNavigation.this, ViewSingleTask.class);
+                startActivity(intent);
+            }
+        });
+
         mMyAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void onClick(View parent, int position) {
                 //mMyAdapter.addData(position,"add item:"+position);
                 //mMyAdapter.notifyItemInserted(position);
+                taskToPresent = mMyAdapter.getData(position);
+                //define a jump
+                Intent intent = new Intent(ViewNavigation.this, ViewSingleTask.class);
+                startActivity(intent);
             }
         });
        /* mMyAdapter.setOnItemLongClickListener(new MyAdapter.OnItemLongClickListener() {
@@ -372,29 +389,6 @@ public class ViewNavigation extends AppCompatActivity
         }
     }
 
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.navigation_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-    */
 
     private void setPersonalTasks() {
 

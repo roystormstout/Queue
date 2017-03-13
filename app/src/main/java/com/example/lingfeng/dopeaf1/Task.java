@@ -60,4 +60,12 @@ public class Task {
         if(userID!=null&&userID.contains(uid))
             userID.remove(uid);
     }
+
+    public String taskDescription() {
+        return taskDescription;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
 }

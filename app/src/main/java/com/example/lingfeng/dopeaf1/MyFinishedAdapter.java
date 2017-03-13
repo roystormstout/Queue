@@ -91,6 +91,8 @@ public class MyFinishedAdapter extends RecyclerView.Adapter<MyFinishedAdapter.My
         this.mOnItemClickListener = l;
     }
 
+
+
     public void setOnItemLongClickListener(OnItemLongClickListener l) {
         this.mOnItemLongClickListener = l;
     }
