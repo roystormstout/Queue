@@ -137,12 +137,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
             }
             //due is in one day
             else if(new Timestamp(date.getTime()).after(oneDayBeforeDue))
-                holder.status.setBackgroundColor(Color.parseColor("#A46E03"));
+                holder.status.setBackgroundColor(Color.parseColor("#D9534F"));
              else if(new Timestamp(date.getTime()).after(twoDayBeforeDue))
-                holder.status.setBackgroundColor(Color.parseColor("#BCD126"));
+                holder.status.setBackgroundColor(Color.parseColor("#F0AD4E"));
             //normal
             else
-                holder.status.setBackgroundColor(Color.parseColor("#3CEEAA"));
+                holder.status.setBackgroundColor(Color.parseColor("#5CB85C"));
         } catch (ParseException e) {
             e.printStackTrace();
         }
