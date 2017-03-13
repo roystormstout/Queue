@@ -80,6 +80,19 @@ public class User {
         }
     }
 
+    public void resumeTask(String task) {
+        if (finishedTask == null) return;
+
+        if (finishedTask.contains(task)) {
+            finishedTask.remove(task);
+
+            if (inProgressTask == null) {
+                inProgressTask = new ArrayList<>();
+            }
+            inProgressTask.add(task);
+        }
+    }
+
 
     public String getUserID() {
         return userID;
