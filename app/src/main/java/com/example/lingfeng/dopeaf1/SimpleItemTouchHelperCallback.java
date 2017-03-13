@@ -8,9 +8,9 @@ import android.support.v7.widget.helper.ItemTouchHelper;
  */
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
-    private onSwipeListener mAdapter;
+    private onSwipeListener adapter;
     public SimpleItemTouchHelperCallback(onSwipeListener listener){
-        mAdapter = listener;
+        adapter = listener;
     }
     /**这个方法是用来设置我们拖动的方向以及侧滑的方向的*/
     @Override
@@ -27,6 +27,6 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     /**当我们侧滑item时会回调此方法*/
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
+        adapter.onItemDismiss(viewHolder.getAdapterPosition());
     }
 }
