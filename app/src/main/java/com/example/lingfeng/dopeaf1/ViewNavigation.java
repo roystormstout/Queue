@@ -620,7 +620,7 @@ public class ViewNavigation extends AppCompatActivity
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshoti) {
                             Task task = dataSnapshoti.getValue(Task.class);
-                            if (!(user.inProgressTask != null && user.inProgressTask.contains(task.taskID)) || (user.finishedTask != null && user.finishedTask.contains(task.taskID))) {
+                            if (!(user.inProgressTask != null && user.inProgressTask.contains(task.taskID)) && !(user.finishedTask != null && user.finishedTask.contains(task.taskID))) {
                                 mMyShareableAdapter.addData(task);
                                 mMyShareableAdapter.sortData();
                                 mMyShareableAdapter.notifyDataSetChanged();
@@ -663,7 +663,7 @@ public class ViewNavigation extends AppCompatActivity
                                     if (user.inProgressTask == null) {
                                         Log.d("error", "class is null");
                                     }
-                                    if (!(user.inProgressTask != null && user.inProgressTask.contains(task.taskID)) || (user.finishedTask != null && user.finishedTask.contains(task.taskID))) {
+                                    if (!(user.inProgressTask != null && user.inProgressTask.contains(task.taskID)) && !(user.finishedTask != null && user.finishedTask.contains(task.taskID))) {
                                         mMyShareableAdapter.addData(task);
                                         mMyShareableAdapter.sortData();
                                         mMyShareableAdapter.notifyDataSetChanged();
