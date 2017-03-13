@@ -32,7 +32,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.lhh.ptrrv.library.PullToRefreshRecyclerView;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.squareup.picasso.Picasso;
 
@@ -53,7 +52,7 @@ public class ViewNavigation extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private RecyclerView mRecyclerViewPersonal;
-    private PullToRefreshRecyclerView mRecyclerViewShareable;
+    private RecyclerView mRecyclerViewShareable;
     private RecyclerView mRecyclerViewFinished;
     private View mainView;
     private MyAdapter mMyAdapter;
@@ -62,7 +61,9 @@ public class ViewNavigation extends AppCompatActivity
     private User user = ControllerLogin.loggedin;
     private DatabaseReference mdatabase = FirebaseDatabase.getInstance().getReference();
     private FloatingActionButton fab_plus,fab_add_class, fab_add_task;
+    private FloatingActionButton fab_refresh;
     Animation FabOpen,FabClose,FabClock,FabAntiClock;
+    Animation refresh;
     private ItemTouchHelper mItemTouchHelper;
     private ItemTouchHelper mShareableItemTouchHelper;
     private ItemTouchHelper mFinishItemTouchHelper;
@@ -142,7 +143,7 @@ public class ViewNavigation extends AppCompatActivity
 
         mRecyclerViewPersonal = (RecyclerView) mainView.findViewById(R.id.rv_main);
         mRecyclerViewPersonal.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerViewShareable = (PullToRefreshRecyclerView) mainView.findViewById(R.id.rv_shareable);
+        mRecyclerViewShareable = (RecyclerView) mainView.findViewById(R.id.rv_shareable);
         mRecyclerViewShareable.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerViewFinished = (RecyclerView) mainView.findViewById(R.id.rv_finished);
         mRecyclerViewFinished.setLayoutManager(new LinearLayoutManager(this));
@@ -158,9 +159,12 @@ public class ViewNavigation extends AppCompatActivity
         fab_plus = (FloatingActionButton) mainView.findViewById(R.id.fab_add);
         fab_add_class = (FloatingActionButton) mainView.findViewById(R.id.fab_add_class);
         fab_add_task = (FloatingActionButton) mainView.findViewById(R.id.fab_add_task);
+        fab_refresh = (FloatingActionButton) findViewById(R.id.fab_refresh);
 
         FabOpen = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_open);
         FabClose = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
+
+        refresh = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.refresh_all_the_way);
 
         FabClock = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_clockwise);
         FabAntiClock = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_anticlockwise);
@@ -174,14 +178,12 @@ public class ViewNavigation extends AppCompatActivity
         mFinishItemTouchHelper = new ItemTouchHelper(finishCallback);
 
         mItemTouchHelper.attachToRecyclerView(mRecyclerViewPersonal);
-        mShareableItemTouchHelper.attachToRecyclerView(mRecyclerViewShareable.getRecyclerView());
+        mShareableItemTouchHelper.attachToRecyclerView(mRecyclerViewShareable);
         mFinishItemTouchHelper.attachToRecyclerView(mRecyclerViewFinished);
 
         mRecyclerViewPersonal.setVisibility(View.VISIBLE);
         mRecyclerViewShareable.setVisibility(View.GONE);
         mRecyclerViewFinished.setVisibility(View.GONE);
-
-        initPullToRefresh();
 
         if(user.inProgressTask == null || user.inProgressTask.size() == 0) {
             //System.err.println("Entering Navigation class "+user.getUsername());
@@ -247,6 +249,25 @@ public class ViewNavigation extends AppCompatActivity
                 Intent intent = new Intent(ViewNavigation.this, AddTask.class);
 
                 startActivity(intent);
+            }
+        });
+
+        fab_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //define a jump
+                fab_refresh.startAnimation(refresh);
+
+                if (isPersonal) {
+                    setPersonalTasks();
+                    if (currentClass.equalsIgnoreCase("Completed Tasks"))
+                        mRecyclerViewFinished.scrollToPosition(0);
+                    else
+                        mRecyclerViewPersonal.scrollToPosition(0);
+                } else {
+                    setSharableTasks();
+                    mRecyclerViewShareable.scrollToPosition(0);
+                }
             }
         });
 
@@ -319,23 +340,6 @@ public class ViewNavigation extends AppCompatActivity
 
     }
 
-    private void initPullToRefresh() {
-
-
-        // set true to open swipe(pull to refresh, default is true)
-        mRecyclerViewShareable.setSwipeEnable(true);
-
-
-        // set OnRefreshListener
-        mRecyclerViewShareable.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                setSharableTasks();
-                mRecyclerViewShareable.setOnRefreshComplete();
-            }
-        });
-    }
-
     private void initInfo() {
         View info = navigationView.getHeaderView(0);
         //View info = findViewById(R.id.info);
@@ -372,6 +376,7 @@ public class ViewNavigation extends AppCompatActivity
         }
     }
 
+
     /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -388,7 +393,13 @@ public class ViewNavigation extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_refresh) {
+            ImageView locButton = (ImageView) item.getActionView();
+            locButton.startAnimation(refresh_all_the_way);
+            if (isPersonal)
+                setPersonalTasks();
+            else
+                setSharableTasks();
             return true;
         }
 
