@@ -53,9 +53,10 @@ dependencies {
     compile 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
     // for get personal icon
     compile 'com.squareup.picasso:picasso:2.5.2'
-    // drawer
-    compile 'com.mxn.soul:flowingdrawer-core:2.0.0'
-    compile 'com.nineoldandroids:library:2.4.0'
+    // login animation
+    compile 'com.wang.avi:library:2.1.3'
+
+
 }
 
 
