@@ -120,7 +120,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         Log.e(TAG, "set value to item:" + position);
-        holder.title.setText(datas.get(position).taskName);
+        String[]taskname=datas.get(position).taskName.split(" ");
+        System.out.println("concatenated"+taskname.length);
+        String reduced= datas.get(position).taskName;
+        if(taskname.length>2) {
+            reduced = taskname[0] +" "+ taskname[1]+"...";
+            System.out.println("concatenated");
+        }
+        holder.title.setText(reduced);
         holder.subtitle.setText(datas.get(position).dueDate.substring(0, 11));
         SimpleDateFormat format=new SimpleDateFormat("dd/MM/yyyy HH:mm");
         Date date = new Date();

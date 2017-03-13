@@ -74,6 +74,7 @@ public class ViewNavigation extends AppCompatActivity
     private String currentClass = "All Tasks";
     private Menu drawerMenu;
     private NavigationView navigationView;
+    public static Task taskToPresent;
 
     Comparator<Task> Order =  new Comparator<Task>(){
         public int compare(Task o1, Task o2) {
@@ -288,11 +289,27 @@ public class ViewNavigation extends AppCompatActivity
             }
         });
 
+        mMyFinishedAdapter.setOnItemClickListener(new MyFinishedAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(View parent, int position) {
+                //mMyAdapter.addData(position,"add item:"+position);
+                //mMyAdapter.notifyItemInserted(position);
+                taskToPresent = mMyFinishedAdapter.getData(position);
+                //define a jump
+                Intent intent = new Intent(ViewNavigation.this, ViewSingleTask.class);
+                startActivity(intent);
+            }
+        });
+
         mMyAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void onClick(View parent, int position) {
                 //mMyAdapter.addData(position,"add item:"+position);
                 //mMyAdapter.notifyItemInserted(position);
+                taskToPresent = mMyAdapter.getData(position);
+                //define a jump
+                Intent intent = new Intent(ViewNavigation.this, ViewSingleTask.class);
+                startActivity(intent);
             }
         });
        /* mMyAdapter.setOnItemLongClickListener(new MyAdapter.OnItemLongClickListener() {

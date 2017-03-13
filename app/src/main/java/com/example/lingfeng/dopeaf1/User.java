@@ -84,10 +84,13 @@ public class User {
     }
 
     public void deleteTask(String task) {
-        if (finishedTask == null) return;
+        if (finishedTask == null&&inProgressTask==null) return;
 
-        if (finishedTask.contains(task)) {
+        if (finishedTask!=null&&finishedTask.contains(task)) {
             finishedTask.remove(task);
+        }
+        if(inProgressTask!=null&&inProgressTask.contains(task)){
+            inProgressTask.remove(task);
         }
     }
 

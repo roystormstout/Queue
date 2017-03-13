@@ -22,6 +22,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Timestamp;
+
 public class AddClass extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private EditText cID;
     private EditText classname;
@@ -74,7 +76,7 @@ public class AddClass extends AppCompatActivity implements GoogleApiClient.OnCon
             public void onClick(View v) {
 
                 //Class front end Check
-                if ((cID.getText().length() > 0) && (classname.getText().length() > 5) && (q.getText().length() > 3) &&(sect.getText().length() > 2)) {
+                if ((cID.getText().length() > 0) && (classname.getText().length() > 3) && (q.getText().length() > 1) &&(sect.getText().length() > 2)) {
                     double cred = Double.parseDouble(credits.getText().toString());
                     final String id = cID.getText().toString();
                     final String n = classname.getText().toString();
@@ -115,6 +117,7 @@ public class AddClass extends AppCompatActivity implements GoogleApiClient.OnCon
                                                 Toast.makeText(AddClass.this, "Enrolling you to the course", Toast.LENGTH_SHORT).show();
                                                 classToCheck.addStudents(a.getUserID());
                                                 a.addCourse(id);
+                                                addVerifiedTask(id);
                                                 mDatabase.child("classes").child(id).setValue(classToCheck);
                                                 mDatabase.child("users").child(a.getUserID()).setValue(a);
                                             }
@@ -167,9 +170,13 @@ public class AddClass extends AppCompatActivity implements GoogleApiClient.OnCon
                                     if (id.equals(aClass.courseID)) {
                                             foundFlag=1;
                                             if(aClass.dropStudent(a.getUserID())&&a.dropCourse(aClass.courseID)){
+                                                dropVerifiedTask(id);
                                                 mDatabase.child("classes").child(id).setValue(aClass);
                                                 mDatabase.child("users").child(a.getUserID()).setValue(a);
                                                 Toast.makeText(AddClass.this, "Course removed!", Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(AddClass.this, ViewNavigation.class);
+                                                //jump to add class
+                                                startActivity(intent);
                                             }
                                             else{
                                                 Toast.makeText(AddClass.this, "Are you actually enrolled?", Toast.LENGTH_SHORT).show();
@@ -246,4 +253,49 @@ public class AddClass extends AppCompatActivity implements GoogleApiClient.OnCon
         // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
-}
+
+    public void addVerifiedTask(final String verClass){
+
+        mDatabase.child("verified_Tasks").child(verClass).addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                    Task verTasks = snapshot.getValue(Task.class);
+                    if(verTasks!=null&&verTasks.courseID.equals(verClass)) {
+                        System.out.println("adding ver task!"+verTasks.taskID);
+                        a.addTask(verTasks.taskID);
+                        System.out.println(a.inProgressTask.size());
+                        verTasks.addUserID(a.getUserID());
+                        mDatabase.child("users").child(a.getUserID()).setValue(a);
+                        mDatabase.child("tasks").child(verTasks.taskID).setValue(verTasks);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+    public void dropVerifiedTask(final String verClass){
+        mDatabase.child("tasks").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Task verTasks = snapshot.getValue(Task.class);
+                    if(verTasks!=null&&verTasks.courseID.equals(verClass)) {
+                        a.deleteTask(verTasks.taskID);
+                        verTasks.deleteUserID(a.getUserID());
+                        mDatabase.child("users").child(a.getUserID()).setValue(a);
+                        mDatabase.child("tasks").child(verTasks.taskID).setValue(verTasks);
+                    }
+                }
+                //a.dropCourse(verClass);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+    }
