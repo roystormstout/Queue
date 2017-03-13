@@ -185,9 +185,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
         System.out.println("And the position we intent to access is...."+position);
         mdatabase.child("users").child(user.getUserID()).setValue(user);
         //删除mItems数据
-       datas.remove(currTask);
+        datas.remove(currTask);
         //删除RecyclerView列表对应item
         notifyItemRemoved(position);
+
     }
 
 
