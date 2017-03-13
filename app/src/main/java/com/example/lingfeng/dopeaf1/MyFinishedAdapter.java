@@ -1,35 +1,32 @@
 package com.example.lingfeng.dopeaf1;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.Date;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
+/**
+ * Created by Vincent on 3/12/17.
+ */
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> implements onSwipeListener {
 
-    private static final String TAG = "MyAdapter";
+public class MyFinishedAdapter extends RecyclerView.Adapter<MyFinishedAdapter.MyViewHolder> implements onSwipeListener {
+
+    private static final String TAG = "MyFinishedAdapter";
     private List<Task> datas;
     private LayoutInflater inflater;
     public OnItemClickListener mOnItemClickListener;
@@ -77,7 +74,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
     };
 
 
-    public MyAdapter(Context context, List<Task> datas) {
+    public MyFinishedAdapter(Context context, List<Task> datas) {
         this.datas = datas;
         inflater = LayoutInflater.from(context);
     }
@@ -101,12 +98,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
         private TextView subtitle;
-        private ImageView status;
+
         public MyViewHolder(View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.rv_main_item_title);
             subtitle = (TextView)itemView.findViewById(R.id.rv_date);
-            status = (ImageView)itemView.findViewById(R.id.rv_status_bar);
         }
     }
 
@@ -122,30 +118,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
         Log.e(TAG, "set value to item:" + position);
         holder.title.setText(datas.get(position).taskName);
         holder.subtitle.setText(datas.get(position).dueDate.substring(0, 11));
-        SimpleDateFormat format=new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        Date date = new Date();
-        try {
-            Timestamp due = new Timestamp(format.parse(datas.get(position).dueDate).
-                    getTime());
-            Timestamp oneDayBeforeDue = new Timestamp(format.parse(datas.get(position).dueDate).
-                    getTime()- 24 * 60 * 60 * 1000);
-            Timestamp twoDayBeforeDue = new Timestamp(format.parse(datas.get(position).dueDate).
-                    getTime()- 2 * 24 * 60 * 60 * 1000);
-            //past due
-            if(new Timestamp(date.getTime()).after(due)){
-                holder.status.setBackgroundColor(Color.parseColor("#000000"));
-            }
-            //due is in one day
-            else if(new Timestamp(date.getTime()).after(oneDayBeforeDue))
-                holder.status.setBackgroundColor(Color.parseColor("#A46E03"));
-             else if(new Timestamp(date.getTime()).after(twoDayBeforeDue))
-                holder.status.setBackgroundColor(Color.parseColor("#BCD126"));
-            //normal
-            else
-                holder.status.setBackgroundColor(Color.parseColor("#3CEEAA"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
         // 设置事件响应
         if (mOnItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -193,10 +165,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
     public void setData(List<Task> newData) { datas = newData; }
 
-  //  public void removeData(int position){
-        //String toRemove = datas[position]
-     //   datas.remove(position);
- //   }
+    //  public void removeData(int position){
+    //String toRemove = datas[position]
+    //   datas.remove(position);
+    //   }
 
     @Override
     public void onItemDismiss(int position) {
@@ -205,8 +177,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
         System.out.println("Happ the position we intent to access is...."+position);
 
         Task currTask = getData(position);
-        user.finishTask(currTask.taskID);
-        System.err.println(currTask+" was deleteing");
+        user.resumeTask(currTask.taskID);
+        System.err.println(currTask+" was resuming");
         System.out.println("Current list has size as......"+datas.size());
         System.out.println("And the position we intent to access is...."+position);
         mdatabase.child("users").child(user.getUserID()).setValue(user);
