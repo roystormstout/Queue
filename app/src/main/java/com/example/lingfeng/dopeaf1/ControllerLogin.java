@@ -1,7 +1,6 @@
 package com.example.lingfeng.dopeaf1;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -10,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -38,7 +39,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
+
+import static com.example.lingfeng.dopeaf1.R.layout.activity_login;
 
 public class ControllerLogin extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "GoogleActivity";
@@ -71,14 +73,18 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
-        setContentView(R.layout.activity_login);
+        setContentView(activity_login);
+        ImageView myImageView= (ImageView) findViewById(R.id.imageView);
+        Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_slide_up);
+        myImageView.startAnimation(myFadeInAnimation);
+
 
         System.err.println("Enter Login class");
         //email = (EditText) findViewById(R.id.email);
         //password = (EditText) findViewById(R.id.password);
         //btnLogin = (Button) findViewById(R.id.login);
         //btnSignUp = (Button) findViewById(R.id.register);
-        btnForgotPassword = (Button) findViewById(R.id.forgotPassword);
+//        btnForgotPassword = (Button) findViewById(R.id.forgotPassword);
         googleSignin = (SignInButton) findViewById(R.id.sign_in_button);
         //rememberMe = (CheckBox)findViewById(R.id.rememberme);
         //autoLogin = (CheckBox)findViewById(R.id.autoLogin);
@@ -94,9 +100,9 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
         }
         */
 
-        googleSignin.setColorScheme(0);
+        googleSignin.setColorScheme(1);
         TextView textView = (TextView) googleSignin.getChildAt(0);
-        textView.setText("Sign in with Google");
+        textView.setText("Sign in");
 
         System.err.println("Finished set textview");
         System.err.println("...........");
@@ -107,22 +113,22 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
 
         //TODO FORGOT PSWD
         //triggered when click on forgot password button
-        btnForgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                /* redirect to page for confirming information and retrieving information */
-
-                //define a jump
-                //TODO: change the view, and may need to PASS the EMAIL user entered, so that they does not need to enter it again
-                Intent intent = new Intent(ControllerLogin.this, ViewNavigation.class);
-                final User userNew = new User("Forgot Password", "Forgot Password", "Forgot Password");
-                loggedin = userNew;
-                mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
-                //jump to add class
-                startActivity(intent);
-            }
-        });
+//        btnForgotPassword.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                /* redirect to page for confirming information and retrieving information */
+//
+//                //define a jump
+//                //TODO: change the view, and may need to PASS the EMAIL user entered, so that they does not need to enter it again
+//                Intent intent = new Intent(ControllerLogin.this, ViewNavigation.class);
+//                final User userNew = new User("Forgot Password", "Forgot Password", "Forgot Password");
+//                loggedin = userNew;
+//                mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
+//                //jump to add class
+//                startActivity(intent);
+//            }
+//        });
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
