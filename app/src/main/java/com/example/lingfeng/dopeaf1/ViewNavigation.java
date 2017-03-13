@@ -246,6 +246,23 @@ public class ViewNavigation extends AppCompatActivity
             }
         });
 
+        mMyFinishedAdapter.setOnItemLongClickListener(new MyFinishedAdapter.OnItemLongClickListener() {
+            @Override
+            public boolean onLongClick(View parent, int position) {
+
+                Task currTask = mMyFinishedAdapter.getData(position);
+                user.resumeTask(currTask.taskID);
+
+                mdatabase.child("users").child(user.getUserID()).setValue(user);
+                //删除mItems数据
+                mMyFinishedAdapter.removeData(currTask);
+                //删除RecyclerView列表对应item
+                mMyFinishedAdapter.notifyItemRemoved(position);
+
+                return true;
+            }
+        });
+
         mMyAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void onClick(View parent, int position) {
