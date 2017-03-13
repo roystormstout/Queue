@@ -14,41 +14,41 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
         android:adjustViewBounds="true"
         android:cropToPadding="true"
         android:visibility="visible"
-        app:srcCompat="@drawable/login"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        app:srcCompat="@drawable/login" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="100dp"
         android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true" />
 
-    <Button
-        android:id="@+id/forgotPassword"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:text="Forgot Password?"
-        android:textColor="@color/colorAccent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/sign_in_button" />
+    <!--<com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"-->
+        <!--android:id="@+id/spin_kit"-->
+        <!--style="@style/SpinKitView.DoubleBounce"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_horizontal|center|fill"-->
+        <!--app:SpinKit_Color="@color/splashBackground"-->
+        <!--android:layout_marginBottom="56dp"-->
+        <!--android:layout_above="@+id/forgotPassword"-->
+        <!--android:layout_centerHorizontal="true" />-->
 
-    <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/spin_kit"
-        style="@style/SpinKitView.Large.Wave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|center|fill"
-        app:SpinKit_Color="@color/splashBackground"
-        android:layout_marginBottom="56dp"
-        android:layout_above="@+id/forgotPassword"
-        android:layout_centerHorizontal="true" />
+    <!--<com.wang.avi.AVLoadingIndicatorView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_above="@+id/forgotPassword"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_gravity="center_horizontal|center|fill"-->
+        <!--android:layout_marginBottom="56dp"-->
+        <!--android:elevation="20dp"-->
+        <!--android:scaleX="-1"-->
+        <!--app:indicatorName="PacmanIndicator" />-->
 
 </RelativeLayout>
