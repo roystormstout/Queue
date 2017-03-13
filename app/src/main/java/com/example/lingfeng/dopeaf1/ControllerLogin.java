@@ -4,15 +4,16 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +28,6 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,30 +38,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.UUID;
-
-import static android.R.string.ok;
+import com.squareup.picasso.Picasso;
 
 public class ControllerLogin extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
     public static User loggedin;
+    public static Uri personPhoto = null; //get the photo of the user
+    public static String personName; //ge the name of the user
+    public static String personEmail; // get the email of the user
     public static GoogleApiClient mGoogleApiClient;
     public DatabaseReference mDatabase;
-    private EditText email;
-    private EditText password;
-    private Button btnLogin;
-    private Button btnSignUp;
+
     private Button btnForgotPassword;
     private SignInButton googleSignin;
-    private CheckBox rememberMe;
-    private CheckBox autoLogin;
-    private SharedPreferences loginPreferences;
-    private SharedPreferences.Editor loginPrefsEditor;
-    private Boolean saveLogin;
-    private String username;
-    private String pswd;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -74,25 +64,8 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
         setContentView(R.layout.activity_login);
 
         System.err.println("Enter Login class");
-        //email = (EditText) findViewById(R.id.email);
-        //password = (EditText) findViewById(R.id.password);
-        //btnLogin = (Button) findViewById(R.id.login);
-        //btnSignUp = (Button) findViewById(R.id.register);
         btnForgotPassword = (Button) findViewById(R.id.forgotPassword);
         googleSignin = (SignInButton) findViewById(R.id.sign_in_button);
-        //rememberMe = (CheckBox)findViewById(R.id.rememberme);
-        //autoLogin = (CheckBox)findViewById(R.id.autoLogin);
-        //loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
-        //loginPrefsEditor = loginPreferences.edit();
-/*
-        saveLogin = loginPreferences.getBoolean("saveLogin", false);
-        if (saveLogin == true) {
-            email.setText(loginPreferences.getString("username", ""));
-            password.setText(loginPreferences.getString("password", ""));
-            rememberMe.setChecked(true);
-            autoLogin.setChecked(loginPreferences.getBoolean("autoLogin", false));
-        }
-        */
 
         googleSignin.setColorScheme(0);
         TextView textView = (TextView) googleSignin.getChildAt(0);
@@ -138,7 +111,7 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        //mAuth = FirebaseAuth.getInstance();
+
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -147,10 +120,10 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
                     // Name, email address, and profile photo Url
                     final String name = user.getDisplayName();
                     final String email = user.getEmail();
-                    //Toast.makeText(Login.this, "successfully added " + name, Toast.LENGTH_SHORT).show();
 
                     // Check if user's email is verified
                     boolean emailVerified = user.isEmailVerified();
@@ -160,20 +133,16 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
                     // FirebaseUser.getToken() instead.
                     final String uid = user.getUid();
 
-                    //final User userNew =
-
                     //put user into users field
                     loggedin = new User(name, email, uid);
 
                     mDatabase.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
                             boolean isNewUser = true;
 
-                            //TODO: update searching to hashmap
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
                                 //search through each user
@@ -185,10 +154,6 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
                                     System.err.println("Found the user in database!!");
                                     loggedin = user;
                                     Toast.makeText(ControllerLogin.this, "Hello " + name, Toast.LENGTH_SHORT).show();
-                                    //Intent intent = new Intent(Login.this, Navigation.class);
-
-                                    //jump to add class
-                                    //startActivity(intent);
                                     finish();
                                     break;
                                     //if the email matches but password does not match
@@ -250,11 +215,6 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
                 }
             });
         }
-        /*
-        if(autoLogin.isChecked()) {
-            btnLogin.performClick();
-        }
-        */
     }
 
     @Override
@@ -268,7 +228,6 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
-        //Toast.makeText(Login.this, "SignIn 1", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -281,6 +240,9 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
             if (result.isSuccess()) {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
+                personPhoto = account.getPhotoUrl();
+                personEmail = account.getEmail();
+                personName = account.getDisplayName();
                 firebaseAuthWithGoogle(account);
             } else {
                 Toast.makeText(ControllerLogin.this, (result.getStatus()).toString(), Toast.LENGTH_SHORT).show();
@@ -316,10 +278,11 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
-
-            //Signed in successfully, show authenticated UI.
-            //Intent intent = new Intent(this, Navigation.class);
-            //startActivity(intent);
+            // Signed in successfolly, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();;
+            personPhoto = acct.getPhotoUrl();
+            personEmail = acct.getEmail();
+            personName = acct.getDisplayName();
             showProgressDialog();
             //finish();
         } else {
