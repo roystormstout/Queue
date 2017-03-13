@@ -300,6 +300,7 @@ public class ViewNavigation extends AppCompatActivity
                        } else {
                            mRecyclerViewPersonal.setVisibility(View.VISIBLE);
                        }
+                       setPersonalTasks();
                    }
                }
                isPersonal = position == 0;
