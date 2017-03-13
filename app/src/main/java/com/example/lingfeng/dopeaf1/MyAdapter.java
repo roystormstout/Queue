@@ -214,6 +214,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
         datas.remove(currTask);
         //删除RecyclerView列表对应item
         notifyItemRemoved(position);
+
     }
 
 
