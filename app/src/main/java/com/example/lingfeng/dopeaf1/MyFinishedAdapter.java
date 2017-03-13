@@ -116,7 +116,14 @@ public class MyFinishedAdapter extends RecyclerView.Adapter<MyFinishedAdapter.My
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         Log.e(TAG, "set value to item:" + position);
-        holder.title.setText(datas.get(position).taskName);
+        String[]taskname=datas.get(position).taskName.split(" ");
+        System.out.println("concatenated"+taskname.length);
+        String reduced= datas.get(position).taskName;
+        if(taskname.length>2) {
+            reduced = taskname[0] +" "+ taskname[1]+"...";
+            System.out.println("concatenated");
+        }
+        holder.title.setText(reduced);
         holder.subtitle.setText(datas.get(position).dueDate.substring(0, 11));
         // 设置事件响应
         if (mOnItemClickListener != null) {
