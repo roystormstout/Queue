@@ -31,8 +31,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.mxn.soul.flowingdrawer_core.ElasticDrawer;
-import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.squareup.picasso.Picasso;
 
@@ -52,16 +50,20 @@ import java.util.Stack;
 public class ViewNavigation extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
-
-    private RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerViewPersonal;
+    private RecyclerView mRecyclerViewShareable;
+    private RecyclerView mRecyclerViewFinished;
     private View mainView;
     private MyAdapter mMyAdapter;
+    private MyShareableAdapter mMyShareableAdapter;
+    private MyFinishedAdapter mMyFinishedAdapter;
     private User user = ControllerLogin.loggedin;
     private DatabaseReference mdatabase = FirebaseDatabase.getInstance().getReference();
     private FloatingActionButton fab_plus,fab_add_class, fab_add_task;
     Animation FabOpen,FabClose,FabClock,FabAntiClock;
     private ItemTouchHelper mItemTouchHelper;
+    private ItemTouchHelper mShareableItemTouchHelper;
+    private ItemTouchHelper mFinishItemTouchHelper;
     boolean fabOpen = false;
     private SmartTabLayout myTab;
     private ViewPager mViewPager;
@@ -136,10 +138,19 @@ public class ViewNavigation extends AppCompatActivity
 
         mainView = findViewById(R.id.activity_main);
 
-        mRecyclerView = (RecyclerView) mainView.findViewById(R.id.rv_main);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerViewPersonal = (RecyclerView) mainView.findViewById(R.id.rv_main);
+        mRecyclerViewPersonal.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerViewShareable = (RecyclerView) mainView.findViewById(R.id.rv_shareable);
+        mRecyclerViewShareable.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerViewFinished = (RecyclerView) mainView.findViewById(R.id.rv_finished);
+        mRecyclerViewFinished.setLayoutManager(new LinearLayoutManager(this));
+
         mMyAdapter = new MyAdapter(ViewNavigation.this, initPersonalData());
-        mRecyclerView.setAdapter(mMyAdapter);
+        mMyShareableAdapter = new MyShareableAdapter(ViewNavigation.this, new ArrayList<Task>());
+        mMyFinishedAdapter = new MyFinishedAdapter(ViewNavigation.this, new ArrayList<Task>());
+        mRecyclerViewPersonal.setAdapter(mMyAdapter);
+        mRecyclerViewFinished.setAdapter(mMyFinishedAdapter);
+        mRecyclerViewShareable.setAdapter(mMyShareableAdapter);
         mMyAdapter.sortData();
 
         fab_plus = (FloatingActionButton) mainView.findViewById(R.id.fab_add);
@@ -153,17 +164,27 @@ public class ViewNavigation extends AppCompatActivity
         FabAntiClock = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_anticlockwise);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mMyAdapter);
+        ItemTouchHelper.Callback shareableCallback = new SimpleItemTouchHelperCallback(mMyShareableAdapter);
+        ItemTouchHelper.Callback finishCallback = new SimpleItemTouchHelperCallback(mMyFinishedAdapter);
+
         mItemTouchHelper = new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+        mShareableItemTouchHelper = new ItemTouchHelper(shareableCallback);
+        mFinishItemTouchHelper = new ItemTouchHelper(finishCallback);
+
+        mItemTouchHelper.attachToRecyclerView(mRecyclerViewPersonal);
+        mShareableItemTouchHelper.attachToRecyclerView(mRecyclerViewShareable);
+        mFinishItemTouchHelper.attachToRecyclerView(mRecyclerViewFinished);
+
+        mRecyclerViewPersonal.setVisibility(View.VISIBLE);
+        mRecyclerViewShareable.setVisibility(View.GONE);
+        mRecyclerViewFinished.setVisibility(View.GONE);
 
         if(user.inProgressTask == null || user.inProgressTask.size() == 0) {
             //System.err.println("Entering Navigation class "+user.getUsername());
             Snackbar.make(findViewById(R.id.rv_main), "Hooooray No Task At ALLLLL!!!", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
-
-
-
+        
         fab_plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -225,6 +246,23 @@ public class ViewNavigation extends AppCompatActivity
             }
         });
 
+        mMyFinishedAdapter.setOnItemLongClickListener(new MyFinishedAdapter.OnItemLongClickListener() {
+            @Override
+            public boolean onLongClick(View parent, int position) {
+
+                Task currTask = mMyFinishedAdapter.getData(position);
+                user.resumeTask(currTask.taskID);
+
+                mdatabase.child("users").child(user.getUserID()).setValue(user);
+                //删除mItems数据
+                mMyFinishedAdapter.removeData(currTask);
+                //删除RecyclerView列表对应item
+                mMyFinishedAdapter.notifyItemRemoved(position);
+
+                return true;
+            }
+        });
+
         mMyAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void onClick(View parent, int position) {
@@ -250,9 +288,18 @@ public class ViewNavigation extends AppCompatActivity
                    if (isPersonal) {
                        drawerMenu.clear();
                        initMenu();
+                       mRecyclerViewPersonal.setVisibility(View.GONE);
+                       mRecyclerViewFinished.setVisibility(View.GONE);
+                       mRecyclerViewShareable.setVisibility(View.VISIBLE);
                        setSharableTasks();
                    } else {
                        drawerMenu.add("Completed Tasks");
+                       mRecyclerViewShareable.setVisibility(View.GONE);
+                       if (currentClass.equals("Completed Tasks")) {
+                           mRecyclerViewFinished.setVisibility(View.VISIBLE);
+                       } else {
+                           mRecyclerViewPersonal.setVisibility(View.VISIBLE);
+                       }
                        setPersonalTasks();
                    }
                }
@@ -331,11 +378,16 @@ public class ViewNavigation extends AppCompatActivity
     private void setPersonalTasks() {
 
         if (currentClass.equalsIgnoreCase("Completed Tasks")) {
-            mMyAdapter.setData(new ArrayList<Task>());
-            mMyAdapter.notifyDataSetChanged();
+            mRecyclerViewPersonal.setVisibility(View.GONE);
+            mRecyclerViewFinished.setVisibility(View.VISIBLE);
+            mMyFinishedAdapter.setData(new ArrayList<Task>());
+            mMyFinishedAdapter.notifyDataSetChanged();
             initCompletedTasks();
+            return;
         }
 
+        mRecyclerViewPersonal.setVisibility(View.VISIBLE);
+        mRecyclerViewFinished.setVisibility(View.GONE);
         if (currentClass.equalsIgnoreCase("All Tasks")) {
             mMyAdapter.setData(initPersonalData());
             mMyAdapter.notifyDataSetChanged();
@@ -357,29 +409,29 @@ public class ViewNavigation extends AppCompatActivity
     private void setSharableTasks() {
 
         if (user.enrolledCourses == null) {
-            mMyAdapter.setData(new ArrayList<Task>());
-            mMyAdapter.notifyDataSetChanged();
+            mMyShareableAdapter.setData(new ArrayList<Task>());
+            mMyShareableAdapter.notifyDataSetChanged();
             return;
         }
 
         if (currentClass.equalsIgnoreCase("Completed Tasks")) {
-            mMyAdapter.setData(new ArrayList<Task>());
-            mMyAdapter.notifyDataSetChanged();
+            mMyShareableAdapter.setData(new ArrayList<Task>());
+            mMyShareableAdapter.notifyDataSetChanged();
             return;
         }
 
         if (currentClass.equalsIgnoreCase("All Tasks")) {
-            mMyAdapter.setData(new ArrayList<Task>());
-            mMyAdapter.notifyDataSetChanged();
+            mMyShareableAdapter.setData(new ArrayList<Task>());
+            mMyShareableAdapter.notifyDataSetChanged();
             sharableAllTasks();
-            mMyAdapter.sortData();
+            mMyShareableAdapter.sortData();
         } else {
             for (String str : user.enrolledCourses) {
                 if (currentClass.equalsIgnoreCase(str)) {
-                    mMyAdapter.setData(new ArrayList<Task>());
-                    mMyAdapter.notifyDataSetChanged();
+                    mMyShareableAdapter.setData(new ArrayList<Task>());
+                    mMyShareableAdapter.notifyDataSetChanged();
                     shareableSpecificCourseTask(str);
-                    mMyAdapter.sortData();
+                    mMyShareableAdapter.sortData();
                     break;
                 }
             }
@@ -393,12 +445,15 @@ public class ViewNavigation extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
-        currentClass = item.toString();
+        if (!currentClass.equals(item.toString())) {
 
-        if (isPersonal) {
-            setPersonalTasks();
-        } else {
-            setSharableTasks();
+            currentClass = item.toString();
+
+            if (isPersonal) {
+                setPersonalTasks();
+            } else {
+                setSharableTasks();
+            }
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -454,8 +509,8 @@ public class ViewNavigation extends AppCompatActivity
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Task task = dataSnapshot.getValue(Task.class);
-                        mMyAdapter.addData(task);
-                        mMyAdapter.notifyDataSetChanged();
+                        mMyFinishedAdapter.addData(task);
+                        mMyFinishedAdapter.notifyDataSetChanged();
                     }
 
                     @Override
@@ -516,9 +571,11 @@ public class ViewNavigation extends AppCompatActivity
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshoti) {
                             Task task = dataSnapshoti.getValue(Task.class);
-                            mMyAdapter.addData(task);
-                            mMyAdapter.sortData();
-                            mMyAdapter.notifyDataSetChanged();
+                            if (!(user.inProgressTask != null && user.inProgressTask.contains(task.taskID)) || (user.finishedTask != null && user.finishedTask.contains(task.taskID))) {
+                                mMyShareableAdapter.addData(task);
+                                mMyShareableAdapter.sortData();
+                                mMyShareableAdapter.notifyDataSetChanged();
+                            }
                         }
 
                         @Override
@@ -554,9 +611,14 @@ public class ViewNavigation extends AppCompatActivity
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshoti) {
                                     Task task = dataSnapshoti.getValue(Task.class);
-                                    mMyAdapter.addData(task);
-                                    mMyAdapter.sortData();
-                                    mMyAdapter.notifyDataSetChanged();
+                                    if (user.inProgressTask == null) {
+                                        Log.d("error", "class is null");
+                                    }
+                                    if (!(user.inProgressTask != null && user.inProgressTask.contains(task.taskID)) || (user.finishedTask != null && user.finishedTask.contains(task.taskID))) {
+                                        mMyShareableAdapter.addData(task);
+                                        mMyShareableAdapter.sortData();
+                                        mMyShareableAdapter.notifyDataSetChanged();
+                                    }
                                 }
 
                                 @Override

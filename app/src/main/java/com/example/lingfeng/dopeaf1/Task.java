@@ -56,4 +56,8 @@ public class Task {
     public void addTaskID(String taskName){
         taskID = taskName;
     }
+    public void deleteUserID(String uid){
+        if(userID!=null&&userID.contains(uid))
+            userID.remove(uid);
+    }
 }

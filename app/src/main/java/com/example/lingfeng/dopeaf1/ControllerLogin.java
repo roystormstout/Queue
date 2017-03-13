@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -40,7 +42,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
+
+import static com.example.lingfeng.dopeaf1.R.layout.activity_login;
 
 import java.io.File;
 import java.util.Properties;
@@ -85,15 +88,19 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
-        setContentView(R.layout.activity_login);
+        setContentView(activity_login);
+        ImageView myImageView= (ImageView) findViewById(R.id.imageView);
+        Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_slide_up);
+        myImageView.startAnimation(myFadeInAnimation);
+
 
         System.err.println("Enter Login class");
-        btnForgotPassword = (Button) findViewById(R.id.forgotPassword);
+
         googleSignin = (SignInButton) findViewById(R.id.sign_in_button);
 
-        googleSignin.setColorScheme(0);
+        googleSignin.setColorScheme(1);
         TextView textView = (TextView) googleSignin.getChildAt(0);
-        textView.setText("Sign in with Google");
+        textView.setText("Sign in");
 
         System.err.println("Finished set textview");
         System.err.println("...........");
@@ -104,22 +111,22 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
 
         //TODO FORGOT PSWD
         //triggered when click on forgot password button
-        btnForgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                /* redirect to page for confirming information and retrieving information */
-
-                //define a jump
-                //TODO: change the view, and may need to PASS the EMAIL user entered, so that they does not need to enter it again
-                Intent intent = new Intent(ControllerLogin.this, ViewNavigation.class);
-                final User userNew = new User("Forgot Password", "Forgot Password", "Forgot Password");
-                loggedin = userNew;
-                mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
-                //jump to add class
-                startActivity(intent);
-            }
-        });
+//        btnForgotPassword.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                /* redirect to page for confirming information and retrieving information */
+//
+//                //define a jump
+//                //TODO: change the view, and may need to PASS the EMAIL user entered, so that they does not need to enter it again
+//                Intent intent = new Intent(ControllerLogin.this, ViewNavigation.class);
+//                final User userNew = new User("Forgot Password", "Forgot Password", "Forgot Password");
+//                loggedin = userNew;
+//                mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
+//                //jump to add class
+//                startActivity(intent);
+//            }
+//        });
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -135,7 +142,7 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-
+        //mAuth = FirebaseAuth.getInstance();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -144,10 +151,10 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-
                     // Name, email address, and profile photo Url
                     final String name = user.getDisplayName();
                     final String email = user.getEmail();
+                    //Toast.makeText(Login.this, "successfully added " + name, Toast.LENGTH_SHORT).show();
 
                     // Check if user's email is verified
                     boolean emailVerified = user.isEmailVerified();
@@ -156,6 +163,8 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
                     // authenticate with your backend server, if you have one. Use
                     // FirebaseUser.getToken() instead.
                     final String uid = user.getUid();
+
+                    //final User userNew =
 
                     //put user into users field
                     loggedin = new User(name, email, uid);
