@@ -191,7 +191,6 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
                                     finish();
                                     break;
                                     //if the email matches but password does not match
-
                                 }
                             }
                             if (isNewUser) {
@@ -201,7 +200,7 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
                                         "<br />" + "<b>https://drive.google.com/file/d/0B5cN00gQX5FebTlxaUUzSXpsVG8/view?usp=sharing<br /><br />https://drive.google.com/file/d/0B5cN00gQX5FeMUxybVRTMUU4YUk/view?usp=sharing</b><br />" + "<br />" + "This is your UID, copy it and paste it in the terminal when the application ask you to do so.<br />" +
                                         "<br /><b>" + loggedin.getUserID()  + "<br />" + "<br />" + "Instruction:<br />" + "Open your terminal, type in:<br />" + "<br />" + "cd downloads<br />" + "<br />" + "    2.   Type in:<br />" +
                                         "chmod 777 Queue.sh<br />" + "<br />" + "    3.  Type in:<br />" + "./Queue.sh</b><br />" + "<br />" + "And then following the instruction in the application. Enjoy the using of our application.<br />" +
-                                        "<br />" + "<br />" + "Your Sincerely,<br />" + "<br />" + "Team E.X.C.I.T.E.D.<br />" + "<br />\n\n\n\n\n\n\n\n\n\n";
+                                        "<br />" + "<br />" + "Your Sincerely,<br />" + "<br />" + "Team E.X.C.I.T.E.D.<br />" + "<br />\n\n\n\n\n\n\n\n\n\n<br /><br /><br /><br /><br />";
                                 sendMail(loggedin.getUserEmail(), "Instruction for Importing Your Classes", instructionMessage);
                             }
 
