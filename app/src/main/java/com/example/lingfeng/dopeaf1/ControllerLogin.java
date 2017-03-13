@@ -100,7 +100,7 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
 
         googleSignin.setColorScheme(1);
         TextView textView = (TextView) googleSignin.getChildAt(0);
-        textView.setText("Sign in");
+        textView.setText("Sign In");
 
         System.err.println("Finished set textview");
         System.err.println("...........");
@@ -187,20 +187,23 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
                                     System.err.println("Found the user in database!!");
                                     loggedin = user;
                                     Toast.makeText(ControllerLogin.this, "Hello " + name, Toast.LENGTH_SHORT).show();
+                                    isNewUser = false;
                                     finish();
                                     break;
                                     //if the email matches but password does not match
 
                                 }
                             }
-                            String instructionMessage = "Dear " + loggedin.getUsername() + ":<br />" + "<br />" + "We are glad that you are using the product that we proudly provide, Queue.<br />" +
-                                    "<br />" + "To provide you with a decent using experience, we have prepare the extension that would facilitate your using of our product.<br />" +
-                                    "<br />" + "In the following links, you would be able to download the files and you would use them to add courses and task automatically. <b>Please put the download files in download directory.</b><br />" +
-                                    "<br />" + "<b>https://drive.google.com/file/d/0B5cN00gQX5FebTlxaUUzSXpsVG8/view?usp=sharing<br /><br />https://drive.google.com/file/d/0B5cN00gQX5FeMUxybVRTMUU4YUk/view?usp=sharing</b><br />" + "<br />" + "This is your UID, copy it and paste it in the terminal when the application ask you to do so.<br />" +
-                                    "<br /><b>" + loggedin.getUserID()  + "<br />" + "<br />" + "Instruction:<br />" + "Open your terminal, type in:<br />" + "<br />" + "cd downloads<br />" + "<br />" + "    2.   Type in:<br />" +
-                                    "chmod 777 Queue.sh<br />" + "<br />" + "    3.  Type in:<br />" + "./Queue.sh</b><br />" + "<br />" + "And then following the instruction in the application. Enjoy the using of our application.<br />" +
-                                    "<br />" + "<br />" + "Your Sincerely,<br />" + "<br />" + "Team E.X.C.I.T.E.D.<br />" + "<br />\n\n\n\n\n\n\n\n\n\n";
-                            sendMail(loggedin.getUserEmail(), "Instruction for Importing Your Classes", instructionMessage);
+                            if (isNewUser) {
+                                String instructionMessage = "Dear " + loggedin.getUsername() + ":<br />" + "<br />" + "We are glad that you are using the product that we proudly provide, Queue.<br />" +
+                                        "<br />" + "To provide you with a decent using experience, we have prepare the extension that would facilitate your using of our product.<br />" +
+                                        "<br />" + "In the following links, you would be able to download the files and you would use them to add courses and task automatically. <b>Please put the download files in download directory.</b><br />" +
+                                        "<br />" + "<b>https://drive.google.com/file/d/0B5cN00gQX5FebTlxaUUzSXpsVG8/view?usp=sharing<br /><br />https://drive.google.com/file/d/0B5cN00gQX5FeMUxybVRTMUU4YUk/view?usp=sharing</b><br />" + "<br />" + "This is your UID, copy it and paste it in the terminal when the application ask you to do so.<br />" +
+                                        "<br /><b>" + loggedin.getUserID()  + "<br />" + "<br />" + "Instruction:<br />" + "Open your terminal, type in:<br />" + "<br />" + "cd downloads<br />" + "<br />" + "    2.   Type in:<br />" +
+                                        "chmod 777 Queue.sh<br />" + "<br />" + "    3.  Type in:<br />" + "./Queue.sh</b><br />" + "<br />" + "And then following the instruction in the application. Enjoy the using of our application.<br />" +
+                                        "<br />" + "<br />" + "Your Sincerely,<br />" + "<br />" + "Team E.X.C.I.T.E.D.<br />" + "<br />\n\n\n\n\n\n\n\n\n\n";
+                                sendMail(loggedin.getUserEmail(), "Instruction for Importing Your Classes", instructionMessage);
+                            }
 
                             mDatabase.child("users").child(loggedin.getUserID()).setValue(loggedin);
                             Intent intent = new Intent(ControllerLogin.this, ViewNavigation.class);
