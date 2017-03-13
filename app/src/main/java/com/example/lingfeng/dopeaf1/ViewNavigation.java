@@ -291,6 +291,7 @@ public class ViewNavigation extends AppCompatActivity
                        mRecyclerViewPersonal.setVisibility(View.GONE);
                        mRecyclerViewFinished.setVisibility(View.GONE);
                        mRecyclerViewShareable.setVisibility(View.VISIBLE);
+                       setSharableTasks();
                    } else {
                        drawerMenu.add("Completed Tasks");
                        mRecyclerViewShareable.setVisibility(View.GONE);
