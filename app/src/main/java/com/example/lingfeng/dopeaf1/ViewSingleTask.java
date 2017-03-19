@@ -21,6 +21,7 @@ public class ViewSingleTask extends AppCompatActivity {
     String taskName = ViewNavigation.taskToPresent.getTaskName();
     String priorityLevel = String.valueOf(ViewNavigation.taskToPresent.priority);
     String dueDate = ViewNavigation.taskToPresent.dueDate;
+    String courseName = ViewNavigation.taskToPresent.courseID;
 
 
 
@@ -34,6 +35,7 @@ public class ViewSingleTask extends AppCompatActivity {
         View aboutPage = new AboutPage(this)
                 .isRTL(false)
                 .setDescription(taskName)
+                .addItem(new Element().setTitle("Course Name:"+"\n\n"+courseName))
                 .addItem(new Element().setTitle("Task Detail:"+"\n\n"+taskDetail))
                 .addItem(new Element().setTitle("Priority Level:\n\n"+priorityLevel))
                 .addItem(new Element().setTitle("Due Date:\n\n"+dueDate))
