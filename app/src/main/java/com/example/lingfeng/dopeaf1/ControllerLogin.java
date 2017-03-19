@@ -170,7 +170,7 @@ public class ControllerLogin extends AppCompatActivity implements GoogleApiClien
                     loggedin = new User(name, email, uid);
 
                     mDatabase.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-
+                        //
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
